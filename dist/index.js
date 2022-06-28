@@ -1,13 +1,215 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 679:
+/***/ 8869:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = bail
+
+function bail(err) {
+  if (err) {
+    throw err
+  }
+}
+
+
+/***/ }),
+
+/***/ 6851:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+exports.parse = parse
+exports.stringify = stringify
+
+var comma = ','
+var space = ' '
+var empty = ''
+
+// Parse comma-separated tokens to an array.
+function parse(value) {
+  var values = []
+  var input = String(value || empty)
+  var index = input.indexOf(comma)
+  var lastIndex = 0
+  var end = false
+  var val
+
+  while (!end) {
+    if (index === -1) {
+      index = input.length
+      end = true
+    }
+
+    val = input.slice(lastIndex, index).trim()
+
+    if (val || !end) {
+      values.push(val)
+    }
+
+    lastIndex = index + 1
+    index = input.indexOf(comma, lastIndex)
+  }
+
+  return values
+}
+
+// Compile an array to comma-separated tokens.
+// `options.padLeft` (default: `true`) pads a space left of each token, and
+// `options.padRight` (default: `false`) pads a space to the right of each token.
+function stringify(values, options) {
+  var settings = options || {}
+  var left = settings.padLeft === false ? empty : space
+  var right = settings.padRight ? space : empty
+
+  // Ensure the last empty entry is seen.
+  if (values[values.length - 1] === empty) {
+    values = values.concat(empty)
+  }
+
+  return values.join(right + comma + left).trim()
+}
+
+
+/***/ }),
+
+/***/ 4470:
+/***/ ((module) => {
+
+"use strict";
+
+
+var hasOwn = Object.prototype.hasOwnProperty;
+var toStr = Object.prototype.toString;
+var defineProperty = Object.defineProperty;
+var gOPD = Object.getOwnPropertyDescriptor;
+
+var isArray = function isArray(arr) {
+	if (typeof Array.isArray === 'function') {
+		return Array.isArray(arr);
+	}
+
+	return toStr.call(arr) === '[object Array]';
+};
+
+var isPlainObject = function isPlainObject(obj) {
+	if (!obj || toStr.call(obj) !== '[object Object]') {
+		return false;
+	}
+
+	var hasOwnConstructor = hasOwn.call(obj, 'constructor');
+	var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call(obj.constructor.prototype, 'isPrototypeOf');
+	// Not own constructor property must be Object
+	if (obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf) {
+		return false;
+	}
+
+	// Own properties are enumerated firstly, so to speed up,
+	// if last one is own, then all properties are own.
+	var key;
+	for (key in obj) { /**/ }
+
+	return typeof key === 'undefined' || hasOwn.call(obj, key);
+};
+
+// If name is '__proto__', and Object.defineProperty is available, define __proto__ as an own property on target
+var setProperty = function setProperty(target, options) {
+	if (defineProperty && options.name === '__proto__') {
+		defineProperty(target, options.name, {
+			enumerable: true,
+			configurable: true,
+			value: options.newValue,
+			writable: true
+		});
+	} else {
+		target[options.name] = options.newValue;
+	}
+};
+
+// Return undefined instead of __proto__ if '__proto__' is not an own property
+var getProperty = function getProperty(obj, name) {
+	if (name === '__proto__') {
+		if (!hasOwn.call(obj, name)) {
+			return void 0;
+		} else if (gOPD) {
+			// In early versions of node, obj['__proto__'] is buggy when obj has
+			// __proto__ as an own property. Object.getOwnPropertyDescriptor() works.
+			return gOPD(obj, name).value;
+		}
+	}
+
+	return obj[name];
+};
+
+module.exports = function extend() {
+	var options, name, src, copy, copyIsArray, clone;
+	var target = arguments[0];
+	var i = 1;
+	var length = arguments.length;
+	var deep = false;
+
+	// Handle a deep copy situation
+	if (typeof target === 'boolean') {
+		deep = target;
+		target = arguments[1] || {};
+		// skip the boolean and the target
+		i = 2;
+	}
+	if (target == null || (typeof target !== 'object' && typeof target !== 'function')) {
+		target = {};
+	}
+
+	for (; i < length; ++i) {
+		options = arguments[i];
+		// Only deal with non-null/undefined values
+		if (options != null) {
+			// Extend the base object
+			for (name in options) {
+				src = getProperty(target, name);
+				copy = getProperty(options, name);
+
+				// Prevent never-ending loop
+				if (target !== copy) {
+					// Recurse if we're merging plain objects or arrays
+					if (deep && copy && (isPlainObject(copy) || (copyIsArray = isArray(copy)))) {
+						if (copyIsArray) {
+							copyIsArray = false;
+							clone = src && isArray(src) ? src : [];
+						} else {
+							clone = src && isPlainObject(src) ? src : {};
+						}
+
+						// Never move original objects, clone them
+						setProperty(target, { name: name, newValue: extend(deep, clone, copy) });
+
+					// Don't bring in undefined values
+					} else if (typeof copy !== 'undefined') {
+						setProperty(target, { name: name, newValue: copy });
+					}
+				}
+			}
+		}
+	}
+
+	// Return the modified object
+	return target;
+};
+
+
+/***/ }),
+
+/***/ 8679:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
-var reactIs = __webpack_require__(296);
+var reactIs = __webpack_require__(1296);
 
 /**
  * Copyright 2015, Yahoo! Inc.
@@ -112,7 +314,7 @@ module.exports = hoistNonReactStatics;
 
 /***/ }),
 
-/***/ 103:
+/***/ 6103:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -135,20 +337,8284 @@ exports.isValidElementType=function(a){return"string"===typeof a||"function"===t
 
 /***/ }),
 
-/***/ 296:
+/***/ 1296:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
 if (true) {
-  module.exports = __webpack_require__(103);
+  module.exports = __webpack_require__(6103);
 } else {}
 
 
 /***/ }),
 
-/***/ 418:
+/***/ 8139:
+/***/ ((module) => {
+
+// http://www.w3.org/TR/CSS21/grammar.html
+// https://github.com/visionmedia/css-parse/pull/49#issuecomment-30088027
+var COMMENT_REGEX = /\/\*[^*]*\*+([^/*][^*]*\*+)*\//g;
+
+var NEWLINE_REGEX = /\n/g;
+var WHITESPACE_REGEX = /^\s*/;
+
+// declaration
+var PROPERTY_REGEX = /^(\*?[-#/*\\\w]+(\[[0-9a-z_-]+\])?)\s*/;
+var COLON_REGEX = /^:\s*/;
+var VALUE_REGEX = /^((?:'(?:\\'|.)*?'|"(?:\\"|.)*?"|\([^)]*?\)|[^};])+)/;
+var SEMICOLON_REGEX = /^[;\s]*/;
+
+// https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String/Trim#Polyfill
+var TRIM_REGEX = /^\s+|\s+$/g;
+
+// strings
+var NEWLINE = '\n';
+var FORWARD_SLASH = '/';
+var ASTERISK = '*';
+var EMPTY_STRING = '';
+
+// types
+var TYPE_COMMENT = 'comment';
+var TYPE_DECLARATION = 'declaration';
+
+/**
+ * @param {String} style
+ * @param {Object} [options]
+ * @return {Object[]}
+ * @throws {TypeError}
+ * @throws {Error}
+ */
+module.exports = function(style, options) {
+  if (typeof style !== 'string') {
+    throw new TypeError('First argument must be a string');
+  }
+
+  if (!style) return [];
+
+  options = options || {};
+
+  /**
+   * Positional.
+   */
+  var lineno = 1;
+  var column = 1;
+
+  /**
+   * Update lineno and column based on `str`.
+   *
+   * @param {String} str
+   */
+  function updatePosition(str) {
+    var lines = str.match(NEWLINE_REGEX);
+    if (lines) lineno += lines.length;
+    var i = str.lastIndexOf(NEWLINE);
+    column = ~i ? str.length - i : column + str.length;
+  }
+
+  /**
+   * Mark position and patch `node.position`.
+   *
+   * @return {Function}
+   */
+  function position() {
+    var start = { line: lineno, column: column };
+    return function(node) {
+      node.position = new Position(start);
+      whitespace();
+      return node;
+    };
+  }
+
+  /**
+   * Store position information for a node.
+   *
+   * @constructor
+   * @property {Object} start
+   * @property {Object} end
+   * @property {undefined|String} source
+   */
+  function Position(start) {
+    this.start = start;
+    this.end = { line: lineno, column: column };
+    this.source = options.source;
+  }
+
+  /**
+   * Non-enumerable source string.
+   */
+  Position.prototype.content = style;
+
+  var errorsList = [];
+
+  /**
+   * Error `msg`.
+   *
+   * @param {String} msg
+   * @throws {Error}
+   */
+  function error(msg) {
+    var err = new Error(
+      options.source + ':' + lineno + ':' + column + ': ' + msg
+    );
+    err.reason = msg;
+    err.filename = options.source;
+    err.line = lineno;
+    err.column = column;
+    err.source = style;
+
+    if (options.silent) {
+      errorsList.push(err);
+    } else {
+      throw err;
+    }
+  }
+
+  /**
+   * Match `re` and return captures.
+   *
+   * @param {RegExp} re
+   * @return {undefined|Array}
+   */
+  function match(re) {
+    var m = re.exec(style);
+    if (!m) return;
+    var str = m[0];
+    updatePosition(str);
+    style = style.slice(str.length);
+    return m;
+  }
+
+  /**
+   * Parse whitespace.
+   */
+  function whitespace() {
+    match(WHITESPACE_REGEX);
+  }
+
+  /**
+   * Parse comments.
+   *
+   * @param {Object[]} [rules]
+   * @return {Object[]}
+   */
+  function comments(rules) {
+    var c;
+    rules = rules || [];
+    while ((c = comment())) {
+      if (c !== false) {
+        rules.push(c);
+      }
+    }
+    return rules;
+  }
+
+  /**
+   * Parse comment.
+   *
+   * @return {Object}
+   * @throws {Error}
+   */
+  function comment() {
+    var pos = position();
+    if (FORWARD_SLASH != style.charAt(0) || ASTERISK != style.charAt(1)) return;
+
+    var i = 2;
+    while (
+      EMPTY_STRING != style.charAt(i) &&
+      (ASTERISK != style.charAt(i) || FORWARD_SLASH != style.charAt(i + 1))
+    ) {
+      ++i;
+    }
+    i += 2;
+
+    if (EMPTY_STRING === style.charAt(i - 1)) {
+      return error('End of comment missing');
+    }
+
+    var str = style.slice(2, i - 2);
+    column += 2;
+    updatePosition(str);
+    style = style.slice(i);
+    column += 2;
+
+    return pos({
+      type: TYPE_COMMENT,
+      comment: str
+    });
+  }
+
+  /**
+   * Parse declaration.
+   *
+   * @return {Object}
+   * @throws {Error}
+   */
+  function declaration() {
+    var pos = position();
+
+    // prop
+    var prop = match(PROPERTY_REGEX);
+    if (!prop) return;
+    comment();
+
+    // :
+    if (!match(COLON_REGEX)) return error("property missing ':'");
+
+    // val
+    var val = match(VALUE_REGEX);
+
+    var ret = pos({
+      type: TYPE_DECLARATION,
+      property: trim(prop[0].replace(COMMENT_REGEX, EMPTY_STRING)),
+      value: val
+        ? trim(val[0].replace(COMMENT_REGEX, EMPTY_STRING))
+        : EMPTY_STRING
+    });
+
+    // ;
+    match(SEMICOLON_REGEX);
+
+    return ret;
+  }
+
+  /**
+   * Parse declarations.
+   *
+   * @return {Object[]}
+   */
+  function declarations() {
+    var decls = [];
+
+    comments(decls);
+
+    // declarations
+    var decl;
+    while ((decl = declaration())) {
+      if (decl !== false) {
+        decls.push(decl);
+        comments(decls);
+      }
+    }
+
+    return decls;
+  }
+
+  whitespace();
+  return declarations();
+};
+
+/**
+ * Trim `str`.
+ *
+ * @param {String} str
+ * @return {String}
+ */
+function trim(str) {
+  return str ? str.replace(TRIM_REGEX, EMPTY_STRING) : EMPTY_STRING;
+}
+
+
+/***/ }),
+
+/***/ 8738:
+/***/ ((module) => {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+module.exports = function isBuffer (obj) {
+  return obj != null && obj.constructor != null &&
+    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+
+/***/ }),
+
+/***/ 6630:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var visit = __webpack_require__(2854)
+
+module.exports = getDefinitionFactory
+
+var own = {}.hasOwnProperty
+
+// Get a definition in `node` by `identifier`.
+function getDefinitionFactory(node, options) {
+  return getterFactory(gather(node, options))
+}
+
+// Gather all definitions in `node`
+function gather(node) {
+  var cache = {}
+
+  if (!node || !node.type) {
+    throw new Error('mdast-util-definitions expected node')
+  }
+
+  visit(node, 'definition', ondefinition)
+
+  return cache
+
+  function ondefinition(definition) {
+    var id = normalise(definition.identifier)
+    if (!own.call(cache, id)) {
+      cache[id] = definition
+    }
+  }
+}
+
+// Factory to get a node from the given definition-cache.
+function getterFactory(cache) {
+  return getter
+
+  // Get a node from the bound definition-cache.
+  function getter(identifier) {
+    var id = identifier && normalise(identifier)
+    return id && own.call(cache, id) ? cache[id] : null
+  }
+}
+
+function normalise(identifier) {
+  return identifier.toUpperCase()
+}
+
+
+/***/ }),
+
+/***/ 2524:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = fromMarkdown
+
+// These three are compiled away in the `dist/`
+
+var toString = __webpack_require__(4999)
+var assign = __webpack_require__(9198)
+var own = __webpack_require__(6706)
+var normalizeIdentifier = __webpack_require__(5478)
+var safeFromInt = __webpack_require__(596)
+var parser = __webpack_require__(2976)
+var preprocessor = __webpack_require__(162)
+var postprocess = __webpack_require__(1242)
+var decode = __webpack_require__(9435)
+var stringifyPosition = __webpack_require__(5432)
+
+function fromMarkdown(value, encoding, options) {
+  if (typeof encoding !== 'string') {
+    options = encoding
+    encoding = undefined
+  }
+
+  return compiler(options)(
+    postprocess(
+      parser(options).document().write(preprocessor()(value, encoding, true))
+    )
+  )
+}
+
+// Note this compiler only understand complete buffering, not streaming.
+function compiler(options) {
+  var settings = options || {}
+  var config = configure(
+    {
+      transforms: [],
+      canContainEols: [
+        'emphasis',
+        'fragment',
+        'heading',
+        'paragraph',
+        'strong'
+      ],
+
+      enter: {
+        autolink: opener(link),
+        autolinkProtocol: onenterdata,
+        autolinkEmail: onenterdata,
+        atxHeading: opener(heading),
+        blockQuote: opener(blockQuote),
+        characterEscape: onenterdata,
+        characterReference: onenterdata,
+        codeFenced: opener(codeFlow),
+        codeFencedFenceInfo: buffer,
+        codeFencedFenceMeta: buffer,
+        codeIndented: opener(codeFlow, buffer),
+        codeText: opener(codeText, buffer),
+        codeTextData: onenterdata,
+        data: onenterdata,
+        codeFlowValue: onenterdata,
+        definition: opener(definition),
+        definitionDestinationString: buffer,
+        definitionLabelString: buffer,
+        definitionTitleString: buffer,
+        emphasis: opener(emphasis),
+        hardBreakEscape: opener(hardBreak),
+        hardBreakTrailing: opener(hardBreak),
+        htmlFlow: opener(html, buffer),
+        htmlFlowData: onenterdata,
+        htmlText: opener(html, buffer),
+        htmlTextData: onenterdata,
+        image: opener(image),
+        label: buffer,
+        link: opener(link),
+        listItem: opener(listItem),
+        listItemValue: onenterlistitemvalue,
+        listOrdered: opener(list, onenterlistordered),
+        listUnordered: opener(list),
+        paragraph: opener(paragraph),
+        reference: onenterreference,
+        referenceString: buffer,
+        resourceDestinationString: buffer,
+        resourceTitleString: buffer,
+        setextHeading: opener(heading),
+        strong: opener(strong),
+        thematicBreak: opener(thematicBreak)
+      },
+
+      exit: {
+        atxHeading: closer(),
+        atxHeadingSequence: onexitatxheadingsequence,
+        autolink: closer(),
+        autolinkEmail: onexitautolinkemail,
+        autolinkProtocol: onexitautolinkprotocol,
+        blockQuote: closer(),
+        characterEscapeValue: onexitdata,
+        characterReferenceMarkerHexadecimal: onexitcharacterreferencemarker,
+        characterReferenceMarkerNumeric: onexitcharacterreferencemarker,
+        characterReferenceValue: onexitcharacterreferencevalue,
+        codeFenced: closer(onexitcodefenced),
+        codeFencedFence: onexitcodefencedfence,
+        codeFencedFenceInfo: onexitcodefencedfenceinfo,
+        codeFencedFenceMeta: onexitcodefencedfencemeta,
+        codeFlowValue: onexitdata,
+        codeIndented: closer(onexitcodeindented),
+        codeText: closer(onexitcodetext),
+        codeTextData: onexitdata,
+        data: onexitdata,
+        definition: closer(),
+        definitionDestinationString: onexitdefinitiondestinationstring,
+        definitionLabelString: onexitdefinitionlabelstring,
+        definitionTitleString: onexitdefinitiontitlestring,
+        emphasis: closer(),
+        hardBreakEscape: closer(onexithardbreak),
+        hardBreakTrailing: closer(onexithardbreak),
+        htmlFlow: closer(onexithtmlflow),
+        htmlFlowData: onexitdata,
+        htmlText: closer(onexithtmltext),
+        htmlTextData: onexitdata,
+        image: closer(onexitimage),
+        label: onexitlabel,
+        labelText: onexitlabeltext,
+        lineEnding: onexitlineending,
+        link: closer(onexitlink),
+        listItem: closer(),
+        listOrdered: closer(),
+        listUnordered: closer(),
+        paragraph: closer(),
+        referenceString: onexitreferencestring,
+        resourceDestinationString: onexitresourcedestinationstring,
+        resourceTitleString: onexitresourcetitlestring,
+        resource: onexitresource,
+        setextHeading: closer(onexitsetextheading),
+        setextHeadingLineSequence: onexitsetextheadinglinesequence,
+        setextHeadingText: onexitsetextheadingtext,
+        strong: closer(),
+        thematicBreak: closer()
+      }
+    },
+
+    settings.mdastExtensions || []
+  )
+
+  var data = {}
+
+  return compile
+
+  function compile(events) {
+    var tree = {type: 'root', children: []}
+    var stack = [tree]
+    var tokenStack = []
+    var listStack = []
+    var index = -1
+    var handler
+    var listStart
+
+    var context = {
+      stack: stack,
+      tokenStack: tokenStack,
+      config: config,
+      enter: enter,
+      exit: exit,
+      buffer: buffer,
+      resume: resume,
+      setData: setData,
+      getData: getData
+    }
+
+    while (++index < events.length) {
+      // We preprocess lists to add `listItem` tokens, and to infer whether
+      // items the list itself are spread out.
+      if (
+        events[index][1].type === 'listOrdered' ||
+        events[index][1].type === 'listUnordered'
+      ) {
+        if (events[index][0] === 'enter') {
+          listStack.push(index)
+        } else {
+          listStart = listStack.pop(index)
+          index = prepareList(events, listStart, index)
+        }
+      }
+    }
+
+    index = -1
+
+    while (++index < events.length) {
+      handler = config[events[index][0]]
+
+      if (own.call(handler, events[index][1].type)) {
+        handler[events[index][1].type].call(
+          assign({sliceSerialize: events[index][2].sliceSerialize}, context),
+          events[index][1]
+        )
+      }
+    }
+
+    if (tokenStack.length) {
+      throw new Error(
+        'Cannot close document, a token (`' +
+          tokenStack[tokenStack.length - 1].type +
+          '`, ' +
+          stringifyPosition({
+            start: tokenStack[tokenStack.length - 1].start,
+            end: tokenStack[tokenStack.length - 1].end
+          }) +
+          ') is still open'
+      )
+    }
+
+    // Figure out `root` position.
+    tree.position = {
+      start: point(
+        events.length ? events[0][1].start : {line: 1, column: 1, offset: 0}
+      ),
+
+      end: point(
+        events.length
+          ? events[events.length - 2][1].end
+          : {line: 1, column: 1, offset: 0}
+      )
+    }
+
+    index = -1
+    while (++index < config.transforms.length) {
+      tree = config.transforms[index](tree) || tree
+    }
+
+    return tree
+  }
+
+  function prepareList(events, start, length) {
+    var index = start - 1
+    var containerBalance = -1
+    var listSpread = false
+    var listItem
+    var tailIndex
+    var lineIndex
+    var tailEvent
+    var event
+    var firstBlankLineIndex
+    var atMarker
+
+    while (++index <= length) {
+      event = events[index]
+
+      if (
+        event[1].type === 'listUnordered' ||
+        event[1].type === 'listOrdered' ||
+        event[1].type === 'blockQuote'
+      ) {
+        if (event[0] === 'enter') {
+          containerBalance++
+        } else {
+          containerBalance--
+        }
+
+        atMarker = undefined
+      } else if (event[1].type === 'lineEndingBlank') {
+        if (event[0] === 'enter') {
+          if (
+            listItem &&
+            !atMarker &&
+            !containerBalance &&
+            !firstBlankLineIndex
+          ) {
+            firstBlankLineIndex = index
+          }
+
+          atMarker = undefined
+        }
+      } else if (
+        event[1].type === 'linePrefix' ||
+        event[1].type === 'listItemValue' ||
+        event[1].type === 'listItemMarker' ||
+        event[1].type === 'listItemPrefix' ||
+        event[1].type === 'listItemPrefixWhitespace'
+      ) {
+        // Empty.
+      } else {
+        atMarker = undefined
+      }
+
+      if (
+        (!containerBalance &&
+          event[0] === 'enter' &&
+          event[1].type === 'listItemPrefix') ||
+        (containerBalance === -1 &&
+          event[0] === 'exit' &&
+          (event[1].type === 'listUnordered' ||
+            event[1].type === 'listOrdered'))
+      ) {
+        if (listItem) {
+          tailIndex = index
+          lineIndex = undefined
+
+          while (tailIndex--) {
+            tailEvent = events[tailIndex]
+
+            if (
+              tailEvent[1].type === 'lineEnding' ||
+              tailEvent[1].type === 'lineEndingBlank'
+            ) {
+              if (tailEvent[0] === 'exit') continue
+
+              if (lineIndex) {
+                events[lineIndex][1].type = 'lineEndingBlank'
+                listSpread = true
+              }
+
+              tailEvent[1].type = 'lineEnding'
+              lineIndex = tailIndex
+            } else if (
+              tailEvent[1].type === 'linePrefix' ||
+              tailEvent[1].type === 'blockQuotePrefix' ||
+              tailEvent[1].type === 'blockQuotePrefixWhitespace' ||
+              tailEvent[1].type === 'blockQuoteMarker' ||
+              tailEvent[1].type === 'listItemIndent'
+            ) {
+              // Empty
+            } else {
+              break
+            }
+          }
+
+          if (
+            firstBlankLineIndex &&
+            (!lineIndex || firstBlankLineIndex < lineIndex)
+          ) {
+            listItem._spread = true
+          }
+
+          // Fix position.
+          listItem.end = point(
+            lineIndex ? events[lineIndex][1].start : event[1].end
+          )
+
+          events.splice(lineIndex || index, 0, ['exit', listItem, event[2]])
+          index++
+          length++
+        }
+
+        // Create a new list item.
+        if (event[1].type === 'listItemPrefix') {
+          listItem = {
+            type: 'listItem',
+            _spread: false,
+            start: point(event[1].start)
+          }
+
+          events.splice(index, 0, ['enter', listItem, event[2]])
+          index++
+          length++
+          firstBlankLineIndex = undefined
+          atMarker = true
+        }
+      }
+    }
+
+    events[start][1]._spread = listSpread
+    return length
+  }
+
+  function setData(key, value) {
+    data[key] = value
+  }
+
+  function getData(key) {
+    return data[key]
+  }
+
+  function point(d) {
+    return {line: d.line, column: d.column, offset: d.offset}
+  }
+
+  function opener(create, and) {
+    return open
+
+    function open(token) {
+      enter.call(this, create(token), token)
+      if (and) and.call(this, token)
+    }
+  }
+
+  function buffer() {
+    this.stack.push({type: 'fragment', children: []})
+  }
+
+  function enter(node, token) {
+    this.stack[this.stack.length - 1].children.push(node)
+    this.stack.push(node)
+    this.tokenStack.push(token)
+    node.position = {start: point(token.start)}
+    return node
+  }
+
+  function closer(and) {
+    return close
+
+    function close(token) {
+      if (and) and.call(this, token)
+      exit.call(this, token)
+    }
+  }
+
+  function exit(token) {
+    var node = this.stack.pop()
+    var open = this.tokenStack.pop()
+
+    if (!open) {
+      throw new Error(
+        'Cannot close `' +
+          token.type +
+          '` (' +
+          stringifyPosition({start: token.start, end: token.end}) +
+          '): it’s not open'
+      )
+    } else if (open.type !== token.type) {
+      throw new Error(
+        'Cannot close `' +
+          token.type +
+          '` (' +
+          stringifyPosition({start: token.start, end: token.end}) +
+          '): a different token (`' +
+          open.type +
+          '`, ' +
+          stringifyPosition({start: open.start, end: open.end}) +
+          ') is open'
+      )
+    }
+
+    node.position.end = point(token.end)
+    return node
+  }
+
+  function resume() {
+    return toString(this.stack.pop())
+  }
+
+  //
+  // Handlers.
+  //
+
+  function onenterlistordered() {
+    setData('expectingFirstListItemValue', true)
+  }
+
+  function onenterlistitemvalue(token) {
+    if (getData('expectingFirstListItemValue')) {
+      this.stack[this.stack.length - 2].start = parseInt(
+        this.sliceSerialize(token),
+        10
+      )
+
+      setData('expectingFirstListItemValue')
+    }
+  }
+
+  function onexitcodefencedfenceinfo() {
+    var data = this.resume()
+    this.stack[this.stack.length - 1].lang = data
+  }
+
+  function onexitcodefencedfencemeta() {
+    var data = this.resume()
+    this.stack[this.stack.length - 1].meta = data
+  }
+
+  function onexitcodefencedfence() {
+    // Exit if this is the closing fence.
+    if (getData('flowCodeInside')) return
+    this.buffer()
+    setData('flowCodeInside', true)
+  }
+
+  function onexitcodefenced() {
+    var data = this.resume()
+    this.stack[this.stack.length - 1].value = data.replace(
+      /^(\r?\n|\r)|(\r?\n|\r)$/g,
+      ''
+    )
+
+    setData('flowCodeInside')
+  }
+
+  function onexitcodeindented() {
+    var data = this.resume()
+    this.stack[this.stack.length - 1].value = data
+  }
+
+  function onexitdefinitionlabelstring(token) {
+    // Discard label, use the source content instead.
+    var label = this.resume()
+    this.stack[this.stack.length - 1].label = label
+    this.stack[this.stack.length - 1].identifier = normalizeIdentifier(
+      this.sliceSerialize(token)
+    ).toLowerCase()
+  }
+
+  function onexitdefinitiontitlestring() {
+    var data = this.resume()
+    this.stack[this.stack.length - 1].title = data
+  }
+
+  function onexitdefinitiondestinationstring() {
+    var data = this.resume()
+    this.stack[this.stack.length - 1].url = data
+  }
+
+  function onexitatxheadingsequence(token) {
+    if (!this.stack[this.stack.length - 1].depth) {
+      this.stack[this.stack.length - 1].depth = this.sliceSerialize(
+        token
+      ).length
+    }
+  }
+
+  function onexitsetextheadingtext() {
+    setData('setextHeadingSlurpLineEnding', true)
+  }
+
+  function onexitsetextheadinglinesequence(token) {
+    this.stack[this.stack.length - 1].depth =
+      this.sliceSerialize(token).charCodeAt(0) === 61 ? 1 : 2
+  }
+
+  function onexitsetextheading() {
+    setData('setextHeadingSlurpLineEnding')
+  }
+
+  function onenterdata(token) {
+    var siblings = this.stack[this.stack.length - 1].children
+    var tail = siblings[siblings.length - 1]
+
+    if (!tail || tail.type !== 'text') {
+      // Add a new text node.
+      tail = text()
+      tail.position = {start: point(token.start)}
+      this.stack[this.stack.length - 1].children.push(tail)
+    }
+
+    this.stack.push(tail)
+  }
+
+  function onexitdata(token) {
+    var tail = this.stack.pop()
+    tail.value += this.sliceSerialize(token)
+    tail.position.end = point(token.end)
+  }
+
+  function onexitlineending(token) {
+    var context = this.stack[this.stack.length - 1]
+
+    // If we’re at a hard break, include the line ending in there.
+    if (getData('atHardBreak')) {
+      context.children[context.children.length - 1].position.end = point(
+        token.end
+      )
+
+      setData('atHardBreak')
+      return
+    }
+
+    if (
+      !getData('setextHeadingSlurpLineEnding') &&
+      config.canContainEols.indexOf(context.type) > -1
+    ) {
+      onenterdata.call(this, token)
+      onexitdata.call(this, token)
+    }
+  }
+
+  function onexithardbreak() {
+    setData('atHardBreak', true)
+  }
+
+  function onexithtmlflow() {
+    var data = this.resume()
+    this.stack[this.stack.length - 1].value = data
+  }
+
+  function onexithtmltext() {
+    var data = this.resume()
+    this.stack[this.stack.length - 1].value = data
+  }
+
+  function onexitcodetext() {
+    var data = this.resume()
+    this.stack[this.stack.length - 1].value = data
+  }
+
+  function onexitlink() {
+    var context = this.stack[this.stack.length - 1]
+
+    // To do: clean.
+    if (getData('inReference')) {
+      context.type += 'Reference'
+      context.referenceType = getData('referenceType') || 'shortcut'
+      delete context.url
+      delete context.title
+    } else {
+      delete context.identifier
+      delete context.label
+      delete context.referenceType
+    }
+
+    setData('referenceType')
+  }
+
+  function onexitimage() {
+    var context = this.stack[this.stack.length - 1]
+
+    // To do: clean.
+    if (getData('inReference')) {
+      context.type += 'Reference'
+      context.referenceType = getData('referenceType') || 'shortcut'
+      delete context.url
+      delete context.title
+    } else {
+      delete context.identifier
+      delete context.label
+      delete context.referenceType
+    }
+
+    setData('referenceType')
+  }
+
+  function onexitlabeltext(token) {
+    this.stack[this.stack.length - 2].identifier = normalizeIdentifier(
+      this.sliceSerialize(token)
+    ).toLowerCase()
+  }
+
+  function onexitlabel() {
+    var fragment = this.stack[this.stack.length - 1]
+    var value = this.resume()
+
+    this.stack[this.stack.length - 1].label = value
+
+    // Assume a reference.
+    setData('inReference', true)
+
+    if (this.stack[this.stack.length - 1].type === 'link') {
+      this.stack[this.stack.length - 1].children = fragment.children
+    } else {
+      this.stack[this.stack.length - 1].alt = value
+    }
+  }
+
+  function onexitresourcedestinationstring() {
+    var data = this.resume()
+    this.stack[this.stack.length - 1].url = data
+  }
+
+  function onexitresourcetitlestring() {
+    var data = this.resume()
+    this.stack[this.stack.length - 1].title = data
+  }
+
+  function onexitresource() {
+    setData('inReference')
+  }
+
+  function onenterreference() {
+    setData('referenceType', 'collapsed')
+  }
+
+  function onexitreferencestring(token) {
+    var label = this.resume()
+    this.stack[this.stack.length - 1].label = label
+    this.stack[this.stack.length - 1].identifier = normalizeIdentifier(
+      this.sliceSerialize(token)
+    ).toLowerCase()
+    setData('referenceType', 'full')
+  }
+
+  function onexitcharacterreferencemarker(token) {
+    setData('characterReferenceType', token.type)
+  }
+
+  function onexitcharacterreferencevalue(token) {
+    var data = this.sliceSerialize(token)
+    var type = getData('characterReferenceType')
+    var value
+    var tail
+
+    if (type) {
+      value = safeFromInt(
+        data,
+        type === 'characterReferenceMarkerNumeric' ? 10 : 16
+      )
+
+      setData('characterReferenceType')
+    } else {
+      value = decode(data)
+    }
+
+    tail = this.stack.pop()
+    tail.value += value
+    tail.position.end = point(token.end)
+  }
+
+  function onexitautolinkprotocol(token) {
+    onexitdata.call(this, token)
+    this.stack[this.stack.length - 1].url = this.sliceSerialize(token)
+  }
+
+  function onexitautolinkemail(token) {
+    onexitdata.call(this, token)
+    this.stack[this.stack.length - 1].url =
+      'mailto:' + this.sliceSerialize(token)
+  }
+
+  //
+  // Creaters.
+  //
+
+  function blockQuote() {
+    return {type: 'blockquote', children: []}
+  }
+
+  function codeFlow() {
+    return {type: 'code', lang: null, meta: null, value: ''}
+  }
+
+  function codeText() {
+    return {type: 'inlineCode', value: ''}
+  }
+
+  function definition() {
+    return {
+      type: 'definition',
+      identifier: '',
+      label: null,
+      title: null,
+      url: ''
+    }
+  }
+
+  function emphasis() {
+    return {type: 'emphasis', children: []}
+  }
+
+  function heading() {
+    return {type: 'heading', depth: undefined, children: []}
+  }
+
+  function hardBreak() {
+    return {type: 'break'}
+  }
+
+  function html() {
+    return {type: 'html', value: ''}
+  }
+
+  function image() {
+    return {type: 'image', title: null, url: '', alt: null}
+  }
+
+  function link() {
+    return {type: 'link', title: null, url: '', children: []}
+  }
+
+  function list(token) {
+    return {
+      type: 'list',
+      ordered: token.type === 'listOrdered',
+      start: null,
+      spread: token._spread,
+      children: []
+    }
+  }
+
+  function listItem(token) {
+    return {
+      type: 'listItem',
+      spread: token._spread,
+      checked: null,
+      children: []
+    }
+  }
+
+  function paragraph() {
+    return {type: 'paragraph', children: []}
+  }
+
+  function strong() {
+    return {type: 'strong', children: []}
+  }
+
+  function text() {
+    return {type: 'text', value: ''}
+  }
+
+  function thematicBreak() {
+    return {type: 'thematicBreak'}
+  }
+}
+
+function configure(config, extensions) {
+  var index = -1
+
+  while (++index < extensions.length) {
+    extension(config, extensions[index])
+  }
+
+  return config
+}
+
+function extension(config, extension) {
+  var key
+  var left
+
+  for (key in extension) {
+    left = own.call(config, key) ? config[key] : (config[key] = {})
+
+    if (key === 'canContainEols' || key === 'transforms') {
+      config[key] = [].concat(left, extension[key])
+    } else {
+      Object.assign(left, extension[key])
+    }
+  }
+}
+
+
+/***/ }),
+
+/***/ 9671:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = __webpack_require__(2524)
+
+
+/***/ }),
+
+/***/ 5288:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+module.exports = __webpack_require__(1601)
+
+
+/***/ }),
+
+/***/ 5426:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = all
+
+var one = __webpack_require__(719)
+
+function all(h, parent) {
+  var nodes = parent.children || []
+  var length = nodes.length
+  var values = []
+  var index = -1
+  var result
+  var head
+
+  while (++index < length) {
+    result = one(h, nodes[index], parent)
+
+    if (result) {
+      if (index && nodes[index - 1].type === 'break') {
+        if (result.value) {
+          result.value = result.value.replace(/^\s+/, '')
+        }
+
+        head = result.children && result.children[0]
+
+        if (head && head.value) {
+          head.value = head.value.replace(/^\s+/, '')
+        }
+      }
+
+      values = values.concat(result)
+    }
+  }
+
+  return values
+}
+
+
+/***/ }),
+
+/***/ 1696:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = generateFootnotes
+
+var thematicBreak = __webpack_require__(7552)
+var list = __webpack_require__(7888)
+var wrap = __webpack_require__(6115)
+
+function generateFootnotes(h) {
+  var footnoteById = h.footnoteById
+  var footnoteOrder = h.footnoteOrder
+  var length = footnoteOrder.length
+  var index = -1
+  var listItems = []
+  var def
+  var backReference
+  var content
+  var tail
+
+  while (++index < length) {
+    def = footnoteById[footnoteOrder[index].toUpperCase()]
+
+    if (!def) {
+      continue
+    }
+
+    content = def.children.concat()
+    tail = content[content.length - 1]
+    backReference = {
+      type: 'link',
+      url: '#fnref-' + def.identifier,
+      data: {hProperties: {className: ['footnote-backref']}},
+      children: [{type: 'text', value: '↩'}]
+    }
+
+    if (!tail || tail.type !== 'paragraph') {
+      tail = {type: 'paragraph', children: []}
+      content.push(tail)
+    }
+
+    tail.children.push(backReference)
+
+    listItems.push({
+      type: 'listItem',
+      data: {hProperties: {id: 'fn-' + def.identifier}},
+      children: content,
+      position: def.position
+    })
+  }
+
+  if (listItems.length === 0) {
+    return null
+  }
+
+  return h(
+    null,
+    'div',
+    {className: ['footnotes']},
+    wrap(
+      [
+        thematicBreak(h),
+        list(h, {type: 'list', ordered: true, children: listItems})
+      ],
+      true
+    )
+  )
+}
+
+
+/***/ }),
+
+/***/ 3126:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = blockquote
+
+var wrap = __webpack_require__(6115)
+var all = __webpack_require__(5426)
+
+function blockquote(h, node) {
+  return h(node, 'blockquote', wrap(all(h, node), true))
+}
+
+
+/***/ }),
+
+/***/ 3562:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = hardBreak
+
+var u = __webpack_require__(914)
+
+function hardBreak(h, node) {
+  return [h(node, 'br'), u('text', '\n')]
+}
+
+
+/***/ }),
+
+/***/ 7891:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = code
+
+var u = __webpack_require__(914)
+
+function code(h, node) {
+  var value = node.value ? node.value + '\n' : ''
+  // To do: next major, use `node.lang` w/o regex, the splitting’s been going
+  // on for years in remark now.
+  var lang = node.lang && node.lang.match(/^[^ \t]+(?=[ \t]|$)/)
+  var props = {}
+  var code
+
+  if (lang) {
+    props.className = ['language-' + lang]
+  }
+
+  code = h(node, 'code', props, [u('text', value)])
+
+  if (node.meta) {
+    code.data = {meta: node.meta}
+  }
+
+  return h(node.position, 'pre', [code])
+}
+
+
+/***/ }),
+
+/***/ 9381:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = strikethrough
+
+var all = __webpack_require__(5426)
+
+function strikethrough(h, node) {
+  return h(node, 'del', all(h, node))
+}
+
+
+/***/ }),
+
+/***/ 790:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = emphasis
+
+var all = __webpack_require__(5426)
+
+function emphasis(h, node) {
+  return h(node, 'em', all(h, node))
+}
+
+
+/***/ }),
+
+/***/ 8235:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = footnoteReference
+
+var u = __webpack_require__(914)
+
+function footnoteReference(h, node) {
+  var footnoteOrder = h.footnoteOrder
+  var identifier = String(node.identifier)
+
+  if (footnoteOrder.indexOf(identifier) === -1) {
+    footnoteOrder.push(identifier)
+  }
+
+  return h(node.position, 'sup', {id: 'fnref-' + identifier}, [
+    h(node, 'a', {href: '#fn-' + identifier, className: ['footnote-ref']}, [
+      u('text', node.label || identifier)
+    ])
+  ])
+}
+
+
+/***/ }),
+
+/***/ 5758:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = footnote
+
+var footnoteReference = __webpack_require__(8235)
+
+function footnote(h, node) {
+  var footnoteById = h.footnoteById
+  var footnoteOrder = h.footnoteOrder
+  var identifier = 1
+
+  while (identifier in footnoteById) {
+    identifier++
+  }
+
+  identifier = String(identifier)
+
+  // No need to check if `identifier` exists in `footnoteOrder`, it’s guaranteed
+  // to not exist because we just generated it.
+  footnoteOrder.push(identifier)
+
+  footnoteById[identifier] = {
+    type: 'footnoteDefinition',
+    identifier: identifier,
+    children: [{type: 'paragraph', children: node.children}],
+    position: node.position
+  }
+
+  return footnoteReference(h, {
+    type: 'footnoteReference',
+    identifier: identifier,
+    position: node.position
+  })
+}
+
+
+/***/ }),
+
+/***/ 4890:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = heading
+
+var all = __webpack_require__(5426)
+
+function heading(h, node) {
+  return h(node, 'h' + node.depth, all(h, node))
+}
+
+
+/***/ }),
+
+/***/ 2202:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = html
+
+var u = __webpack_require__(914)
+
+// Return either a `raw` node in dangerous mode, otherwise nothing.
+function html(h, node) {
+  return h.dangerous ? h.augment(node, u('raw', node.value)) : null
+}
+
+
+/***/ }),
+
+/***/ 1454:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = imageReference
+
+var normalize = __webpack_require__(729)
+var revert = __webpack_require__(713)
+
+function imageReference(h, node) {
+  var def = h.definition(node.identifier)
+  var props
+
+  if (!def) {
+    return revert(h, node)
+  }
+
+  props = {src: normalize(def.url || ''), alt: node.alt}
+
+  if (def.title !== null && def.title !== undefined) {
+    props.title = def.title
+  }
+
+  return h(node, 'img', props)
+}
+
+
+/***/ }),
+
+/***/ 5037:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var normalize = __webpack_require__(729)
+
+module.exports = image
+
+function image(h, node) {
+  var props = {src: normalize(node.url), alt: node.alt}
+
+  if (node.title !== null && node.title !== undefined) {
+    props.title = node.title
+  }
+
+  return h(node, 'img', props)
+}
+
+
+/***/ }),
+
+/***/ 4617:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = {
+  blockquote: __webpack_require__(3126),
+  break: __webpack_require__(3562),
+  code: __webpack_require__(7891),
+  delete: __webpack_require__(9381),
+  emphasis: __webpack_require__(790),
+  footnoteReference: __webpack_require__(8235),
+  footnote: __webpack_require__(5758),
+  heading: __webpack_require__(4890),
+  html: __webpack_require__(2202),
+  imageReference: __webpack_require__(1454),
+  image: __webpack_require__(5037),
+  inlineCode: __webpack_require__(8409),
+  linkReference: __webpack_require__(9266),
+  link: __webpack_require__(404),
+  listItem: __webpack_require__(4463),
+  list: __webpack_require__(7888),
+  paragraph: __webpack_require__(8346),
+  root: __webpack_require__(8100),
+  strong: __webpack_require__(4970),
+  table: __webpack_require__(2605),
+  text: __webpack_require__(989),
+  thematicBreak: __webpack_require__(7552),
+  toml: ignore,
+  yaml: ignore,
+  definition: ignore,
+  footnoteDefinition: ignore
+}
+
+// Return nothing for nodes that are ignored.
+function ignore() {
+  return null
+}
+
+
+/***/ }),
+
+/***/ 8409:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = inlineCode
+
+var u = __webpack_require__(914)
+
+function inlineCode(h, node) {
+  var value = node.value.replace(/\r?\n|\r/g, ' ')
+  return h(node, 'code', [u('text', value)])
+}
+
+
+/***/ }),
+
+/***/ 9266:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = linkReference
+
+var normalize = __webpack_require__(729)
+var revert = __webpack_require__(713)
+var all = __webpack_require__(5426)
+
+function linkReference(h, node) {
+  var def = h.definition(node.identifier)
+  var props
+
+  if (!def) {
+    return revert(h, node)
+  }
+
+  props = {href: normalize(def.url || '')}
+
+  if (def.title !== null && def.title !== undefined) {
+    props.title = def.title
+  }
+
+  return h(node, 'a', props, all(h, node))
+}
+
+
+/***/ }),
+
+/***/ 404:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var normalize = __webpack_require__(729)
+var all = __webpack_require__(5426)
+
+module.exports = link
+
+function link(h, node) {
+  var props = {href: normalize(node.url)}
+
+  if (node.title !== null && node.title !== undefined) {
+    props.title = node.title
+  }
+
+  return h(node, 'a', props, all(h, node))
+}
+
+
+/***/ }),
+
+/***/ 4463:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = listItem
+
+var u = __webpack_require__(914)
+var all = __webpack_require__(5426)
+
+function listItem(h, node, parent) {
+  var result = all(h, node)
+  var head = result[0]
+  var loose = parent ? listLoose(parent) : listItemLoose(node)
+  var props = {}
+  var wrapped = []
+  var length
+  var index
+  var child
+
+  if (typeof node.checked === 'boolean') {
+    if (!head || head.tagName !== 'p') {
+      head = h(null, 'p', [])
+      result.unshift(head)
+    }
+
+    if (head.children.length > 0) {
+      head.children.unshift(u('text', ' '))
+    }
+
+    head.children.unshift(
+      h(null, 'input', {
+        type: 'checkbox',
+        checked: node.checked,
+        disabled: true
+      })
+    )
+
+    // According to github-markdown-css, this class hides bullet.
+    // See: <https://github.com/sindresorhus/github-markdown-css>.
+    props.className = ['task-list-item']
+  }
+
+  length = result.length
+  index = -1
+
+  while (++index < length) {
+    child = result[index]
+
+    // Add eols before nodes, except if this is a loose, first paragraph.
+    if (loose || index !== 0 || child.tagName !== 'p') {
+      wrapped.push(u('text', '\n'))
+    }
+
+    if (child.tagName === 'p' && !loose) {
+      wrapped = wrapped.concat(child.children)
+    } else {
+      wrapped.push(child)
+    }
+  }
+
+  // Add a final eol.
+  if (length && (loose || child.tagName !== 'p')) {
+    wrapped.push(u('text', '\n'))
+  }
+
+  return h(node, 'li', props, wrapped)
+}
+
+function listLoose(node) {
+  var loose = node.spread
+  var children = node.children
+  var length = children.length
+  var index = -1
+
+  while (!loose && ++index < length) {
+    loose = listItemLoose(children[index])
+  }
+
+  return loose
+}
+
+function listItemLoose(node) {
+  var spread = node.spread
+
+  return spread === undefined || spread === null
+    ? node.children.length > 1
+    : spread
+}
+
+
+/***/ }),
+
+/***/ 7888:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = list
+
+var wrap = __webpack_require__(6115)
+var all = __webpack_require__(5426)
+
+function list(h, node) {
+  var props = {}
+  var name = node.ordered ? 'ol' : 'ul'
+  var items
+  var index = -1
+  var length
+
+  if (typeof node.start === 'number' && node.start !== 1) {
+    props.start = node.start
+  }
+
+  items = all(h, node)
+  length = items.length
+
+  // Like GitHub, add a class for custom styling.
+  while (++index < length) {
+    if (
+      items[index].properties.className &&
+      items[index].properties.className.indexOf('task-list-item') !== -1
+    ) {
+      props.className = ['contains-task-list']
+      break
+    }
+  }
+
+  return h(node, name, props, wrap(items, true))
+}
+
+
+/***/ }),
+
+/***/ 8346:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = paragraph
+
+var all = __webpack_require__(5426)
+
+function paragraph(h, node) {
+  return h(node, 'p', all(h, node))
+}
+
+
+/***/ }),
+
+/***/ 8100:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = root
+
+var u = __webpack_require__(914)
+var wrap = __webpack_require__(6115)
+var all = __webpack_require__(5426)
+
+function root(h, node) {
+  return h.augment(node, u('root', wrap(all(h, node))))
+}
+
+
+/***/ }),
+
+/***/ 4970:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = strong
+
+var all = __webpack_require__(5426)
+
+function strong(h, node) {
+  return h(node, 'strong', all(h, node))
+}
+
+
+/***/ }),
+
+/***/ 2605:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = table
+
+var position = __webpack_require__(7361)
+var wrap = __webpack_require__(6115)
+var all = __webpack_require__(5426)
+
+function table(h, node) {
+  var rows = node.children
+  var index = rows.length
+  var align = node.align || []
+  var alignLength = align.length
+  var result = []
+  var pos
+  var row
+  var out
+  var name
+  var cell
+
+  while (index--) {
+    row = rows[index].children
+    name = index === 0 ? 'th' : 'td'
+    pos = alignLength || row.length
+    out = []
+
+    while (pos--) {
+      cell = row[pos]
+      out[pos] = h(cell, name, {align: align[pos]}, cell ? all(h, cell) : [])
+    }
+
+    result[index] = h(rows[index], 'tr', wrap(out, true))
+  }
+
+  return h(
+    node,
+    'table',
+    wrap(
+      [h(result[0].position, 'thead', wrap([result[0]], true))].concat(
+        result[1]
+          ? h(
+              {
+                start: position.start(result[1]),
+                end: position.end(result[result.length - 1])
+              },
+              'tbody',
+              wrap(result.slice(1), true)
+            )
+          : []
+      ),
+      true
+    )
+  )
+}
+
+
+/***/ }),
+
+/***/ 989:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = text
+
+var u = __webpack_require__(914)
+
+function text(h, node) {
+  return h.augment(
+    node,
+    u('text', String(node.value).replace(/[ \t]*(\r?\n|\r)[ \t]*/g, '$1'))
+  )
+}
+
+
+/***/ }),
+
+/***/ 7552:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = thematicBreak
+
+function thematicBreak(h, node) {
+  return h(node, 'hr')
+}
+
+
+/***/ }),
+
+/***/ 1601:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = toHast
+
+var u = __webpack_require__(914)
+var visit = __webpack_require__(2854)
+var position = __webpack_require__(7361)
+var generated = __webpack_require__(1744)
+var definitions = __webpack_require__(6630)
+var one = __webpack_require__(719)
+var footer = __webpack_require__(1696)
+var handlers = __webpack_require__(4617)
+
+var own = {}.hasOwnProperty
+
+var deprecationWarningIssued = false
+
+// Factory to transform.
+function factory(tree, options) {
+  var settings = options || {}
+
+  // Issue a warning if the deprecated tag 'allowDangerousHTML' is used
+  if (settings.allowDangerousHTML !== undefined && !deprecationWarningIssued) {
+    deprecationWarningIssued = true
+    console.warn(
+      'mdast-util-to-hast: deprecation: `allowDangerousHTML` is nonstandard, use `allowDangerousHtml` instead'
+    )
+  }
+
+  var dangerous = settings.allowDangerousHtml || settings.allowDangerousHTML
+  var footnoteById = {}
+
+  h.dangerous = dangerous
+  h.definition = definitions(tree)
+  h.footnoteById = footnoteById
+  h.footnoteOrder = []
+  h.augment = augment
+  h.handlers = Object.assign({}, handlers, settings.handlers)
+  h.unknownHandler = settings.unknownHandler
+  h.passThrough = settings.passThrough
+
+  visit(tree, 'footnoteDefinition', onfootnotedefinition)
+
+  return h
+
+  // Finalise the created `right`, a hast node, from `left`, an mdast node.
+  function augment(left, right) {
+    var data
+    var ctx
+
+    // Handle `data.hName`, `data.hProperties, `data.hChildren`.
+    if (left && left.data) {
+      data = left.data
+
+      if (data.hName) {
+        if (right.type !== 'element') {
+          right = {
+            type: 'element',
+            tagName: '',
+            properties: {},
+            children: []
+          }
+        }
+
+        right.tagName = data.hName
+      }
+
+      if (right.type === 'element' && data.hProperties) {
+        right.properties = Object.assign({}, right.properties, data.hProperties)
+      }
+
+      if (right.children && data.hChildren) {
+        right.children = data.hChildren
+      }
+    }
+
+    ctx = left && left.position ? left : {position: left}
+
+    if (!generated(ctx)) {
+      right.position = {
+        start: position.start(ctx),
+        end: position.end(ctx)
+      }
+    }
+
+    return right
+  }
+
+  // Create an element for `node`.
+  function h(node, tagName, props, children) {
+    if (
+      (children === undefined || children === null) &&
+      typeof props === 'object' &&
+      'length' in props
+    ) {
+      children = props
+      props = {}
+    }
+
+    return augment(node, {
+      type: 'element',
+      tagName: tagName,
+      properties: props || {},
+      children: children || []
+    })
+  }
+
+  function onfootnotedefinition(definition) {
+    var id = String(definition.identifier).toUpperCase()
+
+    // Mimick CM behavior of link definitions.
+    // See: <https://github.com/syntax-tree/mdast-util-definitions/blob/8290999/index.js#L26>.
+    if (!own.call(footnoteById, id)) {
+      footnoteById[id] = definition
+    }
+  }
+}
+
+// Transform `tree`, which is an mdast node, to a hast node.
+function toHast(tree, options) {
+  var h = factory(tree, options)
+  var node = one(h, tree)
+  var foot = footer(h)
+
+  if (foot) {
+    node.children = node.children.concat(u('text', '\n'), foot)
+  }
+
+  return node
+}
+
+
+/***/ }),
+
+/***/ 719:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = one
+
+var u = __webpack_require__(914)
+var all = __webpack_require__(5426)
+
+var own = {}.hasOwnProperty
+
+// Transform an unknown node.
+function unknown(h, node) {
+  if (text(node)) {
+    return h.augment(node, u('text', node.value))
+  }
+
+  return h(node, 'div', all(h, node))
+}
+
+// Visit a node.
+function one(h, node, parent) {
+  var type = node && node.type
+  var fn
+
+  // Fail on non-nodes.
+  if (!type) {
+    throw new Error('Expected node, got `' + node + '`')
+  }
+
+  if (own.call(h.handlers, type)) {
+    fn = h.handlers[type]
+  } else if (h.passThrough && h.passThrough.indexOf(type) > -1) {
+    fn = returnNode
+  } else {
+    fn = h.unknownHandler
+  }
+
+  return (typeof fn === 'function' ? fn : unknown)(h, node, parent)
+}
+
+// Check if the node should be renderered as a text node.
+function text(node) {
+  var data = node.data || {}
+
+  if (
+    own.call(data, 'hName') ||
+    own.call(data, 'hProperties') ||
+    own.call(data, 'hChildren')
+  ) {
+    return false
+  }
+
+  return 'value' in node
+}
+
+function returnNode(h, node) {
+  var clone
+
+  if (node.children) {
+    clone = Object.assign({}, node)
+    clone.children = all(h, node)
+    return clone
+  }
+
+  return node
+}
+
+
+/***/ }),
+
+/***/ 713:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = revert
+
+var u = __webpack_require__(914)
+var all = __webpack_require__(5426)
+
+// Return the content of a reference without definition as Markdown.
+function revert(h, node) {
+  var subtype = node.referenceType
+  var suffix = ']'
+  var contents
+  var head
+  var tail
+
+  if (subtype === 'collapsed') {
+    suffix += '[]'
+  } else if (subtype === 'full') {
+    suffix += '[' + (node.label || node.identifier) + ']'
+  }
+
+  if (node.type === 'imageReference') {
+    return u('text', '![' + node.alt + suffix)
+  }
+
+  contents = all(h, node)
+  head = contents[0]
+
+  if (head && head.type === 'text') {
+    head.value = '[' + head.value
+  } else {
+    contents.unshift(u('text', '['))
+  }
+
+  tail = contents[contents.length - 1]
+
+  if (tail && tail.type === 'text') {
+    tail.value += suffix
+  } else {
+    contents.push(u('text', suffix))
+  }
+
+  return contents
+}
+
+
+/***/ }),
+
+/***/ 6115:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = wrap
+
+var u = __webpack_require__(914)
+
+// Wrap `nodes` with line feeds between each entry.
+// Optionally adds line feeds at the start and end.
+function wrap(nodes, loose) {
+  var result = []
+  var index = -1
+  var length = nodes.length
+
+  if (loose) {
+    result.push(u('text', '\n'))
+  }
+
+  while (++index < length) {
+    if (index) {
+      result.push(u('text', '\n'))
+    }
+
+    result.push(nodes[index])
+  }
+
+  if (loose && nodes.length > 0) {
+    result.push(u('text', '\n'))
+  }
+
+  return result
+}
+
+
+/***/ }),
+
+/***/ 4999:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = toString
+
+// Get the text content of a node.
+// Prefer the node’s plain-text fields, otherwise serialize its children,
+// and if the given value is an array, serialize the nodes in it.
+function toString(node) {
+  return (
+    (node &&
+      (node.value ||
+        node.alt ||
+        node.title ||
+        ('children' in node && all(node.children)) ||
+        ('length' in node && all(node)))) ||
+    ''
+  )
+}
+
+function all(values) {
+  var result = []
+  var index = -1
+
+  while (++index < values.length) {
+    result[index] = toString(values[index])
+  }
+
+  return result.join('')
+}
+
+
+/***/ }),
+
+/***/ 729:
+/***/ ((module) => {
+
+"use strict";
+
+
+
+
+var encodeCache = {};
+
+
+// Create a lookup array where anything but characters in `chars` string
+// and alphanumeric chars is percent-encoded.
+//
+function getEncodeCache(exclude) {
+  var i, ch, cache = encodeCache[exclude];
+  if (cache) { return cache; }
+
+  cache = encodeCache[exclude] = [];
+
+  for (i = 0; i < 128; i++) {
+    ch = String.fromCharCode(i);
+
+    if (/^[0-9a-z]$/i.test(ch)) {
+      // always allow unencoded alphanumeric characters
+      cache.push(ch);
+    } else {
+      cache.push('%' + ('0' + i.toString(16).toUpperCase()).slice(-2));
+    }
+  }
+
+  for (i = 0; i < exclude.length; i++) {
+    cache[exclude.charCodeAt(i)] = exclude[i];
+  }
+
+  return cache;
+}
+
+
+// Encode unsafe characters with percent-encoding, skipping already
+// encoded sequences.
+//
+//  - string       - string to encode
+//  - exclude      - list of characters to ignore (in addition to a-zA-Z0-9)
+//  - keepEscaped  - don't encode '%' in a correct escape sequence (default: true)
+//
+function encode(string, exclude, keepEscaped) {
+  var i, l, code, nextCode, cache,
+      result = '';
+
+  if (typeof exclude !== 'string') {
+    // encode(string, keepEscaped)
+    keepEscaped  = exclude;
+    exclude = encode.defaultChars;
+  }
+
+  if (typeof keepEscaped === 'undefined') {
+    keepEscaped = true;
+  }
+
+  cache = getEncodeCache(exclude);
+
+  for (i = 0, l = string.length; i < l; i++) {
+    code = string.charCodeAt(i);
+
+    if (keepEscaped && code === 0x25 /* % */ && i + 2 < l) {
+      if (/^[0-9a-f]{2}$/i.test(string.slice(i + 1, i + 3))) {
+        result += string.slice(i, i + 3);
+        i += 2;
+        continue;
+      }
+    }
+
+    if (code < 128) {
+      result += cache[code];
+      continue;
+    }
+
+    if (code >= 0xD800 && code <= 0xDFFF) {
+      if (code >= 0xD800 && code <= 0xDBFF && i + 1 < l) {
+        nextCode = string.charCodeAt(i + 1);
+        if (nextCode >= 0xDC00 && nextCode <= 0xDFFF) {
+          result += encodeURIComponent(string[i] + string[i + 1]);
+          i++;
+          continue;
+        }
+      }
+      result += '%EF%BF%BD';
+      continue;
+    }
+
+    result += encodeURIComponent(string[i]);
+  }
+
+  return result;
+}
+
+encode.defaultChars   = ";/?:@&=+$,-_.!~*'()#";
+encode.componentChars = "-_.!~*'()";
+
+
+module.exports = encode;
+
+
+/***/ }),
+
+/***/ 6734:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var regexCheck = __webpack_require__(2841)
+
+var asciiAlpha = regexCheck(/[A-Za-z]/)
+
+module.exports = asciiAlpha
+
+
+/***/ }),
+
+/***/ 6712:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var regexCheck = __webpack_require__(2841)
+
+var asciiAlphanumeric = regexCheck(/[\dA-Za-z]/)
+
+module.exports = asciiAlphanumeric
+
+
+/***/ }),
+
+/***/ 3571:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var regexCheck = __webpack_require__(2841)
+
+var asciiAtext = regexCheck(/[#-'*+\--9=?A-Z^-~]/)
+
+module.exports = asciiAtext
+
+
+/***/ }),
+
+/***/ 9696:
+/***/ ((module) => {
+
+"use strict";
+
+
+// Note: EOF is seen as ASCII control here, because `null < 32 == true`.
+function asciiControl(code) {
+  return (
+    // Special whitespace codes (which have negative values), C0 and Control
+    // character DEL
+    code < 32 || code === 127
+  )
+}
+
+module.exports = asciiControl
+
+
+/***/ }),
+
+/***/ 3977:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var regexCheck = __webpack_require__(2841)
+
+var asciiDigit = regexCheck(/\d/)
+
+module.exports = asciiDigit
+
+
+/***/ }),
+
+/***/ 6238:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var regexCheck = __webpack_require__(2841)
+
+var asciiHexDigit = regexCheck(/[\dA-Fa-f]/)
+
+module.exports = asciiHexDigit
+
+
+/***/ }),
+
+/***/ 3074:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var regexCheck = __webpack_require__(2841)
+
+var asciiPunctuation = regexCheck(/[!-/:-@[-`{-~]/)
+
+module.exports = asciiPunctuation
+
+
+/***/ }),
+
+/***/ 8367:
+/***/ ((module) => {
+
+"use strict";
+
+
+function markdownLineEndingOrSpace(code) {
+  return code < 0 || code === 32
+}
+
+module.exports = markdownLineEndingOrSpace
+
+
+/***/ }),
+
+/***/ 7238:
+/***/ ((module) => {
+
+"use strict";
+
+
+function markdownLineEnding(code) {
+  return code < -2
+}
+
+module.exports = markdownLineEnding
+
+
+/***/ }),
+
+/***/ 3654:
+/***/ ((module) => {
+
+"use strict";
+
+
+function markdownSpace(code) {
+  return code === -2 || code === -1 || code === 32
+}
+
+module.exports = markdownSpace
+
+
+/***/ }),
+
+/***/ 6996:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var unicodePunctuationRegex = __webpack_require__(6830)
+var regexCheck = __webpack_require__(2841)
+
+// In fact adds to the bundle size.
+
+var unicodePunctuation = regexCheck(unicodePunctuationRegex)
+
+module.exports = unicodePunctuation
+
+
+/***/ }),
+
+/***/ 395:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var regexCheck = __webpack_require__(2841)
+
+var unicodeWhitespace = regexCheck(/\s/)
+
+module.exports = unicodeWhitespace
+
+
+/***/ }),
+
+/***/ 9198:
+/***/ ((module) => {
+
+"use strict";
+
+
+var assign = Object.assign
+
+module.exports = assign
+
+
+/***/ }),
+
+/***/ 3267:
+/***/ ((module) => {
+
+"use strict";
+
+
+var fromCharCode = String.fromCharCode
+
+module.exports = fromCharCode
+
+
+/***/ }),
+
+/***/ 6706:
+/***/ ((module) => {
+
+"use strict";
+
+
+var own = {}.hasOwnProperty
+
+module.exports = own
+
+
+/***/ }),
+
+/***/ 7139:
+/***/ ((module) => {
+
+"use strict";
+
+
+// This module is copied from <https://spec.commonmark.org/0.29/#html-blocks>.
+var basics = [
+  'address',
+  'article',
+  'aside',
+  'base',
+  'basefont',
+  'blockquote',
+  'body',
+  'caption',
+  'center',
+  'col',
+  'colgroup',
+  'dd',
+  'details',
+  'dialog',
+  'dir',
+  'div',
+  'dl',
+  'dt',
+  'fieldset',
+  'figcaption',
+  'figure',
+  'footer',
+  'form',
+  'frame',
+  'frameset',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'head',
+  'header',
+  'hr',
+  'html',
+  'iframe',
+  'legend',
+  'li',
+  'link',
+  'main',
+  'menu',
+  'menuitem',
+  'nav',
+  'noframes',
+  'ol',
+  'optgroup',
+  'option',
+  'p',
+  'param',
+  'section',
+  'source',
+  'summary',
+  'table',
+  'tbody',
+  'td',
+  'tfoot',
+  'th',
+  'thead',
+  'title',
+  'tr',
+  'track',
+  'ul'
+]
+
+module.exports = basics
+
+
+/***/ }),
+
+/***/ 6871:
+/***/ ((module) => {
+
+"use strict";
+
+
+// This module is copied from <https://spec.commonmark.org/0.29/#html-blocks>.
+var raws = ['pre', 'script', 'style', 'textarea']
+
+module.exports = raws
+
+
+/***/ }),
+
+/***/ 1362:
+/***/ ((module) => {
+
+"use strict";
+
+
+var splice = [].splice
+
+module.exports = splice
+
+
+/***/ }),
+
+/***/ 6830:
+/***/ ((module) => {
+
+"use strict";
+
+
+// This module is generated by `script/`.
+//
+// CommonMark handles attention (emphasis, strong) markers based on what comes
+// before or after them.
+// One such difference is if those characters are Unicode punctuation.
+// This script is generated from the Unicode data.
+var unicodePunctuation = /[!-\/:-@\[-`\{-~\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u09FD\u0A76\u0AF0\u0C77\u0C84\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E4F\u2E52\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]/
+
+module.exports = unicodePunctuation
+
+
+/***/ }),
+
+/***/ 6274:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({value: true}))
+
+var text$1 = __webpack_require__(7082)
+var attention = __webpack_require__(7542)
+var autolink = __webpack_require__(1349)
+var blockQuote = __webpack_require__(5485)
+var characterEscape = __webpack_require__(9653)
+var characterReference = __webpack_require__(6713)
+var codeFenced = __webpack_require__(6597)
+var codeIndented = __webpack_require__(431)
+var codeText = __webpack_require__(26)
+var definition = __webpack_require__(3865)
+var hardBreakEscape = __webpack_require__(5694)
+var headingAtx = __webpack_require__(5565)
+var htmlFlow = __webpack_require__(6872)
+var htmlText = __webpack_require__(8911)
+var labelEnd = __webpack_require__(1294)
+var labelStartImage = __webpack_require__(6215)
+var labelStartLink = __webpack_require__(534)
+var lineEnding = __webpack_require__(2607)
+var list = __webpack_require__(6931)
+var setextUnderline = __webpack_require__(5874)
+var thematicBreak = __webpack_require__(7039)
+
+var document = {
+  42: list,
+  // Asterisk
+  43: list,
+  // Plus sign
+  45: list,
+  // Dash
+  48: list,
+  // 0
+  49: list,
+  // 1
+  50: list,
+  // 2
+  51: list,
+  // 3
+  52: list,
+  // 4
+  53: list,
+  // 5
+  54: list,
+  // 6
+  55: list,
+  // 7
+  56: list,
+  // 8
+  57: list,
+  // 9
+  62: blockQuote // Greater than
+}
+var contentInitial = {
+  91: definition // Left square bracket
+}
+var flowInitial = {
+  '-2': codeIndented,
+  // Horizontal tab
+  '-1': codeIndented,
+  // Virtual space
+  32: codeIndented // Space
+}
+var flow = {
+  35: headingAtx,
+  // Number sign
+  42: thematicBreak,
+  // Asterisk
+  45: [setextUnderline, thematicBreak],
+  // Dash
+  60: htmlFlow,
+  // Less than
+  61: setextUnderline,
+  // Equals to
+  95: thematicBreak,
+  // Underscore
+  96: codeFenced,
+  // Grave accent
+  126: codeFenced // Tilde
+}
+var string = {
+  38: characterReference,
+  // Ampersand
+  92: characterEscape // Backslash
+}
+var text = {
+  '-5': lineEnding,
+  // Carriage return
+  '-4': lineEnding,
+  // Line feed
+  '-3': lineEnding,
+  // Carriage return + line feed
+  33: labelStartImage,
+  // Exclamation mark
+  38: characterReference,
+  // Ampersand
+  42: attention,
+  // Asterisk
+  60: [autolink, htmlText],
+  // Less than
+  91: labelStartLink,
+  // Left square bracket
+  92: [hardBreakEscape, characterEscape],
+  // Backslash
+  93: labelEnd,
+  // Right square bracket
+  95: attention,
+  // Underscore
+  96: codeText // Grave accent
+}
+var insideSpan = {
+  null: [attention, text$1.resolver]
+}
+var disable = {
+  null: []
+}
+
+exports.contentInitial = contentInitial
+exports.disable = disable
+exports.document = document
+exports.flow = flow
+exports.flowInitial = flowInitial
+exports.insideSpan = insideSpan
+exports.string = string
+exports.text = text
+
+
+/***/ }),
+
+/***/ 3745:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({value: true}))
+
+var markdownLineEnding = __webpack_require__(7238)
+var factorySpace = __webpack_require__(2928)
+
+var tokenize = initializeContent
+
+function initializeContent(effects) {
+  var contentStart = effects.attempt(
+    this.parser.constructs.contentInitial,
+    afterContentStartConstruct,
+    paragraphInitial
+  )
+  var previous
+  return contentStart
+
+  function afterContentStartConstruct(code) {
+    if (code === null) {
+      effects.consume(code)
+      return
+    }
+
+    effects.enter('lineEnding')
+    effects.consume(code)
+    effects.exit('lineEnding')
+    return factorySpace(effects, contentStart, 'linePrefix')
+  }
+
+  function paragraphInitial(code) {
+    effects.enter('paragraph')
+    return lineStart(code)
+  }
+
+  function lineStart(code) {
+    var token = effects.enter('chunkText', {
+      contentType: 'text',
+      previous: previous
+    })
+
+    if (previous) {
+      previous.next = token
+    }
+
+    previous = token
+    return data(code)
+  }
+
+  function data(code) {
+    if (code === null) {
+      effects.exit('chunkText')
+      effects.exit('paragraph')
+      effects.consume(code)
+      return
+    }
+
+    if (markdownLineEnding(code)) {
+      effects.consume(code)
+      effects.exit('chunkText')
+      return lineStart
+    } // Data.
+
+    effects.consume(code)
+    return data
+  }
+}
+
+exports.tokenize = tokenize
+
+
+/***/ }),
+
+/***/ 4201:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({value: true}))
+
+var markdownLineEnding = __webpack_require__(7238)
+var factorySpace = __webpack_require__(2928)
+var partialBlankLine = __webpack_require__(6532)
+
+var tokenize = initializeDocument
+var containerConstruct = {
+  tokenize: tokenizeContainer
+}
+var lazyFlowConstruct = {
+  tokenize: tokenizeLazyFlow
+}
+
+function initializeDocument(effects) {
+  var self = this
+  var stack = []
+  var continued = 0
+  var inspectConstruct = {
+    tokenize: tokenizeInspect,
+    partial: true
+  }
+  var inspectResult
+  var childFlow
+  var childToken
+  return start
+
+  function start(code) {
+    if (continued < stack.length) {
+      self.containerState = stack[continued][1]
+      return effects.attempt(
+        stack[continued][0].continuation,
+        documentContinue,
+        documentContinued
+      )(code)
+    }
+
+    return documentContinued(code)
+  }
+
+  function documentContinue(code) {
+    continued++
+    return start(code)
+  }
+
+  function documentContinued(code) {
+    // If we’re in a concrete construct (such as when expecting another line of
+    // HTML, or we resulted in lazy content), we can immediately start flow.
+    if (inspectResult && inspectResult.flowContinue) {
+      return flowStart(code)
+    }
+
+    self.interrupt =
+      childFlow &&
+      childFlow.currentConstruct &&
+      childFlow.currentConstruct.interruptible
+    self.containerState = {}
+    return effects.attempt(
+      containerConstruct,
+      containerContinue,
+      flowStart
+    )(code)
+  }
+
+  function containerContinue(code) {
+    stack.push([self.currentConstruct, self.containerState])
+    self.containerState = undefined
+    return documentContinued(code)
+  }
+
+  function flowStart(code) {
+    if (code === null) {
+      exitContainers(0, true)
+      effects.consume(code)
+      return
+    }
+
+    childFlow = childFlow || self.parser.flow(self.now())
+    effects.enter('chunkFlow', {
+      contentType: 'flow',
+      previous: childToken,
+      _tokenizer: childFlow
+    })
+    return flowContinue(code)
+  }
+
+  function flowContinue(code) {
+    if (code === null) {
+      continueFlow(effects.exit('chunkFlow'))
+      return flowStart(code)
+    }
+
+    if (markdownLineEnding(code)) {
+      effects.consume(code)
+      continueFlow(effects.exit('chunkFlow'))
+      return effects.check(inspectConstruct, documentAfterPeek)
+    }
+
+    effects.consume(code)
+    return flowContinue
+  }
+
+  function documentAfterPeek(code) {
+    exitContainers(
+      inspectResult.continued,
+      inspectResult && inspectResult.flowEnd
+    )
+    continued = 0
+    return start(code)
+  }
+
+  function continueFlow(token) {
+    if (childToken) childToken.next = token
+    childToken = token
+    childFlow.lazy = inspectResult && inspectResult.lazy
+    childFlow.defineSkip(token.start)
+    childFlow.write(self.sliceStream(token))
+  }
+
+  function exitContainers(size, end) {
+    var index = stack.length // Close the flow.
+
+    if (childFlow && end) {
+      childFlow.write([null])
+      childToken = childFlow = undefined
+    } // Exit open containers.
+
+    while (index-- > size) {
+      self.containerState = stack[index][1]
+      stack[index][0].exit.call(self, effects)
+    }
+
+    stack.length = size
+  }
+
+  function tokenizeInspect(effects, ok) {
+    var subcontinued = 0
+    inspectResult = {}
+    return inspectStart
+
+    function inspectStart(code) {
+      if (subcontinued < stack.length) {
+        self.containerState = stack[subcontinued][1]
+        return effects.attempt(
+          stack[subcontinued][0].continuation,
+          inspectContinue,
+          inspectLess
+        )(code)
+      } // If we’re continued but in a concrete flow, we can’t have more
+      // containers.
+
+      if (childFlow.currentConstruct && childFlow.currentConstruct.concrete) {
+        inspectResult.flowContinue = true
+        return inspectDone(code)
+      }
+
+      self.interrupt =
+        childFlow.currentConstruct && childFlow.currentConstruct.interruptible
+      self.containerState = {}
+      return effects.attempt(
+        containerConstruct,
+        inspectFlowEnd,
+        inspectDone
+      )(code)
+    }
+
+    function inspectContinue(code) {
+      subcontinued++
+      return self.containerState._closeFlow
+        ? inspectFlowEnd(code)
+        : inspectStart(code)
+    }
+
+    function inspectLess(code) {
+      if (childFlow.currentConstruct && childFlow.currentConstruct.lazy) {
+        // Maybe another container?
+        self.containerState = {}
+        return effects.attempt(
+          containerConstruct,
+          inspectFlowEnd, // Maybe flow, or a blank line?
+          effects.attempt(
+            lazyFlowConstruct,
+            inspectFlowEnd,
+            effects.check(partialBlankLine, inspectFlowEnd, inspectLazy)
+          )
+        )(code)
+      } // Otherwise we’re interrupting.
+
+      return inspectFlowEnd(code)
+    }
+
+    function inspectLazy(code) {
+      // Act as if all containers are continued.
+      subcontinued = stack.length
+      inspectResult.lazy = true
+      inspectResult.flowContinue = true
+      return inspectDone(code)
+    } // We’re done with flow if we have more containers, or an interruption.
+
+    function inspectFlowEnd(code) {
+      inspectResult.flowEnd = true
+      return inspectDone(code)
+    }
+
+    function inspectDone(code) {
+      inspectResult.continued = subcontinued
+      self.interrupt = self.containerState = undefined
+      return ok(code)
+    }
+  }
+}
+
+function tokenizeContainer(effects, ok, nok) {
+  return factorySpace(
+    effects,
+    effects.attempt(this.parser.constructs.document, ok, nok),
+    'linePrefix',
+    this.parser.constructs.disable.null.indexOf('codeIndented') > -1
+      ? undefined
+      : 4
+  )
+}
+
+function tokenizeLazyFlow(effects, ok, nok) {
+  return factorySpace(
+    effects,
+    effects.lazy(this.parser.constructs.flow, ok, nok),
+    'linePrefix',
+    this.parser.constructs.disable.null.indexOf('codeIndented') > -1
+      ? undefined
+      : 4
+  )
+}
+
+exports.tokenize = tokenize
+
+
+/***/ }),
+
+/***/ 2871:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({value: true}))
+
+var content = __webpack_require__(4590)
+var factorySpace = __webpack_require__(2928)
+var partialBlankLine = __webpack_require__(6532)
+
+var tokenize = initializeFlow
+
+function initializeFlow(effects) {
+  var self = this
+  var initial = effects.attempt(
+    // Try to parse a blank line.
+    partialBlankLine,
+    atBlankEnding, // Try to parse initial flow (essentially, only code).
+    effects.attempt(
+      this.parser.constructs.flowInitial,
+      afterConstruct,
+      factorySpace(
+        effects,
+        effects.attempt(
+          this.parser.constructs.flow,
+          afterConstruct,
+          effects.attempt(content, afterConstruct)
+        ),
+        'linePrefix'
+      )
+    )
+  )
+  return initial
+
+  function atBlankEnding(code) {
+    if (code === null) {
+      effects.consume(code)
+      return
+    }
+
+    effects.enter('lineEndingBlank')
+    effects.consume(code)
+    effects.exit('lineEndingBlank')
+    self.currentConstruct = undefined
+    return initial
+  }
+
+  function afterConstruct(code) {
+    if (code === null) {
+      effects.consume(code)
+      return
+    }
+
+    effects.enter('lineEnding')
+    effects.consume(code)
+    effects.exit('lineEnding')
+    self.currentConstruct = undefined
+    return initial
+  }
+}
+
+exports.tokenize = tokenize
+
+
+/***/ }),
+
+/***/ 7082:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({value: true}))
+
+var assign = __webpack_require__(9198)
+var shallow = __webpack_require__(5923)
+
+var text = initializeFactory('text')
+var string = initializeFactory('string')
+var resolver = {
+  resolveAll: createResolver()
+}
+
+function initializeFactory(field) {
+  return {
+    tokenize: initializeText,
+    resolveAll: createResolver(
+      field === 'text' ? resolveAllLineSuffixes : undefined
+    )
+  }
+
+  function initializeText(effects) {
+    var self = this
+    var constructs = this.parser.constructs[field]
+    var text = effects.attempt(constructs, start, notText)
+    return start
+
+    function start(code) {
+      return atBreak(code) ? text(code) : notText(code)
+    }
+
+    function notText(code) {
+      if (code === null) {
+        effects.consume(code)
+        return
+      }
+
+      effects.enter('data')
+      effects.consume(code)
+      return data
+    }
+
+    function data(code) {
+      if (atBreak(code)) {
+        effects.exit('data')
+        return text(code)
+      } // Data.
+
+      effects.consume(code)
+      return data
+    }
+
+    function atBreak(code) {
+      var list = constructs[code]
+      var index = -1
+
+      if (code === null) {
+        return true
+      }
+
+      if (list) {
+        while (++index < list.length) {
+          if (
+            !list[index].previous ||
+            list[index].previous.call(self, self.previous)
+          ) {
+            return true
+          }
+        }
+      }
+    }
+  }
+}
+
+function createResolver(extraResolver) {
+  return resolveAllText
+
+  function resolveAllText(events, context) {
+    var index = -1
+    var enter // A rather boring computation (to merge adjacent `data` events) which
+    // improves mm performance by 29%.
+
+    while (++index <= events.length) {
+      if (enter === undefined) {
+        if (events[index] && events[index][1].type === 'data') {
+          enter = index
+          index++
+        }
+      } else if (!events[index] || events[index][1].type !== 'data') {
+        // Don’t do anything if there is one data token.
+        if (index !== enter + 2) {
+          events[enter][1].end = events[index - 1][1].end
+          events.splice(enter + 2, index - enter - 2)
+          index = enter + 2
+        }
+
+        enter = undefined
+      }
+    }
+
+    return extraResolver ? extraResolver(events, context) : events
+  }
+} // A rather ugly set of instructions which again looks at chunks in the input
+// stream.
+// The reason to do this here is that it is *much* faster to parse in reverse.
+// And that we can’t hook into `null` to split the line suffix before an EOF.
+// To do: figure out if we can make this into a clean utility, or even in core.
+// As it will be useful for GFMs literal autolink extension (and maybe even
+// tables?)
+
+function resolveAllLineSuffixes(events, context) {
+  var eventIndex = -1
+  var chunks
+  var data
+  var chunk
+  var index
+  var bufferIndex
+  var size
+  var tabs
+  var token
+
+  while (++eventIndex <= events.length) {
+    if (
+      (eventIndex === events.length ||
+        events[eventIndex][1].type === 'lineEnding') &&
+      events[eventIndex - 1][1].type === 'data'
+    ) {
+      data = events[eventIndex - 1][1]
+      chunks = context.sliceStream(data)
+      index = chunks.length
+      bufferIndex = -1
+      size = 0
+      tabs = undefined
+
+      while (index--) {
+        chunk = chunks[index]
+
+        if (typeof chunk === 'string') {
+          bufferIndex = chunk.length
+
+          while (chunk.charCodeAt(bufferIndex - 1) === 32) {
+            size++
+            bufferIndex--
+          }
+
+          if (bufferIndex) break
+          bufferIndex = -1
+        } // Number
+        else if (chunk === -2) {
+          tabs = true
+          size++
+        } else if (chunk === -1);
+        else {
+          // Replacement character, exit.
+          index++
+          break
+        }
+      }
+
+      if (size) {
+        token = {
+          type:
+            eventIndex === events.length || tabs || size < 2
+              ? 'lineSuffix'
+              : 'hardBreakTrailing',
+          start: {
+            line: data.end.line,
+            column: data.end.column - size,
+            offset: data.end.offset - size,
+            _index: data.start._index + index,
+            _bufferIndex: index
+              ? bufferIndex
+              : data.start._bufferIndex + bufferIndex
+          },
+          end: shallow(data.end)
+        }
+        data.end = shallow(token.start)
+
+        if (data.start.offset === data.end.offset) {
+          assign(data, token)
+        } else {
+          events.splice(
+            eventIndex,
+            0,
+            ['enter', token, context],
+            ['exit', token, context]
+          )
+          eventIndex += 2
+        }
+      }
+
+      eventIndex++
+    }
+  }
+
+  return events
+}
+
+exports.resolver = resolver
+exports.string = string
+exports.text = text
+
+
+/***/ }),
+
+/***/ 2976:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var content = __webpack_require__(3745)
+var document = __webpack_require__(4201)
+var flow = __webpack_require__(2871)
+var text = __webpack_require__(7082)
+var combineExtensions = __webpack_require__(2952)
+var createTokenizer = __webpack_require__(1388)
+var miniflat = __webpack_require__(8180)
+var constructs = __webpack_require__(6274)
+
+function parse(options) {
+  var settings = options || {}
+  var parser = {
+    defined: [],
+    constructs: combineExtensions(
+      [constructs].concat(miniflat(settings.extensions))
+    ),
+    content: create(content),
+    document: create(document),
+    flow: create(flow),
+    string: create(text.string),
+    text: create(text.text)
+  }
+  return parser
+
+  function create(initializer) {
+    return creator
+
+    function creator(from) {
+      return createTokenizer(parser, initializer, from)
+    }
+  }
+}
+
+module.exports = parse
+
+
+/***/ }),
+
+/***/ 1242:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var subtokenize = __webpack_require__(4423)
+
+function postprocess(events) {
+  while (!subtokenize(events)) {
+    // Empty
+  }
+
+  return events
+}
+
+module.exports = postprocess
+
+
+/***/ }),
+
+/***/ 162:
+/***/ ((module) => {
+
+"use strict";
+
+
+var search = /[\0\t\n\r]/g
+
+function preprocess() {
+  var start = true
+  var column = 1
+  var buffer = ''
+  var atCarriageReturn
+  return preprocessor
+
+  function preprocessor(value, encoding, end) {
+    var chunks = []
+    var match
+    var next
+    var startPosition
+    var endPosition
+    var code
+    value = buffer + value.toString(encoding)
+    startPosition = 0
+    buffer = ''
+
+    if (start) {
+      if (value.charCodeAt(0) === 65279) {
+        startPosition++
+      }
+
+      start = undefined
+    }
+
+    while (startPosition < value.length) {
+      search.lastIndex = startPosition
+      match = search.exec(value)
+      endPosition = match ? match.index : value.length
+      code = value.charCodeAt(endPosition)
+
+      if (!match) {
+        buffer = value.slice(startPosition)
+        break
+      }
+
+      if (code === 10 && startPosition === endPosition && atCarriageReturn) {
+        chunks.push(-3)
+        atCarriageReturn = undefined
+      } else {
+        if (atCarriageReturn) {
+          chunks.push(-5)
+          atCarriageReturn = undefined
+        }
+
+        if (startPosition < endPosition) {
+          chunks.push(value.slice(startPosition, endPosition))
+          column += endPosition - startPosition
+        }
+
+        if (code === 0) {
+          chunks.push(65533)
+          column++
+        } else if (code === 9) {
+          next = Math.ceil(column / 4) * 4
+          chunks.push(-2)
+
+          while (column++ < next) chunks.push(-1)
+        } else if (code === 10) {
+          chunks.push(-4)
+          column = 1
+        } // Must be carriage return.
+        else {
+          atCarriageReturn = true
+          column = 1
+        }
+      }
+
+      startPosition = endPosition + 1
+    }
+
+    if (end) {
+      if (atCarriageReturn) chunks.push(-5)
+      if (buffer) chunks.push(buffer)
+      chunks.push(null)
+    }
+
+    return chunks
+  }
+}
+
+module.exports = preprocess
+
+
+/***/ }),
+
+/***/ 7542:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var chunkedPush = __webpack_require__(8811)
+var chunkedSplice = __webpack_require__(6808)
+var classifyCharacter = __webpack_require__(9444)
+var movePoint = __webpack_require__(5644)
+var resolveAll = __webpack_require__(8280)
+var shallow = __webpack_require__(5923)
+
+var attention = {
+  name: 'attention',
+  tokenize: tokenizeAttention,
+  resolveAll: resolveAllAttention
+}
+
+function resolveAllAttention(events, context) {
+  var index = -1
+  var open
+  var group
+  var text
+  var openingSequence
+  var closingSequence
+  var use
+  var nextEvents
+  var offset // Walk through all events.
+  //
+  // Note: performance of this is fine on an mb of normal markdown, but it’s
+  // a bottleneck for malicious stuff.
+
+  while (++index < events.length) {
+    // Find a token that can close.
+    if (
+      events[index][0] === 'enter' &&
+      events[index][1].type === 'attentionSequence' &&
+      events[index][1]._close
+    ) {
+      open = index // Now walk back to find an opener.
+
+      while (open--) {
+        // Find a token that can open the closer.
+        if (
+          events[open][0] === 'exit' &&
+          events[open][1].type === 'attentionSequence' &&
+          events[open][1]._open && // If the markers are the same:
+          context.sliceSerialize(events[open][1]).charCodeAt(0) ===
+            context.sliceSerialize(events[index][1]).charCodeAt(0)
+        ) {
+          // If the opening can close or the closing can open,
+          // and the close size *is not* a multiple of three,
+          // but the sum of the opening and closing size *is* multiple of three,
+          // then don’t match.
+          if (
+            (events[open][1]._close || events[index][1]._open) &&
+            (events[index][1].end.offset - events[index][1].start.offset) % 3 &&
+            !(
+              (events[open][1].end.offset -
+                events[open][1].start.offset +
+                events[index][1].end.offset -
+                events[index][1].start.offset) %
+              3
+            )
+          ) {
+            continue
+          } // Number of markers to use from the sequence.
+
+          use =
+            events[open][1].end.offset - events[open][1].start.offset > 1 &&
+            events[index][1].end.offset - events[index][1].start.offset > 1
+              ? 2
+              : 1
+          openingSequence = {
+            type: use > 1 ? 'strongSequence' : 'emphasisSequence',
+            start: movePoint(shallow(events[open][1].end), -use),
+            end: shallow(events[open][1].end)
+          }
+          closingSequence = {
+            type: use > 1 ? 'strongSequence' : 'emphasisSequence',
+            start: shallow(events[index][1].start),
+            end: movePoint(shallow(events[index][1].start), use)
+          }
+          text = {
+            type: use > 1 ? 'strongText' : 'emphasisText',
+            start: shallow(events[open][1].end),
+            end: shallow(events[index][1].start)
+          }
+          group = {
+            type: use > 1 ? 'strong' : 'emphasis',
+            start: shallow(openingSequence.start),
+            end: shallow(closingSequence.end)
+          }
+          events[open][1].end = shallow(openingSequence.start)
+          events[index][1].start = shallow(closingSequence.end)
+          nextEvents = [] // If there are more markers in the opening, add them before.
+
+          if (events[open][1].end.offset - events[open][1].start.offset) {
+            nextEvents = chunkedPush(nextEvents, [
+              ['enter', events[open][1], context],
+              ['exit', events[open][1], context]
+            ])
+          } // Opening.
+
+          nextEvents = chunkedPush(nextEvents, [
+            ['enter', group, context],
+            ['enter', openingSequence, context],
+            ['exit', openingSequence, context],
+            ['enter', text, context]
+          ]) // Between.
+
+          nextEvents = chunkedPush(
+            nextEvents,
+            resolveAll(
+              context.parser.constructs.insideSpan.null,
+              events.slice(open + 1, index),
+              context
+            )
+          ) // Closing.
+
+          nextEvents = chunkedPush(nextEvents, [
+            ['exit', text, context],
+            ['enter', closingSequence, context],
+            ['exit', closingSequence, context],
+            ['exit', group, context]
+          ]) // If there are more markers in the closing, add them after.
+
+          if (events[index][1].end.offset - events[index][1].start.offset) {
+            offset = 2
+            nextEvents = chunkedPush(nextEvents, [
+              ['enter', events[index][1], context],
+              ['exit', events[index][1], context]
+            ])
+          } else {
+            offset = 0
+          }
+
+          chunkedSplice(events, open - 1, index - open + 3, nextEvents)
+          index = open + nextEvents.length - offset - 2
+          break
+        }
+      }
+    }
+  } // Remove remaining sequences.
+
+  index = -1
+
+  while (++index < events.length) {
+    if (events[index][1].type === 'attentionSequence') {
+      events[index][1].type = 'data'
+    }
+  }
+
+  return events
+}
+
+function tokenizeAttention(effects, ok) {
+  var before = classifyCharacter(this.previous)
+  var marker
+  return start
+
+  function start(code) {
+    effects.enter('attentionSequence')
+    marker = code
+    return sequence(code)
+  }
+
+  function sequence(code) {
+    var token
+    var after
+    var open
+    var close
+
+    if (code === marker) {
+      effects.consume(code)
+      return sequence
+    }
+
+    token = effects.exit('attentionSequence')
+    after = classifyCharacter(code)
+    open = !after || (after === 2 && before)
+    close = !before || (before === 2 && after)
+    token._open = marker === 42 ? open : open && (before || !close)
+    token._close = marker === 42 ? close : close && (after || !open)
+    return ok(code)
+  }
+}
+
+module.exports = attention
+
+
+/***/ }),
+
+/***/ 1349:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var asciiAlpha = __webpack_require__(6734)
+var asciiAlphanumeric = __webpack_require__(6712)
+var asciiAtext = __webpack_require__(3571)
+var asciiControl = __webpack_require__(9696)
+
+var autolink = {
+  name: 'autolink',
+  tokenize: tokenizeAutolink
+}
+
+function tokenizeAutolink(effects, ok, nok) {
+  var size = 1
+  return start
+
+  function start(code) {
+    effects.enter('autolink')
+    effects.enter('autolinkMarker')
+    effects.consume(code)
+    effects.exit('autolinkMarker')
+    effects.enter('autolinkProtocol')
+    return open
+  }
+
+  function open(code) {
+    if (asciiAlpha(code)) {
+      effects.consume(code)
+      return schemeOrEmailAtext
+    }
+
+    return asciiAtext(code) ? emailAtext(code) : nok(code)
+  }
+
+  function schemeOrEmailAtext(code) {
+    return code === 43 || code === 45 || code === 46 || asciiAlphanumeric(code)
+      ? schemeInsideOrEmailAtext(code)
+      : emailAtext(code)
+  }
+
+  function schemeInsideOrEmailAtext(code) {
+    if (code === 58) {
+      effects.consume(code)
+      return urlInside
+    }
+
+    if (
+      (code === 43 || code === 45 || code === 46 || asciiAlphanumeric(code)) &&
+      size++ < 32
+    ) {
+      effects.consume(code)
+      return schemeInsideOrEmailAtext
+    }
+
+    return emailAtext(code)
+  }
+
+  function urlInside(code) {
+    if (code === 62) {
+      effects.exit('autolinkProtocol')
+      return end(code)
+    }
+
+    if (code === 32 || code === 60 || asciiControl(code)) {
+      return nok(code)
+    }
+
+    effects.consume(code)
+    return urlInside
+  }
+
+  function emailAtext(code) {
+    if (code === 64) {
+      effects.consume(code)
+      size = 0
+      return emailAtSignOrDot
+    }
+
+    if (asciiAtext(code)) {
+      effects.consume(code)
+      return emailAtext
+    }
+
+    return nok(code)
+  }
+
+  function emailAtSignOrDot(code) {
+    return asciiAlphanumeric(code) ? emailLabel(code) : nok(code)
+  }
+
+  function emailLabel(code) {
+    if (code === 46) {
+      effects.consume(code)
+      size = 0
+      return emailAtSignOrDot
+    }
+
+    if (code === 62) {
+      // Exit, then change the type.
+      effects.exit('autolinkProtocol').type = 'autolinkEmail'
+      return end(code)
+    }
+
+    return emailValue(code)
+  }
+
+  function emailValue(code) {
+    if ((code === 45 || asciiAlphanumeric(code)) && size++ < 63) {
+      effects.consume(code)
+      return code === 45 ? emailValue : emailLabel
+    }
+
+    return nok(code)
+  }
+
+  function end(code) {
+    effects.enter('autolinkMarker')
+    effects.consume(code)
+    effects.exit('autolinkMarker')
+    effects.exit('autolink')
+    return ok
+  }
+}
+
+module.exports = autolink
+
+
+/***/ }),
+
+/***/ 5485:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownSpace = __webpack_require__(3654)
+var factorySpace = __webpack_require__(2928)
+
+var blockQuote = {
+  name: 'blockQuote',
+  tokenize: tokenizeBlockQuoteStart,
+  continuation: {
+    tokenize: tokenizeBlockQuoteContinuation
+  },
+  exit: exit
+}
+
+function tokenizeBlockQuoteStart(effects, ok, nok) {
+  var self = this
+  return start
+
+  function start(code) {
+    if (code === 62) {
+      if (!self.containerState.open) {
+        effects.enter('blockQuote', {
+          _container: true
+        })
+        self.containerState.open = true
+      }
+
+      effects.enter('blockQuotePrefix')
+      effects.enter('blockQuoteMarker')
+      effects.consume(code)
+      effects.exit('blockQuoteMarker')
+      return after
+    }
+
+    return nok(code)
+  }
+
+  function after(code) {
+    if (markdownSpace(code)) {
+      effects.enter('blockQuotePrefixWhitespace')
+      effects.consume(code)
+      effects.exit('blockQuotePrefixWhitespace')
+      effects.exit('blockQuotePrefix')
+      return ok
+    }
+
+    effects.exit('blockQuotePrefix')
+    return ok(code)
+  }
+}
+
+function tokenizeBlockQuoteContinuation(effects, ok, nok) {
+  return factorySpace(
+    effects,
+    effects.attempt(blockQuote, ok, nok),
+    'linePrefix',
+    this.parser.constructs.disable.null.indexOf('codeIndented') > -1
+      ? undefined
+      : 4
+  )
+}
+
+function exit(effects) {
+  effects.exit('blockQuote')
+}
+
+module.exports = blockQuote
+
+
+/***/ }),
+
+/***/ 9653:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var asciiPunctuation = __webpack_require__(3074)
+
+var characterEscape = {
+  name: 'characterEscape',
+  tokenize: tokenizeCharacterEscape
+}
+
+function tokenizeCharacterEscape(effects, ok, nok) {
+  return start
+
+  function start(code) {
+    effects.enter('characterEscape')
+    effects.enter('escapeMarker')
+    effects.consume(code)
+    effects.exit('escapeMarker')
+    return open
+  }
+
+  function open(code) {
+    if (asciiPunctuation(code)) {
+      effects.enter('characterEscapeValue')
+      effects.consume(code)
+      effects.exit('characterEscapeValue')
+      effects.exit('characterEscape')
+      return ok
+    }
+
+    return nok(code)
+  }
+}
+
+module.exports = characterEscape
+
+
+/***/ }),
+
+/***/ 6713:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var decodeEntity = __webpack_require__(9435)
+var asciiAlphanumeric = __webpack_require__(6712)
+var asciiDigit = __webpack_require__(3977)
+var asciiHexDigit = __webpack_require__(6238)
+
+function _interopDefaultLegacy(e) {
+  return e && typeof e === 'object' && 'default' in e ? e : {default: e}
+}
+
+var decodeEntity__default = /*#__PURE__*/ _interopDefaultLegacy(decodeEntity)
+
+var characterReference = {
+  name: 'characterReference',
+  tokenize: tokenizeCharacterReference
+}
+
+function tokenizeCharacterReference(effects, ok, nok) {
+  var self = this
+  var size = 0
+  var max
+  var test
+  return start
+
+  function start(code) {
+    effects.enter('characterReference')
+    effects.enter('characterReferenceMarker')
+    effects.consume(code)
+    effects.exit('characterReferenceMarker')
+    return open
+  }
+
+  function open(code) {
+    if (code === 35) {
+      effects.enter('characterReferenceMarkerNumeric')
+      effects.consume(code)
+      effects.exit('characterReferenceMarkerNumeric')
+      return numeric
+    }
+
+    effects.enter('characterReferenceValue')
+    max = 31
+    test = asciiAlphanumeric
+    return value(code)
+  }
+
+  function numeric(code) {
+    if (code === 88 || code === 120) {
+      effects.enter('characterReferenceMarkerHexadecimal')
+      effects.consume(code)
+      effects.exit('characterReferenceMarkerHexadecimal')
+      effects.enter('characterReferenceValue')
+      max = 6
+      test = asciiHexDigit
+      return value
+    }
+
+    effects.enter('characterReferenceValue')
+    max = 7
+    test = asciiDigit
+    return value(code)
+  }
+
+  function value(code) {
+    var token
+
+    if (code === 59 && size) {
+      token = effects.exit('characterReferenceValue')
+
+      if (
+        test === asciiAlphanumeric &&
+        !decodeEntity__default['default'](self.sliceSerialize(token))
+      ) {
+        return nok(code)
+      }
+
+      effects.enter('characterReferenceMarker')
+      effects.consume(code)
+      effects.exit('characterReferenceMarker')
+      effects.exit('characterReference')
+      return ok
+    }
+
+    if (test(code) && size++ < max) {
+      effects.consume(code)
+      return value
+    }
+
+    return nok(code)
+  }
+}
+
+module.exports = characterReference
+
+
+/***/ }),
+
+/***/ 6597:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+var markdownLineEndingOrSpace = __webpack_require__(8367)
+var prefixSize = __webpack_require__(5096)
+var factorySpace = __webpack_require__(2928)
+
+var codeFenced = {
+  name: 'codeFenced',
+  tokenize: tokenizeCodeFenced,
+  concrete: true
+}
+
+function tokenizeCodeFenced(effects, ok, nok) {
+  var self = this
+  var closingFenceConstruct = {
+    tokenize: tokenizeClosingFence,
+    partial: true
+  }
+  var initialPrefix = prefixSize(this.events, 'linePrefix')
+  var sizeOpen = 0
+  var marker
+  return start
+
+  function start(code) {
+    effects.enter('codeFenced')
+    effects.enter('codeFencedFence')
+    effects.enter('codeFencedFenceSequence')
+    marker = code
+    return sequenceOpen(code)
+  }
+
+  function sequenceOpen(code) {
+    if (code === marker) {
+      effects.consume(code)
+      sizeOpen++
+      return sequenceOpen
+    }
+
+    effects.exit('codeFencedFenceSequence')
+    return sizeOpen < 3
+      ? nok(code)
+      : factorySpace(effects, infoOpen, 'whitespace')(code)
+  }
+
+  function infoOpen(code) {
+    if (code === null || markdownLineEnding(code)) {
+      return openAfter(code)
+    }
+
+    effects.enter('codeFencedFenceInfo')
+    effects.enter('chunkString', {
+      contentType: 'string'
+    })
+    return info(code)
+  }
+
+  function info(code) {
+    if (code === null || markdownLineEndingOrSpace(code)) {
+      effects.exit('chunkString')
+      effects.exit('codeFencedFenceInfo')
+      return factorySpace(effects, infoAfter, 'whitespace')(code)
+    }
+
+    if (code === 96 && code === marker) return nok(code)
+    effects.consume(code)
+    return info
+  }
+
+  function infoAfter(code) {
+    if (code === null || markdownLineEnding(code)) {
+      return openAfter(code)
+    }
+
+    effects.enter('codeFencedFenceMeta')
+    effects.enter('chunkString', {
+      contentType: 'string'
+    })
+    return meta(code)
+  }
+
+  function meta(code) {
+    if (code === null || markdownLineEnding(code)) {
+      effects.exit('chunkString')
+      effects.exit('codeFencedFenceMeta')
+      return openAfter(code)
+    }
+
+    if (code === 96 && code === marker) return nok(code)
+    effects.consume(code)
+    return meta
+  }
+
+  function openAfter(code) {
+    effects.exit('codeFencedFence')
+    return self.interrupt ? ok(code) : content(code)
+  }
+
+  function content(code) {
+    if (code === null) {
+      return after(code)
+    }
+
+    if (markdownLineEnding(code)) {
+      effects.enter('lineEnding')
+      effects.consume(code)
+      effects.exit('lineEnding')
+      return effects.attempt(
+        closingFenceConstruct,
+        after,
+        initialPrefix
+          ? factorySpace(effects, content, 'linePrefix', initialPrefix + 1)
+          : content
+      )
+    }
+
+    effects.enter('codeFlowValue')
+    return contentContinue(code)
+  }
+
+  function contentContinue(code) {
+    if (code === null || markdownLineEnding(code)) {
+      effects.exit('codeFlowValue')
+      return content(code)
+    }
+
+    effects.consume(code)
+    return contentContinue
+  }
+
+  function after(code) {
+    effects.exit('codeFenced')
+    return ok(code)
+  }
+
+  function tokenizeClosingFence(effects, ok, nok) {
+    var size = 0
+    return factorySpace(
+      effects,
+      closingSequenceStart,
+      'linePrefix',
+      this.parser.constructs.disable.null.indexOf('codeIndented') > -1
+        ? undefined
+        : 4
+    )
+
+    function closingSequenceStart(code) {
+      effects.enter('codeFencedFence')
+      effects.enter('codeFencedFenceSequence')
+      return closingSequence(code)
+    }
+
+    function closingSequence(code) {
+      if (code === marker) {
+        effects.consume(code)
+        size++
+        return closingSequence
+      }
+
+      if (size < sizeOpen) return nok(code)
+      effects.exit('codeFencedFenceSequence')
+      return factorySpace(effects, closingSequenceEnd, 'whitespace')(code)
+    }
+
+    function closingSequenceEnd(code) {
+      if (code === null || markdownLineEnding(code)) {
+        effects.exit('codeFencedFence')
+        return ok(code)
+      }
+
+      return nok(code)
+    }
+  }
+}
+
+module.exports = codeFenced
+
+
+/***/ }),
+
+/***/ 431:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+var chunkedSplice = __webpack_require__(6808)
+var prefixSize = __webpack_require__(5096)
+var factorySpace = __webpack_require__(2928)
+
+var codeIndented = {
+  name: 'codeIndented',
+  tokenize: tokenizeCodeIndented,
+  resolve: resolveCodeIndented
+}
+var indentedContentConstruct = {
+  tokenize: tokenizeIndentedContent,
+  partial: true
+}
+
+function resolveCodeIndented(events, context) {
+  var code = {
+    type: 'codeIndented',
+    start: events[0][1].start,
+    end: events[events.length - 1][1].end
+  }
+  chunkedSplice(events, 0, 0, [['enter', code, context]])
+  chunkedSplice(events, events.length, 0, [['exit', code, context]])
+  return events
+}
+
+function tokenizeCodeIndented(effects, ok, nok) {
+  return effects.attempt(indentedContentConstruct, afterPrefix, nok)
+
+  function afterPrefix(code) {
+    if (code === null) {
+      return ok(code)
+    }
+
+    if (markdownLineEnding(code)) {
+      return effects.attempt(indentedContentConstruct, afterPrefix, ok)(code)
+    }
+
+    effects.enter('codeFlowValue')
+    return content(code)
+  }
+
+  function content(code) {
+    if (code === null || markdownLineEnding(code)) {
+      effects.exit('codeFlowValue')
+      return afterPrefix(code)
+    }
+
+    effects.consume(code)
+    return content
+  }
+}
+
+function tokenizeIndentedContent(effects, ok, nok) {
+  var self = this
+  return factorySpace(effects, afterPrefix, 'linePrefix', 4 + 1)
+
+  function afterPrefix(code) {
+    if (markdownLineEnding(code)) {
+      effects.enter('lineEnding')
+      effects.consume(code)
+      effects.exit('lineEnding')
+      return factorySpace(effects, afterPrefix, 'linePrefix', 4 + 1)
+    }
+
+    return prefixSize(self.events, 'linePrefix') < 4 ? nok(code) : ok(code)
+  }
+}
+
+module.exports = codeIndented
+
+
+/***/ }),
+
+/***/ 26:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+
+var codeText = {
+  name: 'codeText',
+  tokenize: tokenizeCodeText,
+  resolve: resolveCodeText,
+  previous: previous
+}
+
+function resolveCodeText(events) {
+  var tailExitIndex = events.length - 4
+  var headEnterIndex = 3
+  var index
+  var enter // If we start and end with an EOL or a space.
+
+  if (
+    (events[headEnterIndex][1].type === 'lineEnding' ||
+      events[headEnterIndex][1].type === 'space') &&
+    (events[tailExitIndex][1].type === 'lineEnding' ||
+      events[tailExitIndex][1].type === 'space')
+  ) {
+    index = headEnterIndex // And we have data.
+
+    while (++index < tailExitIndex) {
+      if (events[index][1].type === 'codeTextData') {
+        // Then we have padding.
+        events[tailExitIndex][1].type = events[headEnterIndex][1].type =
+          'codeTextPadding'
+        headEnterIndex += 2
+        tailExitIndex -= 2
+        break
+      }
+    }
+  } // Merge adjacent spaces and data.
+
+  index = headEnterIndex - 1
+  tailExitIndex++
+
+  while (++index <= tailExitIndex) {
+    if (enter === undefined) {
+      if (index !== tailExitIndex && events[index][1].type !== 'lineEnding') {
+        enter = index
+      }
+    } else if (
+      index === tailExitIndex ||
+      events[index][1].type === 'lineEnding'
+    ) {
+      events[enter][1].type = 'codeTextData'
+
+      if (index !== enter + 2) {
+        events[enter][1].end = events[index - 1][1].end
+        events.splice(enter + 2, index - enter - 2)
+        tailExitIndex -= index - enter - 2
+        index = enter + 2
+      }
+
+      enter = undefined
+    }
+  }
+
+  return events
+}
+
+function previous(code) {
+  // If there is a previous code, there will always be a tail.
+  return (
+    code !== 96 ||
+    this.events[this.events.length - 1][1].type === 'characterEscape'
+  )
+}
+
+function tokenizeCodeText(effects, ok, nok) {
+  var sizeOpen = 0
+  var size
+  var token
+  return start
+
+  function start(code) {
+    effects.enter('codeText')
+    effects.enter('codeTextSequence')
+    return openingSequence(code)
+  }
+
+  function openingSequence(code) {
+    if (code === 96) {
+      effects.consume(code)
+      sizeOpen++
+      return openingSequence
+    }
+
+    effects.exit('codeTextSequence')
+    return gap(code)
+  }
+
+  function gap(code) {
+    // EOF.
+    if (code === null) {
+      return nok(code)
+    } // Closing fence?
+    // Could also be data.
+
+    if (code === 96) {
+      token = effects.enter('codeTextSequence')
+      size = 0
+      return closingSequence(code)
+    } // Tabs don’t work, and virtual spaces don’t make sense.
+
+    if (code === 32) {
+      effects.enter('space')
+      effects.consume(code)
+      effects.exit('space')
+      return gap
+    }
+
+    if (markdownLineEnding(code)) {
+      effects.enter('lineEnding')
+      effects.consume(code)
+      effects.exit('lineEnding')
+      return gap
+    } // Data.
+
+    effects.enter('codeTextData')
+    return data(code)
+  } // In code.
+
+  function data(code) {
+    if (
+      code === null ||
+      code === 32 ||
+      code === 96 ||
+      markdownLineEnding(code)
+    ) {
+      effects.exit('codeTextData')
+      return gap(code)
+    }
+
+    effects.consume(code)
+    return data
+  } // Closing fence.
+
+  function closingSequence(code) {
+    // More.
+    if (code === 96) {
+      effects.consume(code)
+      size++
+      return closingSequence
+    } // Done!
+
+    if (size === sizeOpen) {
+      effects.exit('codeTextSequence')
+      effects.exit('codeText')
+      return ok(code)
+    } // More or less accents: mark as data.
+
+    token.type = 'codeTextData'
+    return data(code)
+  }
+}
+
+module.exports = codeText
+
+
+/***/ }),
+
+/***/ 4590:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+var prefixSize = __webpack_require__(5096)
+var subtokenize = __webpack_require__(4423)
+var factorySpace = __webpack_require__(2928)
+
+// No name because it must not be turned off.
+var content = {
+  tokenize: tokenizeContent,
+  resolve: resolveContent,
+  interruptible: true,
+  lazy: true
+}
+var continuationConstruct = {
+  tokenize: tokenizeContinuation,
+  partial: true
+} // Content is transparent: it’s parsed right now. That way, definitions are also
+// parsed right now: before text in paragraphs (specifically, media) are parsed.
+
+function resolveContent(events) {
+  subtokenize(events)
+  return events
+}
+
+function tokenizeContent(effects, ok) {
+  var previous
+  return start
+
+  function start(code) {
+    effects.enter('content')
+    previous = effects.enter('chunkContent', {
+      contentType: 'content'
+    })
+    return data(code)
+  }
+
+  function data(code) {
+    if (code === null) {
+      return contentEnd(code)
+    }
+
+    if (markdownLineEnding(code)) {
+      return effects.check(
+        continuationConstruct,
+        contentContinue,
+        contentEnd
+      )(code)
+    } // Data.
+
+    effects.consume(code)
+    return data
+  }
+
+  function contentEnd(code) {
+    effects.exit('chunkContent')
+    effects.exit('content')
+    return ok(code)
+  }
+
+  function contentContinue(code) {
+    effects.consume(code)
+    effects.exit('chunkContent')
+    previous = previous.next = effects.enter('chunkContent', {
+      contentType: 'content',
+      previous: previous
+    })
+    return data
+  }
+}
+
+function tokenizeContinuation(effects, ok, nok) {
+  var self = this
+  return startLookahead
+
+  function startLookahead(code) {
+    effects.enter('lineEnding')
+    effects.consume(code)
+    effects.exit('lineEnding')
+    return factorySpace(effects, prefixed, 'linePrefix')
+  }
+
+  function prefixed(code) {
+    if (code === null || markdownLineEnding(code)) {
+      return nok(code)
+    }
+
+    if (
+      self.parser.constructs.disable.null.indexOf('codeIndented') > -1 ||
+      prefixSize(self.events, 'linePrefix') < 4
+    ) {
+      return effects.interrupt(self.parser.constructs.flow, nok, ok)(code)
+    }
+
+    return ok(code)
+  }
+}
+
+module.exports = content
+
+
+/***/ }),
+
+/***/ 3865:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+var markdownLineEndingOrSpace = __webpack_require__(8367)
+var normalizeIdentifier = __webpack_require__(5478)
+var factoryDestination = __webpack_require__(8229)
+var factoryLabel = __webpack_require__(7154)
+var factorySpace = __webpack_require__(2928)
+var factoryWhitespace = __webpack_require__(1056)
+var factoryTitle = __webpack_require__(9283)
+
+var definition = {
+  name: 'definition',
+  tokenize: tokenizeDefinition
+}
+var titleConstruct = {
+  tokenize: tokenizeTitle,
+  partial: true
+}
+
+function tokenizeDefinition(effects, ok, nok) {
+  var self = this
+  var identifier
+  return start
+
+  function start(code) {
+    effects.enter('definition')
+    return factoryLabel.call(
+      self,
+      effects,
+      labelAfter,
+      nok,
+      'definitionLabel',
+      'definitionLabelMarker',
+      'definitionLabelString'
+    )(code)
+  }
+
+  function labelAfter(code) {
+    identifier = normalizeIdentifier(
+      self.sliceSerialize(self.events[self.events.length - 1][1]).slice(1, -1)
+    )
+
+    if (code === 58) {
+      effects.enter('definitionMarker')
+      effects.consume(code)
+      effects.exit('definitionMarker') // Note: blank lines can’t exist in content.
+
+      return factoryWhitespace(
+        effects,
+        factoryDestination(
+          effects,
+          effects.attempt(
+            titleConstruct,
+            factorySpace(effects, after, 'whitespace'),
+            factorySpace(effects, after, 'whitespace')
+          ),
+          nok,
+          'definitionDestination',
+          'definitionDestinationLiteral',
+          'definitionDestinationLiteralMarker',
+          'definitionDestinationRaw',
+          'definitionDestinationString'
+        )
+      )
+    }
+
+    return nok(code)
+  }
+
+  function after(code) {
+    if (code === null || markdownLineEnding(code)) {
+      effects.exit('definition')
+
+      if (self.parser.defined.indexOf(identifier) < 0) {
+        self.parser.defined.push(identifier)
+      }
+
+      return ok(code)
+    }
+
+    return nok(code)
+  }
+}
+
+function tokenizeTitle(effects, ok, nok) {
+  return start
+
+  function start(code) {
+    return markdownLineEndingOrSpace(code)
+      ? factoryWhitespace(effects, before)(code)
+      : nok(code)
+  }
+
+  function before(code) {
+    if (code === 34 || code === 39 || code === 40) {
+      return factoryTitle(
+        effects,
+        factorySpace(effects, after, 'whitespace'),
+        nok,
+        'definitionTitle',
+        'definitionTitleMarker',
+        'definitionTitleString'
+      )(code)
+    }
+
+    return nok(code)
+  }
+
+  function after(code) {
+    return code === null || markdownLineEnding(code) ? ok(code) : nok(code)
+  }
+}
+
+module.exports = definition
+
+
+/***/ }),
+
+/***/ 8229:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var asciiControl = __webpack_require__(9696)
+var markdownLineEndingOrSpace = __webpack_require__(8367)
+var markdownLineEnding = __webpack_require__(7238)
+
+// eslint-disable-next-line max-params
+function destinationFactory(
+  effects,
+  ok,
+  nok,
+  type,
+  literalType,
+  literalMarkerType,
+  rawType,
+  stringType,
+  max
+) {
+  var limit = max || Infinity
+  var balance = 0
+  return start
+
+  function start(code) {
+    if (code === 60) {
+      effects.enter(type)
+      effects.enter(literalType)
+      effects.enter(literalMarkerType)
+      effects.consume(code)
+      effects.exit(literalMarkerType)
+      return destinationEnclosedBefore
+    }
+
+    if (asciiControl(code) || code === 41) {
+      return nok(code)
+    }
+
+    effects.enter(type)
+    effects.enter(rawType)
+    effects.enter(stringType)
+    effects.enter('chunkString', {
+      contentType: 'string'
+    })
+    return destinationRaw(code)
+  }
+
+  function destinationEnclosedBefore(code) {
+    if (code === 62) {
+      effects.enter(literalMarkerType)
+      effects.consume(code)
+      effects.exit(literalMarkerType)
+      effects.exit(literalType)
+      effects.exit(type)
+      return ok
+    }
+
+    effects.enter(stringType)
+    effects.enter('chunkString', {
+      contentType: 'string'
+    })
+    return destinationEnclosed(code)
+  }
+
+  function destinationEnclosed(code) {
+    if (code === 62) {
+      effects.exit('chunkString')
+      effects.exit(stringType)
+      return destinationEnclosedBefore(code)
+    }
+
+    if (code === null || code === 60 || markdownLineEnding(code)) {
+      return nok(code)
+    }
+
+    effects.consume(code)
+    return code === 92 ? destinationEnclosedEscape : destinationEnclosed
+  }
+
+  function destinationEnclosedEscape(code) {
+    if (code === 60 || code === 62 || code === 92) {
+      effects.consume(code)
+      return destinationEnclosed
+    }
+
+    return destinationEnclosed(code)
+  }
+
+  function destinationRaw(code) {
+    if (code === 40) {
+      if (++balance > limit) return nok(code)
+      effects.consume(code)
+      return destinationRaw
+    }
+
+    if (code === 41) {
+      if (!balance--) {
+        effects.exit('chunkString')
+        effects.exit(stringType)
+        effects.exit(rawType)
+        effects.exit(type)
+        return ok(code)
+      }
+
+      effects.consume(code)
+      return destinationRaw
+    }
+
+    if (code === null || markdownLineEndingOrSpace(code)) {
+      if (balance) return nok(code)
+      effects.exit('chunkString')
+      effects.exit(stringType)
+      effects.exit(rawType)
+      effects.exit(type)
+      return ok(code)
+    }
+
+    if (asciiControl(code)) return nok(code)
+    effects.consume(code)
+    return code === 92 ? destinationRawEscape : destinationRaw
+  }
+
+  function destinationRawEscape(code) {
+    if (code === 40 || code === 41 || code === 92) {
+      effects.consume(code)
+      return destinationRaw
+    }
+
+    return destinationRaw(code)
+  }
+}
+
+module.exports = destinationFactory
+
+
+/***/ }),
+
+/***/ 7154:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+var markdownSpace = __webpack_require__(3654)
+
+// eslint-disable-next-line max-params
+function labelFactory(effects, ok, nok, type, markerType, stringType) {
+  var self = this
+  var size = 0
+  var data
+  return start
+
+  function start(code) {
+    effects.enter(type)
+    effects.enter(markerType)
+    effects.consume(code)
+    effects.exit(markerType)
+    effects.enter(stringType)
+    return atBreak
+  }
+
+  function atBreak(code) {
+    if (
+      code === null ||
+      code === 91 ||
+      (code === 93 && !data) ||
+      /* c8 ignore next */
+      (code === 94 &&
+        /* c8 ignore next */
+        !size &&
+        /* c8 ignore next */
+        '_hiddenFootnoteSupport' in self.parser.constructs) ||
+      size > 999
+    ) {
+      return nok(code)
+    }
+
+    if (code === 93) {
+      effects.exit(stringType)
+      effects.enter(markerType)
+      effects.consume(code)
+      effects.exit(markerType)
+      effects.exit(type)
+      return ok
+    }
+
+    if (markdownLineEnding(code)) {
+      effects.enter('lineEnding')
+      effects.consume(code)
+      effects.exit('lineEnding')
+      return atBreak
+    }
+
+    effects.enter('chunkString', {
+      contentType: 'string'
+    })
+    return label(code)
+  }
+
+  function label(code) {
+    if (
+      code === null ||
+      code === 91 ||
+      code === 93 ||
+      markdownLineEnding(code) ||
+      size++ > 999
+    ) {
+      effects.exit('chunkString')
+      return atBreak(code)
+    }
+
+    effects.consume(code)
+    data = data || !markdownSpace(code)
+    return code === 92 ? labelEscape : label
+  }
+
+  function labelEscape(code) {
+    if (code === 91 || code === 92 || code === 93) {
+      effects.consume(code)
+      size++
+      return label
+    }
+
+    return label(code)
+  }
+}
+
+module.exports = labelFactory
+
+
+/***/ }),
+
+/***/ 2928:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownSpace = __webpack_require__(3654)
+
+function spaceFactory(effects, ok, type, max) {
+  var limit = max ? max - 1 : Infinity
+  var size = 0
+  return start
+
+  function start(code) {
+    if (markdownSpace(code)) {
+      effects.enter(type)
+      return prefix(code)
+    }
+
+    return ok(code)
+  }
+
+  function prefix(code) {
+    if (markdownSpace(code) && size++ < limit) {
+      effects.consume(code)
+      return prefix
+    }
+
+    effects.exit(type)
+    return ok(code)
+  }
+}
+
+module.exports = spaceFactory
+
+
+/***/ }),
+
+/***/ 9283:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+var factorySpace = __webpack_require__(2928)
+
+function titleFactory(effects, ok, nok, type, markerType, stringType) {
+  var marker
+  return start
+
+  function start(code) {
+    effects.enter(type)
+    effects.enter(markerType)
+    effects.consume(code)
+    effects.exit(markerType)
+    marker = code === 40 ? 41 : code
+    return atFirstTitleBreak
+  }
+
+  function atFirstTitleBreak(code) {
+    if (code === marker) {
+      effects.enter(markerType)
+      effects.consume(code)
+      effects.exit(markerType)
+      effects.exit(type)
+      return ok
+    }
+
+    effects.enter(stringType)
+    return atTitleBreak(code)
+  }
+
+  function atTitleBreak(code) {
+    if (code === marker) {
+      effects.exit(stringType)
+      return atFirstTitleBreak(marker)
+    }
+
+    if (code === null) {
+      return nok(code)
+    } // Note: blank lines can’t exist in content.
+
+    if (markdownLineEnding(code)) {
+      effects.enter('lineEnding')
+      effects.consume(code)
+      effects.exit('lineEnding')
+      return factorySpace(effects, atTitleBreak, 'linePrefix')
+    }
+
+    effects.enter('chunkString', {
+      contentType: 'string'
+    })
+    return title(code)
+  }
+
+  function title(code) {
+    if (code === marker || code === null || markdownLineEnding(code)) {
+      effects.exit('chunkString')
+      return atTitleBreak(code)
+    }
+
+    effects.consume(code)
+    return code === 92 ? titleEscape : title
+  }
+
+  function titleEscape(code) {
+    if (code === marker || code === 92) {
+      effects.consume(code)
+      return title
+    }
+
+    return title(code)
+  }
+}
+
+module.exports = titleFactory
+
+
+/***/ }),
+
+/***/ 1056:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+var markdownSpace = __webpack_require__(3654)
+var factorySpace = __webpack_require__(2928)
+
+function whitespaceFactory(effects, ok) {
+  var seen
+  return start
+
+  function start(code) {
+    if (markdownLineEnding(code)) {
+      effects.enter('lineEnding')
+      effects.consume(code)
+      effects.exit('lineEnding')
+      seen = true
+      return start
+    }
+
+    if (markdownSpace(code)) {
+      return factorySpace(
+        effects,
+        start,
+        seen ? 'linePrefix' : 'lineSuffix'
+      )(code)
+    }
+
+    return ok(code)
+  }
+}
+
+module.exports = whitespaceFactory
+
+
+/***/ }),
+
+/***/ 5694:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+
+var hardBreakEscape = {
+  name: 'hardBreakEscape',
+  tokenize: tokenizeHardBreakEscape
+}
+
+function tokenizeHardBreakEscape(effects, ok, nok) {
+  return start
+
+  function start(code) {
+    effects.enter('hardBreakEscape')
+    effects.enter('escapeMarker')
+    effects.consume(code)
+    return open
+  }
+
+  function open(code) {
+    if (markdownLineEnding(code)) {
+      effects.exit('escapeMarker')
+      effects.exit('hardBreakEscape')
+      return ok(code)
+    }
+
+    return nok(code)
+  }
+}
+
+module.exports = hardBreakEscape
+
+
+/***/ }),
+
+/***/ 5565:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+var markdownLineEndingOrSpace = __webpack_require__(8367)
+var markdownSpace = __webpack_require__(3654)
+var chunkedSplice = __webpack_require__(6808)
+var factorySpace = __webpack_require__(2928)
+
+var headingAtx = {
+  name: 'headingAtx',
+  tokenize: tokenizeHeadingAtx,
+  resolve: resolveHeadingAtx
+}
+
+function resolveHeadingAtx(events, context) {
+  var contentEnd = events.length - 2
+  var contentStart = 3
+  var content
+  var text // Prefix whitespace, part of the opening.
+
+  if (events[contentStart][1].type === 'whitespace') {
+    contentStart += 2
+  } // Suffix whitespace, part of the closing.
+
+  if (
+    contentEnd - 2 > contentStart &&
+    events[contentEnd][1].type === 'whitespace'
+  ) {
+    contentEnd -= 2
+  }
+
+  if (
+    events[contentEnd][1].type === 'atxHeadingSequence' &&
+    (contentStart === contentEnd - 1 ||
+      (contentEnd - 4 > contentStart &&
+        events[contentEnd - 2][1].type === 'whitespace'))
+  ) {
+    contentEnd -= contentStart + 1 === contentEnd ? 2 : 4
+  }
+
+  if (contentEnd > contentStart) {
+    content = {
+      type: 'atxHeadingText',
+      start: events[contentStart][1].start,
+      end: events[contentEnd][1].end
+    }
+    text = {
+      type: 'chunkText',
+      start: events[contentStart][1].start,
+      end: events[contentEnd][1].end,
+      contentType: 'text'
+    }
+    chunkedSplice(events, contentStart, contentEnd - contentStart + 1, [
+      ['enter', content, context],
+      ['enter', text, context],
+      ['exit', text, context],
+      ['exit', content, context]
+    ])
+  }
+
+  return events
+}
+
+function tokenizeHeadingAtx(effects, ok, nok) {
+  var self = this
+  var size = 0
+  return start
+
+  function start(code) {
+    effects.enter('atxHeading')
+    effects.enter('atxHeadingSequence')
+    return fenceOpenInside(code)
+  }
+
+  function fenceOpenInside(code) {
+    if (code === 35 && size++ < 6) {
+      effects.consume(code)
+      return fenceOpenInside
+    }
+
+    if (code === null || markdownLineEndingOrSpace(code)) {
+      effects.exit('atxHeadingSequence')
+      return self.interrupt ? ok(code) : headingBreak(code)
+    }
+
+    return nok(code)
+  }
+
+  function headingBreak(code) {
+    if (code === 35) {
+      effects.enter('atxHeadingSequence')
+      return sequence(code)
+    }
+
+    if (code === null || markdownLineEnding(code)) {
+      effects.exit('atxHeading')
+      return ok(code)
+    }
+
+    if (markdownSpace(code)) {
+      return factorySpace(effects, headingBreak, 'whitespace')(code)
+    }
+
+    effects.enter('atxHeadingText')
+    return data(code)
+  }
+
+  function sequence(code) {
+    if (code === 35) {
+      effects.consume(code)
+      return sequence
+    }
+
+    effects.exit('atxHeadingSequence')
+    return headingBreak(code)
+  }
+
+  function data(code) {
+    if (code === null || code === 35 || markdownLineEndingOrSpace(code)) {
+      effects.exit('atxHeadingText')
+      return headingBreak(code)
+    }
+
+    effects.consume(code)
+    return data
+  }
+}
+
+module.exports = headingAtx
+
+
+/***/ }),
+
+/***/ 6872:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var asciiAlpha = __webpack_require__(6734)
+var asciiAlphanumeric = __webpack_require__(6712)
+var markdownLineEnding = __webpack_require__(7238)
+var markdownLineEndingOrSpace = __webpack_require__(8367)
+var markdownSpace = __webpack_require__(3654)
+var fromCharCode = __webpack_require__(3267)
+var htmlBlockNames = __webpack_require__(7139)
+var htmlRawNames = __webpack_require__(6871)
+var partialBlankLine = __webpack_require__(6532)
+
+var htmlFlow = {
+  name: 'htmlFlow',
+  tokenize: tokenizeHtmlFlow,
+  resolveTo: resolveToHtmlFlow,
+  concrete: true
+}
+var nextBlankConstruct = {
+  tokenize: tokenizeNextBlank,
+  partial: true
+}
+
+function resolveToHtmlFlow(events) {
+  var index = events.length
+
+  while (index--) {
+    if (events[index][0] === 'enter' && events[index][1].type === 'htmlFlow') {
+      break
+    }
+  }
+
+  if (index > 1 && events[index - 2][1].type === 'linePrefix') {
+    // Add the prefix start to the HTML token.
+    events[index][1].start = events[index - 2][1].start // Add the prefix start to the HTML line token.
+
+    events[index + 1][1].start = events[index - 2][1].start // Remove the line prefix.
+
+    events.splice(index - 2, 2)
+  }
+
+  return events
+}
+
+function tokenizeHtmlFlow(effects, ok, nok) {
+  var self = this
+  var kind
+  var startTag
+  var buffer
+  var index
+  var marker
+  return start
+
+  function start(code) {
+    effects.enter('htmlFlow')
+    effects.enter('htmlFlowData')
+    effects.consume(code)
+    return open
+  }
+
+  function open(code) {
+    if (code === 33) {
+      effects.consume(code)
+      return declarationStart
+    }
+
+    if (code === 47) {
+      effects.consume(code)
+      return tagCloseStart
+    }
+
+    if (code === 63) {
+      effects.consume(code)
+      kind = 3 // While we’re in an instruction instead of a declaration, we’re on a `?`
+      // right now, so we do need to search for `>`, similar to declarations.
+
+      return self.interrupt ? ok : continuationDeclarationInside
+    }
+
+    if (asciiAlpha(code)) {
+      effects.consume(code)
+      buffer = fromCharCode(code)
+      startTag = true
+      return tagName
+    }
+
+    return nok(code)
+  }
+
+  function declarationStart(code) {
+    if (code === 45) {
+      effects.consume(code)
+      kind = 2
+      return commentOpenInside
+    }
+
+    if (code === 91) {
+      effects.consume(code)
+      kind = 5
+      buffer = 'CDATA['
+      index = 0
+      return cdataOpenInside
+    }
+
+    if (asciiAlpha(code)) {
+      effects.consume(code)
+      kind = 4
+      return self.interrupt ? ok : continuationDeclarationInside
+    }
+
+    return nok(code)
+  }
+
+  function commentOpenInside(code) {
+    if (code === 45) {
+      effects.consume(code)
+      return self.interrupt ? ok : continuationDeclarationInside
+    }
+
+    return nok(code)
+  }
+
+  function cdataOpenInside(code) {
+    if (code === buffer.charCodeAt(index++)) {
+      effects.consume(code)
+      return index === buffer.length
+        ? self.interrupt
+          ? ok
+          : continuation
+        : cdataOpenInside
+    }
+
+    return nok(code)
+  }
+
+  function tagCloseStart(code) {
+    if (asciiAlpha(code)) {
+      effects.consume(code)
+      buffer = fromCharCode(code)
+      return tagName
+    }
+
+    return nok(code)
+  }
+
+  function tagName(code) {
+    if (
+      code === null ||
+      code === 47 ||
+      code === 62 ||
+      markdownLineEndingOrSpace(code)
+    ) {
+      if (
+        code !== 47 &&
+        startTag &&
+        htmlRawNames.indexOf(buffer.toLowerCase()) > -1
+      ) {
+        kind = 1
+        return self.interrupt ? ok(code) : continuation(code)
+      }
+
+      if (htmlBlockNames.indexOf(buffer.toLowerCase()) > -1) {
+        kind = 6
+
+        if (code === 47) {
+          effects.consume(code)
+          return basicSelfClosing
+        }
+
+        return self.interrupt ? ok(code) : continuation(code)
+      }
+
+      kind = 7 // Do not support complete HTML when interrupting.
+
+      return self.interrupt
+        ? nok(code)
+        : startTag
+        ? completeAttributeNameBefore(code)
+        : completeClosingTagAfter(code)
+    }
+
+    if (code === 45 || asciiAlphanumeric(code)) {
+      effects.consume(code)
+      buffer += fromCharCode(code)
+      return tagName
+    }
+
+    return nok(code)
+  }
+
+  function basicSelfClosing(code) {
+    if (code === 62) {
+      effects.consume(code)
+      return self.interrupt ? ok : continuation
+    }
+
+    return nok(code)
+  }
+
+  function completeClosingTagAfter(code) {
+    if (markdownSpace(code)) {
+      effects.consume(code)
+      return completeClosingTagAfter
+    }
+
+    return completeEnd(code)
+  }
+
+  function completeAttributeNameBefore(code) {
+    if (code === 47) {
+      effects.consume(code)
+      return completeEnd
+    }
+
+    if (code === 58 || code === 95 || asciiAlpha(code)) {
+      effects.consume(code)
+      return completeAttributeName
+    }
+
+    if (markdownSpace(code)) {
+      effects.consume(code)
+      return completeAttributeNameBefore
+    }
+
+    return completeEnd(code)
+  }
+
+  function completeAttributeName(code) {
+    if (
+      code === 45 ||
+      code === 46 ||
+      code === 58 ||
+      code === 95 ||
+      asciiAlphanumeric(code)
+    ) {
+      effects.consume(code)
+      return completeAttributeName
+    }
+
+    return completeAttributeNameAfter(code)
+  }
+
+  function completeAttributeNameAfter(code) {
+    if (code === 61) {
+      effects.consume(code)
+      return completeAttributeValueBefore
+    }
+
+    if (markdownSpace(code)) {
+      effects.consume(code)
+      return completeAttributeNameAfter
+    }
+
+    return completeAttributeNameBefore(code)
+  }
+
+  function completeAttributeValueBefore(code) {
+    if (
+      code === null ||
+      code === 60 ||
+      code === 61 ||
+      code === 62 ||
+      code === 96
+    ) {
+      return nok(code)
+    }
+
+    if (code === 34 || code === 39) {
+      effects.consume(code)
+      marker = code
+      return completeAttributeValueQuoted
+    }
+
+    if (markdownSpace(code)) {
+      effects.consume(code)
+      return completeAttributeValueBefore
+    }
+
+    marker = undefined
+    return completeAttributeValueUnquoted(code)
+  }
+
+  function completeAttributeValueQuoted(code) {
+    if (code === marker) {
+      effects.consume(code)
+      return completeAttributeValueQuotedAfter
+    }
+
+    if (code === null || markdownLineEnding(code)) {
+      return nok(code)
+    }
+
+    effects.consume(code)
+    return completeAttributeValueQuoted
+  }
+
+  function completeAttributeValueUnquoted(code) {
+    if (
+      code === null ||
+      code === 34 ||
+      code === 39 ||
+      code === 60 ||
+      code === 61 ||
+      code === 62 ||
+      code === 96 ||
+      markdownLineEndingOrSpace(code)
+    ) {
+      return completeAttributeNameAfter(code)
+    }
+
+    effects.consume(code)
+    return completeAttributeValueUnquoted
+  }
+
+  function completeAttributeValueQuotedAfter(code) {
+    if (code === 47 || code === 62 || markdownSpace(code)) {
+      return completeAttributeNameBefore(code)
+    }
+
+    return nok(code)
+  }
+
+  function completeEnd(code) {
+    if (code === 62) {
+      effects.consume(code)
+      return completeAfter
+    }
+
+    return nok(code)
+  }
+
+  function completeAfter(code) {
+    if (markdownSpace(code)) {
+      effects.consume(code)
+      return completeAfter
+    }
+
+    return code === null || markdownLineEnding(code)
+      ? continuation(code)
+      : nok(code)
+  }
+
+  function continuation(code) {
+    if (code === 45 && kind === 2) {
+      effects.consume(code)
+      return continuationCommentInside
+    }
+
+    if (code === 60 && kind === 1) {
+      effects.consume(code)
+      return continuationRawTagOpen
+    }
+
+    if (code === 62 && kind === 4) {
+      effects.consume(code)
+      return continuationClose
+    }
+
+    if (code === 63 && kind === 3) {
+      effects.consume(code)
+      return continuationDeclarationInside
+    }
+
+    if (code === 93 && kind === 5) {
+      effects.consume(code)
+      return continuationCharacterDataInside
+    }
+
+    if (markdownLineEnding(code) && (kind === 6 || kind === 7)) {
+      return effects.check(
+        nextBlankConstruct,
+        continuationClose,
+        continuationAtLineEnding
+      )(code)
+    }
+
+    if (code === null || markdownLineEnding(code)) {
+      return continuationAtLineEnding(code)
+    }
+
+    effects.consume(code)
+    return continuation
+  }
+
+  function continuationAtLineEnding(code) {
+    effects.exit('htmlFlowData')
+    return htmlContinueStart(code)
+  }
+
+  function htmlContinueStart(code) {
+    if (code === null) {
+      return done(code)
+    }
+
+    if (markdownLineEnding(code)) {
+      effects.enter('lineEnding')
+      effects.consume(code)
+      effects.exit('lineEnding')
+      return htmlContinueStart
+    }
+
+    effects.enter('htmlFlowData')
+    return continuation(code)
+  }
+
+  function continuationCommentInside(code) {
+    if (code === 45) {
+      effects.consume(code)
+      return continuationDeclarationInside
+    }
+
+    return continuation(code)
+  }
+
+  function continuationRawTagOpen(code) {
+    if (code === 47) {
+      effects.consume(code)
+      buffer = ''
+      return continuationRawEndTag
+    }
+
+    return continuation(code)
+  }
+
+  function continuationRawEndTag(code) {
+    if (code === 62 && htmlRawNames.indexOf(buffer.toLowerCase()) > -1) {
+      effects.consume(code)
+      return continuationClose
+    }
+
+    if (asciiAlpha(code) && buffer.length < 8) {
+      effects.consume(code)
+      buffer += fromCharCode(code)
+      return continuationRawEndTag
+    }
+
+    return continuation(code)
+  }
+
+  function continuationCharacterDataInside(code) {
+    if (code === 93) {
+      effects.consume(code)
+      return continuationDeclarationInside
+    }
+
+    return continuation(code)
+  }
+
+  function continuationDeclarationInside(code) {
+    if (code === 62) {
+      effects.consume(code)
+      return continuationClose
+    }
+
+    return continuation(code)
+  }
+
+  function continuationClose(code) {
+    if (code === null || markdownLineEnding(code)) {
+      effects.exit('htmlFlowData')
+      return done(code)
+    }
+
+    effects.consume(code)
+    return continuationClose
+  }
+
+  function done(code) {
+    effects.exit('htmlFlow')
+    return ok(code)
+  }
+}
+
+function tokenizeNextBlank(effects, ok, nok) {
+  return start
+
+  function start(code) {
+    effects.exit('htmlFlowData')
+    effects.enter('lineEndingBlank')
+    effects.consume(code)
+    effects.exit('lineEndingBlank')
+    return effects.attempt(partialBlankLine, ok, nok)
+  }
+}
+
+module.exports = htmlFlow
+
+
+/***/ }),
+
+/***/ 8911:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var asciiAlpha = __webpack_require__(6734)
+var asciiAlphanumeric = __webpack_require__(6712)
+var markdownLineEnding = __webpack_require__(7238)
+var markdownLineEndingOrSpace = __webpack_require__(8367)
+var markdownSpace = __webpack_require__(3654)
+var factorySpace = __webpack_require__(2928)
+
+var htmlText = {
+  name: 'htmlText',
+  tokenize: tokenizeHtmlText
+}
+
+function tokenizeHtmlText(effects, ok, nok) {
+  var self = this
+  var marker
+  var buffer
+  var index
+  var returnState
+  return start
+
+  function start(code) {
+    effects.enter('htmlText')
+    effects.enter('htmlTextData')
+    effects.consume(code)
+    return open
+  }
+
+  function open(code) {
+    if (code === 33) {
+      effects.consume(code)
+      return declarationOpen
+    }
+
+    if (code === 47) {
+      effects.consume(code)
+      return tagCloseStart
+    }
+
+    if (code === 63) {
+      effects.consume(code)
+      return instruction
+    }
+
+    if (asciiAlpha(code)) {
+      effects.consume(code)
+      return tagOpen
+    }
+
+    return nok(code)
+  }
+
+  function declarationOpen(code) {
+    if (code === 45) {
+      effects.consume(code)
+      return commentOpen
+    }
+
+    if (code === 91) {
+      effects.consume(code)
+      buffer = 'CDATA['
+      index = 0
+      return cdataOpen
+    }
+
+    if (asciiAlpha(code)) {
+      effects.consume(code)
+      return declaration
+    }
+
+    return nok(code)
+  }
+
+  function commentOpen(code) {
+    if (code === 45) {
+      effects.consume(code)
+      return commentStart
+    }
+
+    return nok(code)
+  }
+
+  function commentStart(code) {
+    if (code === null || code === 62) {
+      return nok(code)
+    }
+
+    if (code === 45) {
+      effects.consume(code)
+      return commentStartDash
+    }
+
+    return comment(code)
+  }
+
+  function commentStartDash(code) {
+    if (code === null || code === 62) {
+      return nok(code)
+    }
+
+    return comment(code)
+  }
+
+  function comment(code) {
+    if (code === null) {
+      return nok(code)
+    }
+
+    if (code === 45) {
+      effects.consume(code)
+      return commentClose
+    }
+
+    if (markdownLineEnding(code)) {
+      returnState = comment
+      return atLineEnding(code)
+    }
+
+    effects.consume(code)
+    return comment
+  }
+
+  function commentClose(code) {
+    if (code === 45) {
+      effects.consume(code)
+      return end
+    }
+
+    return comment(code)
+  }
+
+  function cdataOpen(code) {
+    if (code === buffer.charCodeAt(index++)) {
+      effects.consume(code)
+      return index === buffer.length ? cdata : cdataOpen
+    }
+
+    return nok(code)
+  }
+
+  function cdata(code) {
+    if (code === null) {
+      return nok(code)
+    }
+
+    if (code === 93) {
+      effects.consume(code)
+      return cdataClose
+    }
+
+    if (markdownLineEnding(code)) {
+      returnState = cdata
+      return atLineEnding(code)
+    }
+
+    effects.consume(code)
+    return cdata
+  }
+
+  function cdataClose(code) {
+    if (code === 93) {
+      effects.consume(code)
+      return cdataEnd
+    }
+
+    return cdata(code)
+  }
+
+  function cdataEnd(code) {
+    if (code === 62) {
+      return end(code)
+    }
+
+    if (code === 93) {
+      effects.consume(code)
+      return cdataEnd
+    }
+
+    return cdata(code)
+  }
+
+  function declaration(code) {
+    if (code === null || code === 62) {
+      return end(code)
+    }
+
+    if (markdownLineEnding(code)) {
+      returnState = declaration
+      return atLineEnding(code)
+    }
+
+    effects.consume(code)
+    return declaration
+  }
+
+  function instruction(code) {
+    if (code === null) {
+      return nok(code)
+    }
+
+    if (code === 63) {
+      effects.consume(code)
+      return instructionClose
+    }
+
+    if (markdownLineEnding(code)) {
+      returnState = instruction
+      return atLineEnding(code)
+    }
+
+    effects.consume(code)
+    return instruction
+  }
+
+  function instructionClose(code) {
+    return code === 62 ? end(code) : instruction(code)
+  }
+
+  function tagCloseStart(code) {
+    if (asciiAlpha(code)) {
+      effects.consume(code)
+      return tagClose
+    }
+
+    return nok(code)
+  }
+
+  function tagClose(code) {
+    if (code === 45 || asciiAlphanumeric(code)) {
+      effects.consume(code)
+      return tagClose
+    }
+
+    return tagCloseBetween(code)
+  }
+
+  function tagCloseBetween(code) {
+    if (markdownLineEnding(code)) {
+      returnState = tagCloseBetween
+      return atLineEnding(code)
+    }
+
+    if (markdownSpace(code)) {
+      effects.consume(code)
+      return tagCloseBetween
+    }
+
+    return end(code)
+  }
+
+  function tagOpen(code) {
+    if (code === 45 || asciiAlphanumeric(code)) {
+      effects.consume(code)
+      return tagOpen
+    }
+
+    if (code === 47 || code === 62 || markdownLineEndingOrSpace(code)) {
+      return tagOpenBetween(code)
+    }
+
+    return nok(code)
+  }
+
+  function tagOpenBetween(code) {
+    if (code === 47) {
+      effects.consume(code)
+      return end
+    }
+
+    if (code === 58 || code === 95 || asciiAlpha(code)) {
+      effects.consume(code)
+      return tagOpenAttributeName
+    }
+
+    if (markdownLineEnding(code)) {
+      returnState = tagOpenBetween
+      return atLineEnding(code)
+    }
+
+    if (markdownSpace(code)) {
+      effects.consume(code)
+      return tagOpenBetween
+    }
+
+    return end(code)
+  }
+
+  function tagOpenAttributeName(code) {
+    if (
+      code === 45 ||
+      code === 46 ||
+      code === 58 ||
+      code === 95 ||
+      asciiAlphanumeric(code)
+    ) {
+      effects.consume(code)
+      return tagOpenAttributeName
+    }
+
+    return tagOpenAttributeNameAfter(code)
+  }
+
+  function tagOpenAttributeNameAfter(code) {
+    if (code === 61) {
+      effects.consume(code)
+      return tagOpenAttributeValueBefore
+    }
+
+    if (markdownLineEnding(code)) {
+      returnState = tagOpenAttributeNameAfter
+      return atLineEnding(code)
+    }
+
+    if (markdownSpace(code)) {
+      effects.consume(code)
+      return tagOpenAttributeNameAfter
+    }
+
+    return tagOpenBetween(code)
+  }
+
+  function tagOpenAttributeValueBefore(code) {
+    if (
+      code === null ||
+      code === 60 ||
+      code === 61 ||
+      code === 62 ||
+      code === 96
+    ) {
+      return nok(code)
+    }
+
+    if (code === 34 || code === 39) {
+      effects.consume(code)
+      marker = code
+      return tagOpenAttributeValueQuoted
+    }
+
+    if (markdownLineEnding(code)) {
+      returnState = tagOpenAttributeValueBefore
+      return atLineEnding(code)
+    }
+
+    if (markdownSpace(code)) {
+      effects.consume(code)
+      return tagOpenAttributeValueBefore
+    }
+
+    effects.consume(code)
+    marker = undefined
+    return tagOpenAttributeValueUnquoted
+  }
+
+  function tagOpenAttributeValueQuoted(code) {
+    if (code === marker) {
+      effects.consume(code)
+      return tagOpenAttributeValueQuotedAfter
+    }
+
+    if (code === null) {
+      return nok(code)
+    }
+
+    if (markdownLineEnding(code)) {
+      returnState = tagOpenAttributeValueQuoted
+      return atLineEnding(code)
+    }
+
+    effects.consume(code)
+    return tagOpenAttributeValueQuoted
+  }
+
+  function tagOpenAttributeValueQuotedAfter(code) {
+    if (code === 62 || code === 47 || markdownLineEndingOrSpace(code)) {
+      return tagOpenBetween(code)
+    }
+
+    return nok(code)
+  }
+
+  function tagOpenAttributeValueUnquoted(code) {
+    if (
+      code === null ||
+      code === 34 ||
+      code === 39 ||
+      code === 60 ||
+      code === 61 ||
+      code === 96
+    ) {
+      return nok(code)
+    }
+
+    if (code === 62 || markdownLineEndingOrSpace(code)) {
+      return tagOpenBetween(code)
+    }
+
+    effects.consume(code)
+    return tagOpenAttributeValueUnquoted
+  } // We can’t have blank lines in content, so no need to worry about empty
+  // tokens.
+
+  function atLineEnding(code) {
+    effects.exit('htmlTextData')
+    effects.enter('lineEnding')
+    effects.consume(code)
+    effects.exit('lineEnding')
+    return factorySpace(
+      effects,
+      afterPrefix,
+      'linePrefix',
+      self.parser.constructs.disable.null.indexOf('codeIndented') > -1
+        ? undefined
+        : 4
+    )
+  }
+
+  function afterPrefix(code) {
+    effects.enter('htmlTextData')
+    return returnState(code)
+  }
+
+  function end(code) {
+    if (code === 62) {
+      effects.consume(code)
+      effects.exit('htmlTextData')
+      effects.exit('htmlText')
+      return ok
+    }
+
+    return nok(code)
+  }
+}
+
+module.exports = htmlText
+
+
+/***/ }),
+
+/***/ 1294:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEndingOrSpace = __webpack_require__(8367)
+var chunkedPush = __webpack_require__(8811)
+var chunkedSplice = __webpack_require__(6808)
+var normalizeIdentifier = __webpack_require__(5478)
+var resolveAll = __webpack_require__(8280)
+var shallow = __webpack_require__(5923)
+var factoryDestination = __webpack_require__(8229)
+var factoryLabel = __webpack_require__(7154)
+var factoryTitle = __webpack_require__(9283)
+var factoryWhitespace = __webpack_require__(1056)
+
+var labelEnd = {
+  name: 'labelEnd',
+  tokenize: tokenizeLabelEnd,
+  resolveTo: resolveToLabelEnd,
+  resolveAll: resolveAllLabelEnd
+}
+var resourceConstruct = {
+  tokenize: tokenizeResource
+}
+var fullReferenceConstruct = {
+  tokenize: tokenizeFullReference
+}
+var collapsedReferenceConstruct = {
+  tokenize: tokenizeCollapsedReference
+}
+
+function resolveAllLabelEnd(events) {
+  var index = -1
+  var token
+
+  while (++index < events.length) {
+    token = events[index][1]
+
+    if (
+      !token._used &&
+      (token.type === 'labelImage' ||
+        token.type === 'labelLink' ||
+        token.type === 'labelEnd')
+    ) {
+      // Remove the marker.
+      events.splice(index + 1, token.type === 'labelImage' ? 4 : 2)
+      token.type = 'data'
+      index++
+    }
+  }
+
+  return events
+}
+
+function resolveToLabelEnd(events, context) {
+  var index = events.length
+  var offset = 0
+  var group
+  var label
+  var text
+  var token
+  var open
+  var close
+  var media // Find an opening.
+
+  while (index--) {
+    token = events[index][1]
+
+    if (open) {
+      // If we see another link, or inactive link label, we’ve been here before.
+      if (
+        token.type === 'link' ||
+        (token.type === 'labelLink' && token._inactive)
+      ) {
+        break
+      } // Mark other link openings as inactive, as we can’t have links in
+      // links.
+
+      if (events[index][0] === 'enter' && token.type === 'labelLink') {
+        token._inactive = true
+      }
+    } else if (close) {
+      if (
+        events[index][0] === 'enter' &&
+        (token.type === 'labelImage' || token.type === 'labelLink') &&
+        !token._balanced
+      ) {
+        open = index
+
+        if (token.type !== 'labelLink') {
+          offset = 2
+          break
+        }
+      }
+    } else if (token.type === 'labelEnd') {
+      close = index
+    }
+  }
+
+  group = {
+    type: events[open][1].type === 'labelLink' ? 'link' : 'image',
+    start: shallow(events[open][1].start),
+    end: shallow(events[events.length - 1][1].end)
+  }
+  label = {
+    type: 'label',
+    start: shallow(events[open][1].start),
+    end: shallow(events[close][1].end)
+  }
+  text = {
+    type: 'labelText',
+    start: shallow(events[open + offset + 2][1].end),
+    end: shallow(events[close - 2][1].start)
+  }
+  media = [
+    ['enter', group, context],
+    ['enter', label, context]
+  ] // Opening marker.
+
+  media = chunkedPush(media, events.slice(open + 1, open + offset + 3)) // Text open.
+
+  media = chunkedPush(media, [['enter', text, context]]) // Between.
+
+  media = chunkedPush(
+    media,
+    resolveAll(
+      context.parser.constructs.insideSpan.null,
+      events.slice(open + offset + 4, close - 3),
+      context
+    )
+  ) // Text close, marker close, label close.
+
+  media = chunkedPush(media, [
+    ['exit', text, context],
+    events[close - 2],
+    events[close - 1],
+    ['exit', label, context]
+  ]) // Reference, resource, or so.
+
+  media = chunkedPush(media, events.slice(close + 1)) // Media close.
+
+  media = chunkedPush(media, [['exit', group, context]])
+  chunkedSplice(events, open, events.length, media)
+  return events
+}
+
+function tokenizeLabelEnd(effects, ok, nok) {
+  var self = this
+  var index = self.events.length
+  var labelStart
+  var defined // Find an opening.
+
+  while (index--) {
+    if (
+      (self.events[index][1].type === 'labelImage' ||
+        self.events[index][1].type === 'labelLink') &&
+      !self.events[index][1]._balanced
+    ) {
+      labelStart = self.events[index][1]
+      break
+    }
+  }
+
+  return start
+
+  function start(code) {
+    if (!labelStart) {
+      return nok(code)
+    } // It’s a balanced bracket, but contains a link.
+
+    if (labelStart._inactive) return balanced(code)
+    defined =
+      self.parser.defined.indexOf(
+        normalizeIdentifier(
+          self.sliceSerialize({
+            start: labelStart.end,
+            end: self.now()
+          })
+        )
+      ) > -1
+    effects.enter('labelEnd')
+    effects.enter('labelMarker')
+    effects.consume(code)
+    effects.exit('labelMarker')
+    effects.exit('labelEnd')
+    return afterLabelEnd
+  }
+
+  function afterLabelEnd(code) {
+    // Resource: `[asd](fgh)`.
+    if (code === 40) {
+      return effects.attempt(
+        resourceConstruct,
+        ok,
+        defined ? ok : balanced
+      )(code)
+    } // Collapsed (`[asd][]`) or full (`[asd][fgh]`) reference?
+
+    if (code === 91) {
+      return effects.attempt(
+        fullReferenceConstruct,
+        ok,
+        defined
+          ? effects.attempt(collapsedReferenceConstruct, ok, balanced)
+          : balanced
+      )(code)
+    } // Shortcut reference: `[asd]`?
+
+    return defined ? ok(code) : balanced(code)
+  }
+
+  function balanced(code) {
+    labelStart._balanced = true
+    return nok(code)
+  }
+}
+
+function tokenizeResource(effects, ok, nok) {
+  return start
+
+  function start(code) {
+    effects.enter('resource')
+    effects.enter('resourceMarker')
+    effects.consume(code)
+    effects.exit('resourceMarker')
+    return factoryWhitespace(effects, open)
+  }
+
+  function open(code) {
+    if (code === 41) {
+      return end(code)
+    }
+
+    return factoryDestination(
+      effects,
+      destinationAfter,
+      nok,
+      'resourceDestination',
+      'resourceDestinationLiteral',
+      'resourceDestinationLiteralMarker',
+      'resourceDestinationRaw',
+      'resourceDestinationString',
+      3
+    )(code)
+  }
+
+  function destinationAfter(code) {
+    return markdownLineEndingOrSpace(code)
+      ? factoryWhitespace(effects, between)(code)
+      : end(code)
+  }
+
+  function between(code) {
+    if (code === 34 || code === 39 || code === 40) {
+      return factoryTitle(
+        effects,
+        factoryWhitespace(effects, end),
+        nok,
+        'resourceTitle',
+        'resourceTitleMarker',
+        'resourceTitleString'
+      )(code)
+    }
+
+    return end(code)
+  }
+
+  function end(code) {
+    if (code === 41) {
+      effects.enter('resourceMarker')
+      effects.consume(code)
+      effects.exit('resourceMarker')
+      effects.exit('resource')
+      return ok
+    }
+
+    return nok(code)
+  }
+}
+
+function tokenizeFullReference(effects, ok, nok) {
+  var self = this
+  return start
+
+  function start(code) {
+    return factoryLabel.call(
+      self,
+      effects,
+      afterLabel,
+      nok,
+      'reference',
+      'referenceMarker',
+      'referenceString'
+    )(code)
+  }
+
+  function afterLabel(code) {
+    return self.parser.defined.indexOf(
+      normalizeIdentifier(
+        self.sliceSerialize(self.events[self.events.length - 1][1]).slice(1, -1)
+      )
+    ) < 0
+      ? nok(code)
+      : ok(code)
+  }
+}
+
+function tokenizeCollapsedReference(effects, ok, nok) {
+  return start
+
+  function start(code) {
+    effects.enter('reference')
+    effects.enter('referenceMarker')
+    effects.consume(code)
+    effects.exit('referenceMarker')
+    return open
+  }
+
+  function open(code) {
+    if (code === 93) {
+      effects.enter('referenceMarker')
+      effects.consume(code)
+      effects.exit('referenceMarker')
+      effects.exit('reference')
+      return ok
+    }
+
+    return nok(code)
+  }
+}
+
+module.exports = labelEnd
+
+
+/***/ }),
+
+/***/ 6215:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var labelEnd = __webpack_require__(1294)
+
+var labelStartImage = {
+  name: 'labelStartImage',
+  tokenize: tokenizeLabelStartImage,
+  resolveAll: labelEnd.resolveAll
+}
+
+function tokenizeLabelStartImage(effects, ok, nok) {
+  var self = this
+  return start
+
+  function start(code) {
+    effects.enter('labelImage')
+    effects.enter('labelImageMarker')
+    effects.consume(code)
+    effects.exit('labelImageMarker')
+    return open
+  }
+
+  function open(code) {
+    if (code === 91) {
+      effects.enter('labelMarker')
+      effects.consume(code)
+      effects.exit('labelMarker')
+      effects.exit('labelImage')
+      return after
+    }
+
+    return nok(code)
+  }
+
+  function after(code) {
+    /* c8 ignore next */
+    return code === 94 &&
+      /* c8 ignore next */
+      '_hiddenFootnoteSupport' in self.parser.constructs
+      ? /* c8 ignore next */
+        nok(code)
+      : ok(code)
+  }
+}
+
+module.exports = labelStartImage
+
+
+/***/ }),
+
+/***/ 534:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var labelEnd = __webpack_require__(1294)
+
+var labelStartLink = {
+  name: 'labelStartLink',
+  tokenize: tokenizeLabelStartLink,
+  resolveAll: labelEnd.resolveAll
+}
+
+function tokenizeLabelStartLink(effects, ok, nok) {
+  var self = this
+  return start
+
+  function start(code) {
+    effects.enter('labelLink')
+    effects.enter('labelMarker')
+    effects.consume(code)
+    effects.exit('labelMarker')
+    effects.exit('labelLink')
+    return after
+  }
+
+  function after(code) {
+    /* c8 ignore next */
+    return code === 94 &&
+      /* c8 ignore next */
+      '_hiddenFootnoteSupport' in self.parser.constructs
+      ? /* c8 ignore next */
+        nok(code)
+      : ok(code)
+  }
+}
+
+module.exports = labelStartLink
+
+
+/***/ }),
+
+/***/ 2607:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var factorySpace = __webpack_require__(2928)
+
+var lineEnding = {
+  name: 'lineEnding',
+  tokenize: tokenizeLineEnding
+}
+
+function tokenizeLineEnding(effects, ok) {
+  return start
+
+  function start(code) {
+    effects.enter('lineEnding')
+    effects.consume(code)
+    effects.exit('lineEnding')
+    return factorySpace(effects, ok, 'linePrefix')
+  }
+}
+
+module.exports = lineEnding
+
+
+/***/ }),
+
+/***/ 6931:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var asciiDigit = __webpack_require__(3977)
+var markdownSpace = __webpack_require__(3654)
+var prefixSize = __webpack_require__(5096)
+var sizeChunks = __webpack_require__(8892)
+var factorySpace = __webpack_require__(2928)
+var partialBlankLine = __webpack_require__(6532)
+var thematicBreak = __webpack_require__(7039)
+
+var list = {
+  name: 'list',
+  tokenize: tokenizeListStart,
+  continuation: {
+    tokenize: tokenizeListContinuation
+  },
+  exit: tokenizeListEnd
+}
+var listItemPrefixWhitespaceConstruct = {
+  tokenize: tokenizeListItemPrefixWhitespace,
+  partial: true
+}
+var indentConstruct = {
+  tokenize: tokenizeIndent,
+  partial: true
+}
+
+function tokenizeListStart(effects, ok, nok) {
+  var self = this
+  var initialSize = prefixSize(self.events, 'linePrefix')
+  var size = 0
+  return start
+
+  function start(code) {
+    var kind =
+      self.containerState.type ||
+      (code === 42 || code === 43 || code === 45
+        ? 'listUnordered'
+        : 'listOrdered')
+
+    if (
+      kind === 'listUnordered'
+        ? !self.containerState.marker || code === self.containerState.marker
+        : asciiDigit(code)
+    ) {
+      if (!self.containerState.type) {
+        self.containerState.type = kind
+        effects.enter(kind, {
+          _container: true
+        })
+      }
+
+      if (kind === 'listUnordered') {
+        effects.enter('listItemPrefix')
+        return code === 42 || code === 45
+          ? effects.check(thematicBreak, nok, atMarker)(code)
+          : atMarker(code)
+      }
+
+      if (!self.interrupt || code === 49) {
+        effects.enter('listItemPrefix')
+        effects.enter('listItemValue')
+        return inside(code)
+      }
+    }
+
+    return nok(code)
+  }
+
+  function inside(code) {
+    if (asciiDigit(code) && ++size < 10) {
+      effects.consume(code)
+      return inside
+    }
+
+    if (
+      (!self.interrupt || size < 2) &&
+      (self.containerState.marker
+        ? code === self.containerState.marker
+        : code === 41 || code === 46)
+    ) {
+      effects.exit('listItemValue')
+      return atMarker(code)
+    }
+
+    return nok(code)
+  }
+
+  function atMarker(code) {
+    effects.enter('listItemMarker')
+    effects.consume(code)
+    effects.exit('listItemMarker')
+    self.containerState.marker = self.containerState.marker || code
+    return effects.check(
+      partialBlankLine, // Can’t be empty when interrupting.
+      self.interrupt ? nok : onBlank,
+      effects.attempt(
+        listItemPrefixWhitespaceConstruct,
+        endOfPrefix,
+        otherPrefix
+      )
+    )
+  }
+
+  function onBlank(code) {
+    self.containerState.initialBlankLine = true
+    initialSize++
+    return endOfPrefix(code)
+  }
+
+  function otherPrefix(code) {
+    if (markdownSpace(code)) {
+      effects.enter('listItemPrefixWhitespace')
+      effects.consume(code)
+      effects.exit('listItemPrefixWhitespace')
+      return endOfPrefix
+    }
+
+    return nok(code)
+  }
+
+  function endOfPrefix(code) {
+    self.containerState.size =
+      initialSize + sizeChunks(self.sliceStream(effects.exit('listItemPrefix')))
+    return ok(code)
+  }
+}
+
+function tokenizeListContinuation(effects, ok, nok) {
+  var self = this
+  self.containerState._closeFlow = undefined
+  return effects.check(partialBlankLine, onBlank, notBlank)
+
+  function onBlank(code) {
+    self.containerState.furtherBlankLines =
+      self.containerState.furtherBlankLines ||
+      self.containerState.initialBlankLine // We have a blank line.
+    // Still, try to consume at most the items size.
+
+    return factorySpace(
+      effects,
+      ok,
+      'listItemIndent',
+      self.containerState.size + 1
+    )(code)
+  }
+
+  function notBlank(code) {
+    if (self.containerState.furtherBlankLines || !markdownSpace(code)) {
+      self.containerState.furtherBlankLines = self.containerState.initialBlankLine = undefined
+      return notInCurrentItem(code)
+    }
+
+    self.containerState.furtherBlankLines = self.containerState.initialBlankLine = undefined
+    return effects.attempt(indentConstruct, ok, notInCurrentItem)(code)
+  }
+
+  function notInCurrentItem(code) {
+    // While we do continue, we signal that the flow should be closed.
+    self.containerState._closeFlow = true // As we’re closing flow, we’re no longer interrupting.
+
+    self.interrupt = undefined
+    return factorySpace(
+      effects,
+      effects.attempt(list, ok, nok),
+      'linePrefix',
+      self.parser.constructs.disable.null.indexOf('codeIndented') > -1
+        ? undefined
+        : 4
+    )(code)
+  }
+}
+
+function tokenizeIndent(effects, ok, nok) {
+  var self = this
+  return factorySpace(
+    effects,
+    afterPrefix,
+    'listItemIndent',
+    self.containerState.size + 1
+  )
+
+  function afterPrefix(code) {
+    return prefixSize(self.events, 'listItemIndent') ===
+      self.containerState.size
+      ? ok(code)
+      : nok(code)
+  }
+}
+
+function tokenizeListEnd(effects) {
+  effects.exit(this.containerState.type)
+}
+
+function tokenizeListItemPrefixWhitespace(effects, ok, nok) {
+  var self = this
+  return factorySpace(
+    effects,
+    afterPrefix,
+    'listItemPrefixWhitespace',
+    self.parser.constructs.disable.null.indexOf('codeIndented') > -1
+      ? undefined
+      : 4 + 1
+  )
+
+  function afterPrefix(code) {
+    return markdownSpace(code) ||
+      !prefixSize(self.events, 'listItemPrefixWhitespace')
+      ? nok(code)
+      : ok(code)
+  }
+}
+
+module.exports = list
+
+
+/***/ }),
+
+/***/ 6532:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+var factorySpace = __webpack_require__(2928)
+
+var partialBlankLine = {
+  tokenize: tokenizePartialBlankLine,
+  partial: true
+}
+
+function tokenizePartialBlankLine(effects, ok, nok) {
+  return factorySpace(effects, afterWhitespace, 'linePrefix')
+
+  function afterWhitespace(code) {
+    return code === null || markdownLineEnding(code) ? ok(code) : nok(code)
+  }
+}
+
+module.exports = partialBlankLine
+
+
+/***/ }),
+
+/***/ 5874:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+var shallow = __webpack_require__(5923)
+var factorySpace = __webpack_require__(2928)
+
+var setextUnderline = {
+  name: 'setextUnderline',
+  tokenize: tokenizeSetextUnderline,
+  resolveTo: resolveToSetextUnderline
+}
+
+function resolveToSetextUnderline(events, context) {
+  var index = events.length
+  var content
+  var text
+  var definition
+  var heading // Find the opening of the content.
+  // It’ll always exist: we don’t tokenize if it isn’t there.
+
+  while (index--) {
+    if (events[index][0] === 'enter') {
+      if (events[index][1].type === 'content') {
+        content = index
+        break
+      }
+
+      if (events[index][1].type === 'paragraph') {
+        text = index
+      }
+    } // Exit
+    else {
+      if (events[index][1].type === 'content') {
+        // Remove the content end (if needed we’ll add it later)
+        events.splice(index, 1)
+      }
+
+      if (!definition && events[index][1].type === 'definition') {
+        definition = index
+      }
+    }
+  }
+
+  heading = {
+    type: 'setextHeading',
+    start: shallow(events[text][1].start),
+    end: shallow(events[events.length - 1][1].end)
+  } // Change the paragraph to setext heading text.
+
+  events[text][1].type = 'setextHeadingText' // If we have definitions in the content, we’ll keep on having content,
+  // but we need move it.
+
+  if (definition) {
+    events.splice(text, 0, ['enter', heading, context])
+    events.splice(definition + 1, 0, ['exit', events[content][1], context])
+    events[content][1].end = shallow(events[definition][1].end)
+  } else {
+    events[content][1] = heading
+  } // Add the heading exit at the end.
+
+  events.push(['exit', heading, context])
+  return events
+}
+
+function tokenizeSetextUnderline(effects, ok, nok) {
+  var self = this
+  var index = self.events.length
+  var marker
+  var paragraph // Find an opening.
+
+  while (index--) {
+    // Skip enter/exit of line ending, line prefix, and content.
+    // We can now either have a definition or a paragraph.
+    if (
+      self.events[index][1].type !== 'lineEnding' &&
+      self.events[index][1].type !== 'linePrefix' &&
+      self.events[index][1].type !== 'content'
+    ) {
+      paragraph = self.events[index][1].type === 'paragraph'
+      break
+    }
+  }
+
+  return start
+
+  function start(code) {
+    if (!self.lazy && (self.interrupt || paragraph)) {
+      effects.enter('setextHeadingLine')
+      effects.enter('setextHeadingLineSequence')
+      marker = code
+      return closingSequence(code)
+    }
+
+    return nok(code)
+  }
+
+  function closingSequence(code) {
+    if (code === marker) {
+      effects.consume(code)
+      return closingSequence
+    }
+
+    effects.exit('setextHeadingLineSequence')
+    return factorySpace(effects, closingSequenceEnd, 'lineSuffix')(code)
+  }
+
+  function closingSequenceEnd(code) {
+    if (code === null || markdownLineEnding(code)) {
+      effects.exit('setextHeadingLine')
+      return ok(code)
+    }
+
+    return nok(code)
+  }
+}
+
+module.exports = setextUnderline
+
+
+/***/ }),
+
+/***/ 7039:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEnding = __webpack_require__(7238)
+var markdownSpace = __webpack_require__(3654)
+var factorySpace = __webpack_require__(2928)
+
+var thematicBreak = {
+  name: 'thematicBreak',
+  tokenize: tokenizeThematicBreak
+}
+
+function tokenizeThematicBreak(effects, ok, nok) {
+  var size = 0
+  var marker
+  return start
+
+  function start(code) {
+    effects.enter('thematicBreak')
+    marker = code
+    return atBreak(code)
+  }
+
+  function atBreak(code) {
+    if (code === marker) {
+      effects.enter('thematicBreakSequence')
+      return sequence(code)
+    }
+
+    if (markdownSpace(code)) {
+      return factorySpace(effects, atBreak, 'whitespace')(code)
+    }
+
+    if (size < 3 || (code !== null && !markdownLineEnding(code))) {
+      return nok(code)
+    }
+
+    effects.exit('thematicBreak')
+    return ok(code)
+  }
+
+  function sequence(code) {
+    if (code === marker) {
+      effects.consume(code)
+      size++
+      return sequence
+    }
+
+    effects.exit('thematicBreakSequence')
+    return atBreak(code)
+  }
+}
+
+module.exports = thematicBreak
+
+
+/***/ }),
+
+/***/ 8811:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var chunkedSplice = __webpack_require__(6808)
+
+function chunkedPush(list, items) {
+  if (list.length) {
+    chunkedSplice(list, list.length, 0, items)
+    return list
+  }
+
+  return items
+}
+
+module.exports = chunkedPush
+
+
+/***/ }),
+
+/***/ 6808:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var splice = __webpack_require__(1362)
+
+// causes a stack overflow in V8 when trying to insert 100k items for instance.
+
+function chunkedSplice(list, start, remove, items) {
+  var end = list.length
+  var chunkStart = 0
+  var parameters // Make start between zero and `end` (included).
+
+  if (start < 0) {
+    start = -start > end ? 0 : end + start
+  } else {
+    start = start > end ? end : start
+  }
+
+  remove = remove > 0 ? remove : 0 // No need to chunk the items if there’s only a couple (10k) items.
+
+  if (items.length < 10000) {
+    parameters = Array.from(items)
+    parameters.unshift(start, remove)
+    splice.apply(list, parameters)
+  } else {
+    // Delete `remove` items starting from `start`
+    if (remove) splice.apply(list, [start, remove]) // Insert the items in chunks to not cause stack overflows.
+
+    while (chunkStart < items.length) {
+      parameters = items.slice(chunkStart, chunkStart + 10000)
+      parameters.unshift(start, 0)
+      splice.apply(list, parameters)
+      chunkStart += 10000
+      start += 10000
+    }
+  }
+}
+
+module.exports = chunkedSplice
+
+
+/***/ }),
+
+/***/ 9444:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var markdownLineEndingOrSpace = __webpack_require__(8367)
+var unicodePunctuation = __webpack_require__(6996)
+var unicodeWhitespace = __webpack_require__(395)
+
+// Classify whether a character is unicode whitespace, unicode punctuation, or
+// anything else.
+// Used for attention (emphasis, strong), whose sequences can open or close
+// based on the class of surrounding characters.
+function classifyCharacter(code) {
+  if (
+    code === null ||
+    markdownLineEndingOrSpace(code) ||
+    unicodeWhitespace(code)
+  ) {
+    return 1
+  }
+
+  if (unicodePunctuation(code)) {
+    return 2
+  }
+}
+
+module.exports = classifyCharacter
+
+
+/***/ }),
+
+/***/ 2952:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var hasOwnProperty = __webpack_require__(6706)
+var chunkedSplice = __webpack_require__(6808)
+var miniflat = __webpack_require__(8180)
+
+function combineExtensions(extensions) {
+  var all = {}
+  var index = -1
+
+  while (++index < extensions.length) {
+    extension(all, extensions[index])
+  }
+
+  return all
+}
+
+function extension(all, extension) {
+  var hook
+  var left
+  var right
+  var code
+
+  for (hook in extension) {
+    left = hasOwnProperty.call(all, hook) ? all[hook] : (all[hook] = {})
+    right = extension[hook]
+
+    for (code in right) {
+      left[code] = constructs(
+        miniflat(right[code]),
+        hasOwnProperty.call(left, code) ? left[code] : []
+      )
+    }
+  }
+}
+
+function constructs(list, existing) {
+  var index = -1
+  var before = []
+
+  while (++index < list.length) {
+    ;(list[index].add === 'after' ? existing : before).push(list[index])
+  }
+
+  chunkedSplice(existing, 0, 0, before)
+  return existing
+}
+
+module.exports = combineExtensions
+
+
+/***/ }),
+
+/***/ 1388:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var assign = __webpack_require__(9198)
+var markdownLineEnding = __webpack_require__(7238)
+var chunkedPush = __webpack_require__(8811)
+var chunkedSplice = __webpack_require__(6808)
+var miniflat = __webpack_require__(8180)
+var resolveAll = __webpack_require__(8280)
+var serializeChunks = __webpack_require__(3082)
+var shallow = __webpack_require__(5923)
+var sliceChunks = __webpack_require__(2774)
+
+// Create a tokenizer.
+// Tokenizers deal with one type of data (e.g., containers, flow, text).
+// The parser is the object dealing with it all.
+// `initialize` works like other constructs, except that only its `tokenize`
+// function is used, in which case it doesn’t receive an `ok` or `nok`.
+// `from` can be given to set the point before the first character, although
+// when further lines are indented, they must be set with `defineSkip`.
+function createTokenizer(parser, initialize, from) {
+  var point = from
+    ? shallow(from)
+    : {
+        line: 1,
+        column: 1,
+        offset: 0
+      }
+  var columnStart = {}
+  var resolveAllConstructs = []
+  var chunks = []
+  var stack = []
+
+  var effects = {
+    consume: consume,
+    enter: enter,
+    exit: exit,
+    attempt: constructFactory(onsuccessfulconstruct),
+    check: constructFactory(onsuccessfulcheck),
+    interrupt: constructFactory(onsuccessfulcheck, {
+      interrupt: true
+    }),
+    lazy: constructFactory(onsuccessfulcheck, {
+      lazy: true
+    })
+  } // State and tools for resolving and serializing.
+
+  var context = {
+    previous: null,
+    events: [],
+    parser: parser,
+    sliceStream: sliceStream,
+    sliceSerialize: sliceSerialize,
+    now: now,
+    defineSkip: skip,
+    write: write
+  } // The state function.
+
+  var state = initialize.tokenize.call(context, effects) // Track which character we expect to be consumed, to catch bugs.
+
+  if (initialize.resolveAll) {
+    resolveAllConstructs.push(initialize)
+  } // Store where we are in the input stream.
+
+  point._index = 0
+  point._bufferIndex = -1
+  return context
+
+  function write(slice) {
+    chunks = chunkedPush(chunks, slice)
+    main() // Exit if we’re not done, resolve might change stuff.
+
+    if (chunks[chunks.length - 1] !== null) {
+      return []
+    }
+
+    addResult(initialize, 0) // Otherwise, resolve, and exit.
+
+    context.events = resolveAll(resolveAllConstructs, context.events, context)
+    return context.events
+  } //
+  // Tools.
+  //
+
+  function sliceSerialize(token) {
+    return serializeChunks(sliceStream(token))
+  }
+
+  function sliceStream(token) {
+    return sliceChunks(chunks, token)
+  }
+
+  function now() {
+    return shallow(point)
+  }
+
+  function skip(value) {
+    columnStart[value.line] = value.column
+    accountForPotentialSkip()
+  } //
+  // State management.
+  //
+  // Main loop (note that `_index` and `_bufferIndex` in `point` are modified by
+  // `consume`).
+  // Here is where we walk through the chunks, which either include strings of
+  // several characters, or numerical character codes.
+  // The reason to do this in a loop instead of a call is so the stack can
+  // drain.
+
+  function main() {
+    var chunkIndex
+    var chunk
+
+    while (point._index < chunks.length) {
+      chunk = chunks[point._index] // If we’re in a buffer chunk, loop through it.
+
+      if (typeof chunk === 'string') {
+        chunkIndex = point._index
+
+        if (point._bufferIndex < 0) {
+          point._bufferIndex = 0
+        }
+
+        while (
+          point._index === chunkIndex &&
+          point._bufferIndex < chunk.length
+        ) {
+          go(chunk.charCodeAt(point._bufferIndex))
+        }
+      } else {
+        go(chunk)
+      }
+    }
+  } // Deal with one code.
+
+  function go(code) {
+    state = state(code)
+  } // Move a character forward.
+
+  function consume(code) {
+    if (markdownLineEnding(code)) {
+      point.line++
+      point.column = 1
+      point.offset += code === -3 ? 2 : 1
+      accountForPotentialSkip()
+    } else if (code !== -1) {
+      point.column++
+      point.offset++
+    } // Not in a string chunk.
+
+    if (point._bufferIndex < 0) {
+      point._index++
+    } else {
+      point._bufferIndex++ // At end of string chunk.
+
+      if (point._bufferIndex === chunks[point._index].length) {
+        point._bufferIndex = -1
+        point._index++
+      }
+    } // Expose the previous character.
+
+    context.previous = code // Mark as consumed.
+  } // Start a token.
+
+  function enter(type, fields) {
+    var token = fields || {}
+    token.type = type
+    token.start = now()
+    context.events.push(['enter', token, context])
+    stack.push(token)
+    return token
+  } // Stop a token.
+
+  function exit(type) {
+    var token = stack.pop()
+    token.end = now()
+    context.events.push(['exit', token, context])
+    return token
+  } // Use results.
+
+  function onsuccessfulconstruct(construct, info) {
+    addResult(construct, info.from)
+  } // Discard results.
+
+  function onsuccessfulcheck(construct, info) {
+    info.restore()
+  } // Factory to attempt/check/interrupt.
+
+  function constructFactory(onreturn, fields) {
+    return hook // Handle either an object mapping codes to constructs, a list of
+    // constructs, or a single construct.
+
+    function hook(constructs, returnState, bogusState) {
+      var listOfConstructs
+      var constructIndex
+      var currentConstruct
+      var info
+      return constructs.tokenize || 'length' in constructs
+        ? handleListOfConstructs(miniflat(constructs))
+        : handleMapOfConstructs
+
+      function handleMapOfConstructs(code) {
+        if (code in constructs || null in constructs) {
+          return handleListOfConstructs(
+            constructs.null
+              ? /* c8 ignore next */
+                miniflat(constructs[code]).concat(miniflat(constructs.null))
+              : constructs[code]
+          )(code)
+        }
+
+        return bogusState(code)
+      }
+
+      function handleListOfConstructs(list) {
+        listOfConstructs = list
+        constructIndex = 0
+        return handleConstruct(list[constructIndex])
+      }
+
+      function handleConstruct(construct) {
+        return start
+
+        function start(code) {
+          // To do: not nede to store if there is no bogus state, probably?
+          // Currently doesn’t work because `inspect` in document does a check
+          // w/o a bogus, which doesn’t make sense. But it does seem to help perf
+          // by not storing.
+          info = store()
+          currentConstruct = construct
+
+          if (!construct.partial) {
+            context.currentConstruct = construct
+          }
+
+          if (
+            construct.name &&
+            context.parser.constructs.disable.null.indexOf(construct.name) > -1
+          ) {
+            return nok()
+          }
+
+          return construct.tokenize.call(
+            fields ? assign({}, context, fields) : context,
+            effects,
+            ok,
+            nok
+          )(code)
+        }
+      }
+
+      function ok(code) {
+        onreturn(currentConstruct, info)
+        return returnState
+      }
+
+      function nok(code) {
+        info.restore()
+
+        if (++constructIndex < listOfConstructs.length) {
+          return handleConstruct(listOfConstructs[constructIndex])
+        }
+
+        return bogusState
+      }
+    }
+  }
+
+  function addResult(construct, from) {
+    if (construct.resolveAll && resolveAllConstructs.indexOf(construct) < 0) {
+      resolveAllConstructs.push(construct)
+    }
+
+    if (construct.resolve) {
+      chunkedSplice(
+        context.events,
+        from,
+        context.events.length - from,
+        construct.resolve(context.events.slice(from), context)
+      )
+    }
+
+    if (construct.resolveTo) {
+      context.events = construct.resolveTo(context.events, context)
+    }
+  }
+
+  function store() {
+    var startPoint = now()
+    var startPrevious = context.previous
+    var startCurrentConstruct = context.currentConstruct
+    var startEventsIndex = context.events.length
+    var startStack = Array.from(stack)
+    return {
+      restore: restore,
+      from: startEventsIndex
+    }
+
+    function restore() {
+      point = startPoint
+      context.previous = startPrevious
+      context.currentConstruct = startCurrentConstruct
+      context.events.length = startEventsIndex
+      stack = startStack
+      accountForPotentialSkip()
+    }
+  }
+
+  function accountForPotentialSkip() {
+    if (point.line in columnStart && point.column < 2) {
+      point.column = columnStart[point.line]
+      point.offset += columnStart[point.line] - 1
+    }
+  }
+}
+
+module.exports = createTokenizer
+
+
+/***/ }),
+
+/***/ 8180:
+/***/ ((module) => {
+
+"use strict";
+
+
+function miniflat(value) {
+  return value === null || value === undefined
+    ? []
+    : 'length' in value
+    ? value
+    : [value]
+}
+
+module.exports = miniflat
+
+
+/***/ }),
+
+/***/ 5644:
+/***/ ((module) => {
+
+"use strict";
+
+
+// chunks (replacement characters, tabs, or line endings).
+
+function movePoint(point, offset) {
+  point.column += offset
+  point.offset += offset
+  point._bufferIndex += offset
+  return point
+}
+
+module.exports = movePoint
+
+
+/***/ }),
+
+/***/ 5478:
+/***/ ((module) => {
+
+"use strict";
+
+
+function normalizeIdentifier(value) {
+  return (
+    value // Collapse Markdown whitespace.
+      .replace(/[\t\n\r ]+/g, ' ') // Trim.
+      .replace(/^ | $/g, '') // Some characters are considered “uppercase”, but if their lowercase
+      // counterpart is uppercased will result in a different uppercase
+      // character.
+      // Hence, to get that form, we perform both lower- and uppercase.
+      // Upper case makes sure keys will not interact with default prototypal
+      // methods: no object method is uppercase.
+      .toLowerCase()
+      .toUpperCase()
+  )
+}
+
+module.exports = normalizeIdentifier
+
+
+/***/ }),
+
+/***/ 5096:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var sizeChunks = __webpack_require__(8892)
+
+function prefixSize(events, type) {
+  var tail = events[events.length - 1]
+  if (!tail || tail[1].type !== type) return 0
+  return sizeChunks(tail[2].sliceStream(tail[1]))
+}
+
+module.exports = prefixSize
+
+
+/***/ }),
+
+/***/ 2841:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var fromCharCode = __webpack_require__(3267)
+
+function regexCheck(regex) {
+  return check
+
+  function check(code) {
+    return regex.test(fromCharCode(code))
+  }
+}
+
+module.exports = regexCheck
+
+
+/***/ }),
+
+/***/ 8280:
+/***/ ((module) => {
+
+"use strict";
+
+
+function resolveAll(constructs, events, context) {
+  var called = []
+  var index = -1
+  var resolve
+
+  while (++index < constructs.length) {
+    resolve = constructs[index].resolveAll
+
+    if (resolve && called.indexOf(resolve) < 0) {
+      events = resolve(events, context)
+      called.push(resolve)
+    }
+  }
+
+  return events
+}
+
+module.exports = resolveAll
+
+
+/***/ }),
+
+/***/ 596:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var fromCharCode = __webpack_require__(3267)
+
+function safeFromInt(value, base) {
+  var code = parseInt(value, base)
+
+  if (
+    // C0 except for HT, LF, FF, CR, space
+    code < 9 ||
+    code === 11 ||
+    (code > 13 && code < 32) || // Control character (DEL) of the basic block and C1 controls.
+    (code > 126 && code < 160) || // Lone high surrogates and low surrogates.
+    (code > 55295 && code < 57344) || // Noncharacters.
+    (code > 64975 && code < 65008) ||
+    (code & 65535) === 65535 ||
+    (code & 65535) === 65534 || // Out of range
+    code > 1114111
+  ) {
+    return '\uFFFD'
+  }
+
+  return fromCharCode(code)
+}
+
+module.exports = safeFromInt
+
+
+/***/ }),
+
+/***/ 3082:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var fromCharCode = __webpack_require__(3267)
+
+function serializeChunks(chunks) {
+  var index = -1
+  var result = []
+  var chunk
+  var value
+  var atTab
+
+  while (++index < chunks.length) {
+    chunk = chunks[index]
+
+    if (typeof chunk === 'string') {
+      value = chunk
+    } else if (chunk === -5) {
+      value = '\r'
+    } else if (chunk === -4) {
+      value = '\n'
+    } else if (chunk === -3) {
+      value = '\r' + '\n'
+    } else if (chunk === -2) {
+      value = '\t'
+    } else if (chunk === -1) {
+      if (atTab) continue
+      value = ' '
+    } else {
+      // Currently only replacement character.
+      value = fromCharCode(chunk)
+    }
+
+    atTab = chunk === -2
+    result.push(value)
+  }
+
+  return result.join('')
+}
+
+module.exports = serializeChunks
+
+
+/***/ }),
+
+/***/ 5923:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var assign = __webpack_require__(9198)
+
+function shallow(object) {
+  return assign({}, object)
+}
+
+module.exports = shallow
+
+
+/***/ }),
+
+/***/ 8892:
+/***/ ((module) => {
+
+"use strict";
+
+
+// Counts tabs based on their expanded size, and CR+LF as one character.
+
+function sizeChunks(chunks) {
+  var index = -1
+  var size = 0
+
+  while (++index < chunks.length) {
+    size += typeof chunks[index] === 'string' ? chunks[index].length : 1
+  }
+
+  return size
+}
+
+module.exports = sizeChunks
+
+
+/***/ }),
+
+/***/ 2774:
+/***/ ((module) => {
+
+"use strict";
+
+
+function sliceChunks(chunks, token) {
+  var startIndex = token.start._index
+  var startBufferIndex = token.start._bufferIndex
+  var endIndex = token.end._index
+  var endBufferIndex = token.end._bufferIndex
+  var view
+
+  if (startIndex === endIndex) {
+    view = [chunks[startIndex].slice(startBufferIndex, endBufferIndex)]
+  } else {
+    view = chunks.slice(startIndex, endIndex)
+
+    if (startBufferIndex > -1) {
+      view[0] = view[0].slice(startBufferIndex)
+    }
+
+    if (endBufferIndex > 0) {
+      view.push(chunks[endIndex].slice(0, endBufferIndex))
+    }
+  }
+
+  return view
+}
+
+module.exports = sliceChunks
+
+
+/***/ }),
+
+/***/ 4423:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var assign = __webpack_require__(9198)
+var chunkedSplice = __webpack_require__(6808)
+var shallow = __webpack_require__(5923)
+
+function subtokenize(events) {
+  var jumps = {}
+  var index = -1
+  var event
+  var lineIndex
+  var otherIndex
+  var otherEvent
+  var parameters
+  var subevents
+  var more
+
+  while (++index < events.length) {
+    while (index in jumps) {
+      index = jumps[index]
+    }
+
+    event = events[index] // Add a hook for the GFM tasklist extension, which needs to know if text
+    // is in the first content of a list item.
+
+    if (
+      index &&
+      event[1].type === 'chunkFlow' &&
+      events[index - 1][1].type === 'listItemPrefix'
+    ) {
+      subevents = event[1]._tokenizer.events
+      otherIndex = 0
+
+      if (
+        otherIndex < subevents.length &&
+        subevents[otherIndex][1].type === 'lineEndingBlank'
+      ) {
+        otherIndex += 2
+      }
+
+      if (
+        otherIndex < subevents.length &&
+        subevents[otherIndex][1].type === 'content'
+      ) {
+        while (++otherIndex < subevents.length) {
+          if (subevents[otherIndex][1].type === 'content') {
+            break
+          }
+
+          if (subevents[otherIndex][1].type === 'chunkText') {
+            subevents[otherIndex][1].isInFirstContentOfListItem = true
+            otherIndex++
+          }
+        }
+      }
+    } // Enter.
+
+    if (event[0] === 'enter') {
+      if (event[1].contentType) {
+        assign(jumps, subcontent(events, index))
+        index = jumps[index]
+        more = true
+      }
+    } // Exit.
+    else if (event[1]._container || event[1]._movePreviousLineEndings) {
+      otherIndex = index
+      lineIndex = undefined
+
+      while (otherIndex--) {
+        otherEvent = events[otherIndex]
+
+        if (
+          otherEvent[1].type === 'lineEnding' ||
+          otherEvent[1].type === 'lineEndingBlank'
+        ) {
+          if (otherEvent[0] === 'enter') {
+            if (lineIndex) {
+              events[lineIndex][1].type = 'lineEndingBlank'
+            }
+
+            otherEvent[1].type = 'lineEnding'
+            lineIndex = otherIndex
+          }
+        } else {
+          break
+        }
+      }
+
+      if (lineIndex) {
+        // Fix position.
+        event[1].end = shallow(events[lineIndex][1].start) // Switch container exit w/ line endings.
+
+        parameters = events.slice(lineIndex, index)
+        parameters.unshift(event)
+        chunkedSplice(events, lineIndex, index - lineIndex + 1, parameters)
+      }
+    }
+  }
+
+  return !more
+}
+
+function subcontent(events, eventIndex) {
+  var token = events[eventIndex][1]
+  var context = events[eventIndex][2]
+  var startPosition = eventIndex - 1
+  var startPositions = []
+  var tokenizer =
+    token._tokenizer || context.parser[token.contentType](token.start)
+  var childEvents = tokenizer.events
+  var jumps = []
+  var gaps = {}
+  var stream
+  var previous
+  var index
+  var entered
+  var end
+  var adjust // Loop forward through the linked tokens to pass them in order to the
+  // subtokenizer.
+
+  while (token) {
+    // Find the position of the event for this token.
+    while (events[++startPosition][1] !== token) {
+      // Empty.
+    }
+
+    startPositions.push(startPosition)
+
+    if (!token._tokenizer) {
+      stream = context.sliceStream(token)
+
+      if (!token.next) {
+        stream.push(null)
+      }
+
+      if (previous) {
+        tokenizer.defineSkip(token.start)
+      }
+
+      if (token.isInFirstContentOfListItem) {
+        tokenizer._gfmTasklistFirstContentOfListItem = true
+      }
+
+      tokenizer.write(stream)
+
+      if (token.isInFirstContentOfListItem) {
+        tokenizer._gfmTasklistFirstContentOfListItem = undefined
+      }
+    } // Unravel the next token.
+
+    previous = token
+    token = token.next
+  } // Now, loop back through all events (and linked tokens), to figure out which
+  // parts belong where.
+
+  token = previous
+  index = childEvents.length
+
+  while (index--) {
+    // Make sure we’ve at least seen something (final eol is part of the last
+    // token).
+    if (childEvents[index][0] === 'enter') {
+      entered = true
+    } else if (
+      // Find a void token that includes a break.
+      entered &&
+      childEvents[index][1].type === childEvents[index - 1][1].type &&
+      childEvents[index][1].start.line !== childEvents[index][1].end.line
+    ) {
+      add(childEvents.slice(index + 1, end))
+      // Help GC.
+      token._tokenizer = token.next = undefined
+      token = token.previous
+      end = index + 1
+    }
+  }
+
+  // Help GC.
+  tokenizer.events = token._tokenizer = token.next = undefined // Do head:
+
+  add(childEvents.slice(0, end))
+  index = -1
+  adjust = 0
+
+  while (++index < jumps.length) {
+    gaps[adjust + jumps[index][0]] = adjust + jumps[index][1]
+    adjust += jumps[index][1] - jumps[index][0] - 1
+  }
+
+  return gaps
+
+  function add(slice) {
+    var start = startPositions.pop()
+    jumps.unshift([start, start + slice.length - 1])
+    chunkedSplice(events, start, 2, slice)
+  }
+}
+
+module.exports = subtokenize
+
+
+/***/ }),
+
+/***/ 7418:
 /***/ ((module) => {
 
 "use strict";
@@ -246,7 +8712,1569 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 448:
+/***/ 9435:
+/***/ ((module) => {
+
+"use strict";
+
+
+/* eslint-env browser */
+
+var el
+
+var semicolon = 59 //  ';'
+
+module.exports = decodeEntity
+
+function decodeEntity(characters) {
+  var entity = '&' + characters + ';'
+  var char
+
+  el = el || document.createElement('i')
+  el.innerHTML = entity
+  char = el.textContent
+
+  // Some entities do not require the closing semicolon (`&not` - for instance),
+  // which leads to situations where parsing the assumed entity of &notit; will
+  // result in the string `¬it;`.  When we encounter a trailing semicolon after
+  // parsing and the entity to decode was not a semicolon (`&semi;`), we can
+  // assume that the matching was incomplete
+  if (char.charCodeAt(char.length - 1) === semicolon && characters !== 'semi') {
+    return false
+  }
+
+  // If the decoded string is equal to the input, the entity was not valid
+  return char === entity ? false : char
+}
+
+
+/***/ }),
+
+/***/ 2703:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var ReactPropTypesSecret = __webpack_require__(414);
+
+function emptyFunction() {}
+function emptyFunctionWithReset() {}
+emptyFunctionWithReset.resetWarningCache = emptyFunction;
+
+module.exports = function() {
+  function shim(props, propName, componentName, location, propFullName, secret) {
+    if (secret === ReactPropTypesSecret) {
+      // It is still safe when called from React.
+      return;
+    }
+    var err = new Error(
+      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+      'Use PropTypes.checkPropTypes() to call them. ' +
+      'Read more at http://fb.me/use-check-prop-types'
+    );
+    err.name = 'Invariant Violation';
+    throw err;
+  };
+  shim.isRequired = shim;
+  function getShim() {
+    return shim;
+  };
+  // Important!
+  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
+  var ReactPropTypes = {
+    array: shim,
+    bigint: shim,
+    bool: shim,
+    func: shim,
+    number: shim,
+    object: shim,
+    string: shim,
+    symbol: shim,
+
+    any: shim,
+    arrayOf: getShim,
+    element: shim,
+    elementType: shim,
+    instanceOf: getShim,
+    node: shim,
+    objectOf: getShim,
+    oneOf: getShim,
+    oneOfType: getShim,
+    shape: getShim,
+    exact: getShim,
+
+    checkPropTypes: emptyFunctionWithReset,
+    resetWarningCache: emptyFunction
+  };
+
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+
+/***/ }),
+
+/***/ 5697:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+if (false) { var throwOnDirectAccess, ReactIs; } else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = __webpack_require__(2703)();
+}
+
+
+/***/ }),
+
+/***/ 414:
+/***/ ((module) => {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+module.exports = ReactPropTypesSecret;
+
+
+/***/ }),
+
+/***/ 9560:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var normalize = __webpack_require__(6632)
+var DefinedInfo = __webpack_require__(8805)
+var Info = __webpack_require__(7643)
+
+var data = 'data'
+
+module.exports = find
+
+var valid = /^data[-\w.:]+$/i
+var dash = /-[a-z]/g
+var cap = /[A-Z]/g
+
+function find(schema, value) {
+  var normal = normalize(value)
+  var prop = value
+  var Type = Info
+
+  if (normal in schema.normal) {
+    return schema.property[schema.normal[normal]]
+  }
+
+  if (normal.length > 4 && normal.slice(0, 4) === data && valid.test(value)) {
+    // Attribute or property.
+    if (value.charAt(4) === '-') {
+      prop = datasetToProperty(value)
+    } else {
+      value = datasetToAttribute(value)
+    }
+
+    Type = DefinedInfo
+  }
+
+  return new Type(prop, value)
+}
+
+function datasetToProperty(attribute) {
+  var value = attribute.slice(5).replace(dash, camelcase)
+  return data + value.charAt(0).toUpperCase() + value.slice(1)
+}
+
+function datasetToAttribute(property) {
+  var value = property.slice(4)
+
+  if (dash.test(value)) {
+    return property
+  }
+
+  value = value.replace(cap, kebab)
+
+  if (value.charAt(0) !== '-') {
+    value = '-' + value
+  }
+
+  return data + value
+}
+
+function kebab($0) {
+  return '-' + $0.toLowerCase()
+}
+
+function camelcase($0) {
+  return $0.charAt(1).toUpperCase()
+}
+
+
+/***/ }),
+
+/***/ 7247:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var merge = __webpack_require__(9940)
+var xlink = __webpack_require__(8289)
+var xml = __webpack_require__(5812)
+var xmlns = __webpack_require__(4397)
+var aria = __webpack_require__(7716)
+var html = __webpack_require__(1805)
+
+module.exports = merge([xml, xlink, xmlns, aria, html])
+
+
+/***/ }),
+
+/***/ 7716:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var types = __webpack_require__(7000)
+var create = __webpack_require__(7596)
+
+var booleanish = types.booleanish
+var number = types.number
+var spaceSeparated = types.spaceSeparated
+
+module.exports = create({
+  transform: ariaTransform,
+  properties: {
+    ariaActiveDescendant: null,
+    ariaAtomic: booleanish,
+    ariaAutoComplete: null,
+    ariaBusy: booleanish,
+    ariaChecked: booleanish,
+    ariaColCount: number,
+    ariaColIndex: number,
+    ariaColSpan: number,
+    ariaControls: spaceSeparated,
+    ariaCurrent: null,
+    ariaDescribedBy: spaceSeparated,
+    ariaDetails: null,
+    ariaDisabled: booleanish,
+    ariaDropEffect: spaceSeparated,
+    ariaErrorMessage: null,
+    ariaExpanded: booleanish,
+    ariaFlowTo: spaceSeparated,
+    ariaGrabbed: booleanish,
+    ariaHasPopup: null,
+    ariaHidden: booleanish,
+    ariaInvalid: null,
+    ariaKeyShortcuts: null,
+    ariaLabel: null,
+    ariaLabelledBy: spaceSeparated,
+    ariaLevel: number,
+    ariaLive: null,
+    ariaModal: booleanish,
+    ariaMultiLine: booleanish,
+    ariaMultiSelectable: booleanish,
+    ariaOrientation: null,
+    ariaOwns: spaceSeparated,
+    ariaPlaceholder: null,
+    ariaPosInSet: number,
+    ariaPressed: booleanish,
+    ariaReadOnly: booleanish,
+    ariaRelevant: null,
+    ariaRequired: booleanish,
+    ariaRoleDescription: spaceSeparated,
+    ariaRowCount: number,
+    ariaRowIndex: number,
+    ariaRowSpan: number,
+    ariaSelected: booleanish,
+    ariaSetSize: number,
+    ariaSort: null,
+    ariaValueMax: number,
+    ariaValueMin: number,
+    ariaValueNow: number,
+    ariaValueText: null,
+    role: null
+  }
+})
+
+function ariaTransform(_, prop) {
+  return prop === 'role' ? prop : 'aria-' + prop.slice(4).toLowerCase()
+}
+
+
+/***/ }),
+
+/***/ 1805:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var types = __webpack_require__(7000)
+var create = __webpack_require__(7596)
+var caseInsensitiveTransform = __webpack_require__(855)
+
+var boolean = types.boolean
+var overloadedBoolean = types.overloadedBoolean
+var booleanish = types.booleanish
+var number = types.number
+var spaceSeparated = types.spaceSeparated
+var commaSeparated = types.commaSeparated
+
+module.exports = create({
+  space: 'html',
+  attributes: {
+    acceptcharset: 'accept-charset',
+    classname: 'class',
+    htmlfor: 'for',
+    httpequiv: 'http-equiv'
+  },
+  transform: caseInsensitiveTransform,
+  mustUseProperty: ['checked', 'multiple', 'muted', 'selected'],
+  properties: {
+    // Standard Properties.
+    abbr: null,
+    accept: commaSeparated,
+    acceptCharset: spaceSeparated,
+    accessKey: spaceSeparated,
+    action: null,
+    allow: null,
+    allowFullScreen: boolean,
+    allowPaymentRequest: boolean,
+    allowUserMedia: boolean,
+    alt: null,
+    as: null,
+    async: boolean,
+    autoCapitalize: null,
+    autoComplete: spaceSeparated,
+    autoFocus: boolean,
+    autoPlay: boolean,
+    capture: boolean,
+    charSet: null,
+    checked: boolean,
+    cite: null,
+    className: spaceSeparated,
+    cols: number,
+    colSpan: null,
+    content: null,
+    contentEditable: booleanish,
+    controls: boolean,
+    controlsList: spaceSeparated,
+    coords: number | commaSeparated,
+    crossOrigin: null,
+    data: null,
+    dateTime: null,
+    decoding: null,
+    default: boolean,
+    defer: boolean,
+    dir: null,
+    dirName: null,
+    disabled: boolean,
+    download: overloadedBoolean,
+    draggable: booleanish,
+    encType: null,
+    enterKeyHint: null,
+    form: null,
+    formAction: null,
+    formEncType: null,
+    formMethod: null,
+    formNoValidate: boolean,
+    formTarget: null,
+    headers: spaceSeparated,
+    height: number,
+    hidden: boolean,
+    high: number,
+    href: null,
+    hrefLang: null,
+    htmlFor: spaceSeparated,
+    httpEquiv: spaceSeparated,
+    id: null,
+    imageSizes: null,
+    imageSrcSet: commaSeparated,
+    inputMode: null,
+    integrity: null,
+    is: null,
+    isMap: boolean,
+    itemId: null,
+    itemProp: spaceSeparated,
+    itemRef: spaceSeparated,
+    itemScope: boolean,
+    itemType: spaceSeparated,
+    kind: null,
+    label: null,
+    lang: null,
+    language: null,
+    list: null,
+    loading: null,
+    loop: boolean,
+    low: number,
+    manifest: null,
+    max: null,
+    maxLength: number,
+    media: null,
+    method: null,
+    min: null,
+    minLength: number,
+    multiple: boolean,
+    muted: boolean,
+    name: null,
+    nonce: null,
+    noModule: boolean,
+    noValidate: boolean,
+    onAbort: null,
+    onAfterPrint: null,
+    onAuxClick: null,
+    onBeforePrint: null,
+    onBeforeUnload: null,
+    onBlur: null,
+    onCancel: null,
+    onCanPlay: null,
+    onCanPlayThrough: null,
+    onChange: null,
+    onClick: null,
+    onClose: null,
+    onContextMenu: null,
+    onCopy: null,
+    onCueChange: null,
+    onCut: null,
+    onDblClick: null,
+    onDrag: null,
+    onDragEnd: null,
+    onDragEnter: null,
+    onDragExit: null,
+    onDragLeave: null,
+    onDragOver: null,
+    onDragStart: null,
+    onDrop: null,
+    onDurationChange: null,
+    onEmptied: null,
+    onEnded: null,
+    onError: null,
+    onFocus: null,
+    onFormData: null,
+    onHashChange: null,
+    onInput: null,
+    onInvalid: null,
+    onKeyDown: null,
+    onKeyPress: null,
+    onKeyUp: null,
+    onLanguageChange: null,
+    onLoad: null,
+    onLoadedData: null,
+    onLoadedMetadata: null,
+    onLoadEnd: null,
+    onLoadStart: null,
+    onMessage: null,
+    onMessageError: null,
+    onMouseDown: null,
+    onMouseEnter: null,
+    onMouseLeave: null,
+    onMouseMove: null,
+    onMouseOut: null,
+    onMouseOver: null,
+    onMouseUp: null,
+    onOffline: null,
+    onOnline: null,
+    onPageHide: null,
+    onPageShow: null,
+    onPaste: null,
+    onPause: null,
+    onPlay: null,
+    onPlaying: null,
+    onPopState: null,
+    onProgress: null,
+    onRateChange: null,
+    onRejectionHandled: null,
+    onReset: null,
+    onResize: null,
+    onScroll: null,
+    onSecurityPolicyViolation: null,
+    onSeeked: null,
+    onSeeking: null,
+    onSelect: null,
+    onSlotChange: null,
+    onStalled: null,
+    onStorage: null,
+    onSubmit: null,
+    onSuspend: null,
+    onTimeUpdate: null,
+    onToggle: null,
+    onUnhandledRejection: null,
+    onUnload: null,
+    onVolumeChange: null,
+    onWaiting: null,
+    onWheel: null,
+    open: boolean,
+    optimum: number,
+    pattern: null,
+    ping: spaceSeparated,
+    placeholder: null,
+    playsInline: boolean,
+    poster: null,
+    preload: null,
+    readOnly: boolean,
+    referrerPolicy: null,
+    rel: spaceSeparated,
+    required: boolean,
+    reversed: boolean,
+    rows: number,
+    rowSpan: number,
+    sandbox: spaceSeparated,
+    scope: null,
+    scoped: boolean,
+    seamless: boolean,
+    selected: boolean,
+    shape: null,
+    size: number,
+    sizes: null,
+    slot: null,
+    span: number,
+    spellCheck: booleanish,
+    src: null,
+    srcDoc: null,
+    srcLang: null,
+    srcSet: commaSeparated,
+    start: number,
+    step: null,
+    style: null,
+    tabIndex: number,
+    target: null,
+    title: null,
+    translate: null,
+    type: null,
+    typeMustMatch: boolean,
+    useMap: null,
+    value: booleanish,
+    width: number,
+    wrap: null,
+
+    // Legacy.
+    // See: https://html.spec.whatwg.org/#other-elements,-attributes-and-apis
+    align: null, // Several. Use CSS `text-align` instead,
+    aLink: null, // `<body>`. Use CSS `a:active {color}` instead
+    archive: spaceSeparated, // `<object>`. List of URIs to archives
+    axis: null, // `<td>` and `<th>`. Use `scope` on `<th>`
+    background: null, // `<body>`. Use CSS `background-image` instead
+    bgColor: null, // `<body>` and table elements. Use CSS `background-color` instead
+    border: number, // `<table>`. Use CSS `border-width` instead,
+    borderColor: null, // `<table>`. Use CSS `border-color` instead,
+    bottomMargin: number, // `<body>`
+    cellPadding: null, // `<table>`
+    cellSpacing: null, // `<table>`
+    char: null, // Several table elements. When `align=char`, sets the character to align on
+    charOff: null, // Several table elements. When `char`, offsets the alignment
+    classId: null, // `<object>`
+    clear: null, // `<br>`. Use CSS `clear` instead
+    code: null, // `<object>`
+    codeBase: null, // `<object>`
+    codeType: null, // `<object>`
+    color: null, // `<font>` and `<hr>`. Use CSS instead
+    compact: boolean, // Lists. Use CSS to reduce space between items instead
+    declare: boolean, // `<object>`
+    event: null, // `<script>`
+    face: null, // `<font>`. Use CSS instead
+    frame: null, // `<table>`
+    frameBorder: null, // `<iframe>`. Use CSS `border` instead
+    hSpace: number, // `<img>` and `<object>`
+    leftMargin: number, // `<body>`
+    link: null, // `<body>`. Use CSS `a:link {color: *}` instead
+    longDesc: null, // `<frame>`, `<iframe>`, and `<img>`. Use an `<a>`
+    lowSrc: null, // `<img>`. Use a `<picture>`
+    marginHeight: number, // `<body>`
+    marginWidth: number, // `<body>`
+    noResize: boolean, // `<frame>`
+    noHref: boolean, // `<area>`. Use no href instead of an explicit `nohref`
+    noShade: boolean, // `<hr>`. Use background-color and height instead of borders
+    noWrap: boolean, // `<td>` and `<th>`
+    object: null, // `<applet>`
+    profile: null, // `<head>`
+    prompt: null, // `<isindex>`
+    rev: null, // `<link>`
+    rightMargin: number, // `<body>`
+    rules: null, // `<table>`
+    scheme: null, // `<meta>`
+    scrolling: booleanish, // `<frame>`. Use overflow in the child context
+    standby: null, // `<object>`
+    summary: null, // `<table>`
+    text: null, // `<body>`. Use CSS `color` instead
+    topMargin: number, // `<body>`
+    valueType: null, // `<param>`
+    version: null, // `<html>`. Use a doctype.
+    vAlign: null, // Several. Use CSS `vertical-align` instead
+    vLink: null, // `<body>`. Use CSS `a:visited {color}` instead
+    vSpace: number, // `<img>` and `<object>`
+
+    // Non-standard Properties.
+    allowTransparency: null,
+    autoCorrect: null,
+    autoSave: null,
+    disablePictureInPicture: boolean,
+    disableRemotePlayback: boolean,
+    prefix: null,
+    property: null,
+    results: number,
+    security: null,
+    unselectable: null
+  }
+})
+
+
+/***/ }),
+
+/***/ 5789:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var types = __webpack_require__(7000)
+var create = __webpack_require__(7596)
+var caseSensitiveTransform = __webpack_require__(8740)
+
+var boolean = types.boolean
+var number = types.number
+var spaceSeparated = types.spaceSeparated
+var commaSeparated = types.commaSeparated
+var commaOrSpaceSeparated = types.commaOrSpaceSeparated
+
+module.exports = create({
+  space: 'svg',
+  attributes: {
+    accentHeight: 'accent-height',
+    alignmentBaseline: 'alignment-baseline',
+    arabicForm: 'arabic-form',
+    baselineShift: 'baseline-shift',
+    capHeight: 'cap-height',
+    className: 'class',
+    clipPath: 'clip-path',
+    clipRule: 'clip-rule',
+    colorInterpolation: 'color-interpolation',
+    colorInterpolationFilters: 'color-interpolation-filters',
+    colorProfile: 'color-profile',
+    colorRendering: 'color-rendering',
+    crossOrigin: 'crossorigin',
+    dataType: 'datatype',
+    dominantBaseline: 'dominant-baseline',
+    enableBackground: 'enable-background',
+    fillOpacity: 'fill-opacity',
+    fillRule: 'fill-rule',
+    floodColor: 'flood-color',
+    floodOpacity: 'flood-opacity',
+    fontFamily: 'font-family',
+    fontSize: 'font-size',
+    fontSizeAdjust: 'font-size-adjust',
+    fontStretch: 'font-stretch',
+    fontStyle: 'font-style',
+    fontVariant: 'font-variant',
+    fontWeight: 'font-weight',
+    glyphName: 'glyph-name',
+    glyphOrientationHorizontal: 'glyph-orientation-horizontal',
+    glyphOrientationVertical: 'glyph-orientation-vertical',
+    hrefLang: 'hreflang',
+    horizAdvX: 'horiz-adv-x',
+    horizOriginX: 'horiz-origin-x',
+    horizOriginY: 'horiz-origin-y',
+    imageRendering: 'image-rendering',
+    letterSpacing: 'letter-spacing',
+    lightingColor: 'lighting-color',
+    markerEnd: 'marker-end',
+    markerMid: 'marker-mid',
+    markerStart: 'marker-start',
+    navDown: 'nav-down',
+    navDownLeft: 'nav-down-left',
+    navDownRight: 'nav-down-right',
+    navLeft: 'nav-left',
+    navNext: 'nav-next',
+    navPrev: 'nav-prev',
+    navRight: 'nav-right',
+    navUp: 'nav-up',
+    navUpLeft: 'nav-up-left',
+    navUpRight: 'nav-up-right',
+    onAbort: 'onabort',
+    onActivate: 'onactivate',
+    onAfterPrint: 'onafterprint',
+    onBeforePrint: 'onbeforeprint',
+    onBegin: 'onbegin',
+    onCancel: 'oncancel',
+    onCanPlay: 'oncanplay',
+    onCanPlayThrough: 'oncanplaythrough',
+    onChange: 'onchange',
+    onClick: 'onclick',
+    onClose: 'onclose',
+    onCopy: 'oncopy',
+    onCueChange: 'oncuechange',
+    onCut: 'oncut',
+    onDblClick: 'ondblclick',
+    onDrag: 'ondrag',
+    onDragEnd: 'ondragend',
+    onDragEnter: 'ondragenter',
+    onDragExit: 'ondragexit',
+    onDragLeave: 'ondragleave',
+    onDragOver: 'ondragover',
+    onDragStart: 'ondragstart',
+    onDrop: 'ondrop',
+    onDurationChange: 'ondurationchange',
+    onEmptied: 'onemptied',
+    onEnd: 'onend',
+    onEnded: 'onended',
+    onError: 'onerror',
+    onFocus: 'onfocus',
+    onFocusIn: 'onfocusin',
+    onFocusOut: 'onfocusout',
+    onHashChange: 'onhashchange',
+    onInput: 'oninput',
+    onInvalid: 'oninvalid',
+    onKeyDown: 'onkeydown',
+    onKeyPress: 'onkeypress',
+    onKeyUp: 'onkeyup',
+    onLoad: 'onload',
+    onLoadedData: 'onloadeddata',
+    onLoadedMetadata: 'onloadedmetadata',
+    onLoadStart: 'onloadstart',
+    onMessage: 'onmessage',
+    onMouseDown: 'onmousedown',
+    onMouseEnter: 'onmouseenter',
+    onMouseLeave: 'onmouseleave',
+    onMouseMove: 'onmousemove',
+    onMouseOut: 'onmouseout',
+    onMouseOver: 'onmouseover',
+    onMouseUp: 'onmouseup',
+    onMouseWheel: 'onmousewheel',
+    onOffline: 'onoffline',
+    onOnline: 'ononline',
+    onPageHide: 'onpagehide',
+    onPageShow: 'onpageshow',
+    onPaste: 'onpaste',
+    onPause: 'onpause',
+    onPlay: 'onplay',
+    onPlaying: 'onplaying',
+    onPopState: 'onpopstate',
+    onProgress: 'onprogress',
+    onRateChange: 'onratechange',
+    onRepeat: 'onrepeat',
+    onReset: 'onreset',
+    onResize: 'onresize',
+    onScroll: 'onscroll',
+    onSeeked: 'onseeked',
+    onSeeking: 'onseeking',
+    onSelect: 'onselect',
+    onShow: 'onshow',
+    onStalled: 'onstalled',
+    onStorage: 'onstorage',
+    onSubmit: 'onsubmit',
+    onSuspend: 'onsuspend',
+    onTimeUpdate: 'ontimeupdate',
+    onToggle: 'ontoggle',
+    onUnload: 'onunload',
+    onVolumeChange: 'onvolumechange',
+    onWaiting: 'onwaiting',
+    onZoom: 'onzoom',
+    overlinePosition: 'overline-position',
+    overlineThickness: 'overline-thickness',
+    paintOrder: 'paint-order',
+    panose1: 'panose-1',
+    pointerEvents: 'pointer-events',
+    referrerPolicy: 'referrerpolicy',
+    renderingIntent: 'rendering-intent',
+    shapeRendering: 'shape-rendering',
+    stopColor: 'stop-color',
+    stopOpacity: 'stop-opacity',
+    strikethroughPosition: 'strikethrough-position',
+    strikethroughThickness: 'strikethrough-thickness',
+    strokeDashArray: 'stroke-dasharray',
+    strokeDashOffset: 'stroke-dashoffset',
+    strokeLineCap: 'stroke-linecap',
+    strokeLineJoin: 'stroke-linejoin',
+    strokeMiterLimit: 'stroke-miterlimit',
+    strokeOpacity: 'stroke-opacity',
+    strokeWidth: 'stroke-width',
+    tabIndex: 'tabindex',
+    textAnchor: 'text-anchor',
+    textDecoration: 'text-decoration',
+    textRendering: 'text-rendering',
+    typeOf: 'typeof',
+    underlinePosition: 'underline-position',
+    underlineThickness: 'underline-thickness',
+    unicodeBidi: 'unicode-bidi',
+    unicodeRange: 'unicode-range',
+    unitsPerEm: 'units-per-em',
+    vAlphabetic: 'v-alphabetic',
+    vHanging: 'v-hanging',
+    vIdeographic: 'v-ideographic',
+    vMathematical: 'v-mathematical',
+    vectorEffect: 'vector-effect',
+    vertAdvY: 'vert-adv-y',
+    vertOriginX: 'vert-origin-x',
+    vertOriginY: 'vert-origin-y',
+    wordSpacing: 'word-spacing',
+    writingMode: 'writing-mode',
+    xHeight: 'x-height',
+    // These were camelcased in Tiny. Now lowercased in SVG 2
+    playbackOrder: 'playbackorder',
+    timelineBegin: 'timelinebegin'
+  },
+  transform: caseSensitiveTransform,
+  properties: {
+    about: commaOrSpaceSeparated,
+    accentHeight: number,
+    accumulate: null,
+    additive: null,
+    alignmentBaseline: null,
+    alphabetic: number,
+    amplitude: number,
+    arabicForm: null,
+    ascent: number,
+    attributeName: null,
+    attributeType: null,
+    azimuth: number,
+    bandwidth: null,
+    baselineShift: null,
+    baseFrequency: null,
+    baseProfile: null,
+    bbox: null,
+    begin: null,
+    bias: number,
+    by: null,
+    calcMode: null,
+    capHeight: number,
+    className: spaceSeparated,
+    clip: null,
+    clipPath: null,
+    clipPathUnits: null,
+    clipRule: null,
+    color: null,
+    colorInterpolation: null,
+    colorInterpolationFilters: null,
+    colorProfile: null,
+    colorRendering: null,
+    content: null,
+    contentScriptType: null,
+    contentStyleType: null,
+    crossOrigin: null,
+    cursor: null,
+    cx: null,
+    cy: null,
+    d: null,
+    dataType: null,
+    defaultAction: null,
+    descent: number,
+    diffuseConstant: number,
+    direction: null,
+    display: null,
+    dur: null,
+    divisor: number,
+    dominantBaseline: null,
+    download: boolean,
+    dx: null,
+    dy: null,
+    edgeMode: null,
+    editable: null,
+    elevation: number,
+    enableBackground: null,
+    end: null,
+    event: null,
+    exponent: number,
+    externalResourcesRequired: null,
+    fill: null,
+    fillOpacity: number,
+    fillRule: null,
+    filter: null,
+    filterRes: null,
+    filterUnits: null,
+    floodColor: null,
+    floodOpacity: null,
+    focusable: null,
+    focusHighlight: null,
+    fontFamily: null,
+    fontSize: null,
+    fontSizeAdjust: null,
+    fontStretch: null,
+    fontStyle: null,
+    fontVariant: null,
+    fontWeight: null,
+    format: null,
+    fr: null,
+    from: null,
+    fx: null,
+    fy: null,
+    g1: commaSeparated,
+    g2: commaSeparated,
+    glyphName: commaSeparated,
+    glyphOrientationHorizontal: null,
+    glyphOrientationVertical: null,
+    glyphRef: null,
+    gradientTransform: null,
+    gradientUnits: null,
+    handler: null,
+    hanging: number,
+    hatchContentUnits: null,
+    hatchUnits: null,
+    height: null,
+    href: null,
+    hrefLang: null,
+    horizAdvX: number,
+    horizOriginX: number,
+    horizOriginY: number,
+    id: null,
+    ideographic: number,
+    imageRendering: null,
+    initialVisibility: null,
+    in: null,
+    in2: null,
+    intercept: number,
+    k: number,
+    k1: number,
+    k2: number,
+    k3: number,
+    k4: number,
+    kernelMatrix: commaOrSpaceSeparated,
+    kernelUnitLength: null,
+    keyPoints: null, // SEMI_COLON_SEPARATED
+    keySplines: null, // SEMI_COLON_SEPARATED
+    keyTimes: null, // SEMI_COLON_SEPARATED
+    kerning: null,
+    lang: null,
+    lengthAdjust: null,
+    letterSpacing: null,
+    lightingColor: null,
+    limitingConeAngle: number,
+    local: null,
+    markerEnd: null,
+    markerMid: null,
+    markerStart: null,
+    markerHeight: null,
+    markerUnits: null,
+    markerWidth: null,
+    mask: null,
+    maskContentUnits: null,
+    maskUnits: null,
+    mathematical: null,
+    max: null,
+    media: null,
+    mediaCharacterEncoding: null,
+    mediaContentEncodings: null,
+    mediaSize: number,
+    mediaTime: null,
+    method: null,
+    min: null,
+    mode: null,
+    name: null,
+    navDown: null,
+    navDownLeft: null,
+    navDownRight: null,
+    navLeft: null,
+    navNext: null,
+    navPrev: null,
+    navRight: null,
+    navUp: null,
+    navUpLeft: null,
+    navUpRight: null,
+    numOctaves: null,
+    observer: null,
+    offset: null,
+    onAbort: null,
+    onActivate: null,
+    onAfterPrint: null,
+    onBeforePrint: null,
+    onBegin: null,
+    onCancel: null,
+    onCanPlay: null,
+    onCanPlayThrough: null,
+    onChange: null,
+    onClick: null,
+    onClose: null,
+    onCopy: null,
+    onCueChange: null,
+    onCut: null,
+    onDblClick: null,
+    onDrag: null,
+    onDragEnd: null,
+    onDragEnter: null,
+    onDragExit: null,
+    onDragLeave: null,
+    onDragOver: null,
+    onDragStart: null,
+    onDrop: null,
+    onDurationChange: null,
+    onEmptied: null,
+    onEnd: null,
+    onEnded: null,
+    onError: null,
+    onFocus: null,
+    onFocusIn: null,
+    onFocusOut: null,
+    onHashChange: null,
+    onInput: null,
+    onInvalid: null,
+    onKeyDown: null,
+    onKeyPress: null,
+    onKeyUp: null,
+    onLoad: null,
+    onLoadedData: null,
+    onLoadedMetadata: null,
+    onLoadStart: null,
+    onMessage: null,
+    onMouseDown: null,
+    onMouseEnter: null,
+    onMouseLeave: null,
+    onMouseMove: null,
+    onMouseOut: null,
+    onMouseOver: null,
+    onMouseUp: null,
+    onMouseWheel: null,
+    onOffline: null,
+    onOnline: null,
+    onPageHide: null,
+    onPageShow: null,
+    onPaste: null,
+    onPause: null,
+    onPlay: null,
+    onPlaying: null,
+    onPopState: null,
+    onProgress: null,
+    onRateChange: null,
+    onRepeat: null,
+    onReset: null,
+    onResize: null,
+    onScroll: null,
+    onSeeked: null,
+    onSeeking: null,
+    onSelect: null,
+    onShow: null,
+    onStalled: null,
+    onStorage: null,
+    onSubmit: null,
+    onSuspend: null,
+    onTimeUpdate: null,
+    onToggle: null,
+    onUnload: null,
+    onVolumeChange: null,
+    onWaiting: null,
+    onZoom: null,
+    opacity: null,
+    operator: null,
+    order: null,
+    orient: null,
+    orientation: null,
+    origin: null,
+    overflow: null,
+    overlay: null,
+    overlinePosition: number,
+    overlineThickness: number,
+    paintOrder: null,
+    panose1: null,
+    path: null,
+    pathLength: number,
+    patternContentUnits: null,
+    patternTransform: null,
+    patternUnits: null,
+    phase: null,
+    ping: spaceSeparated,
+    pitch: null,
+    playbackOrder: null,
+    pointerEvents: null,
+    points: null,
+    pointsAtX: number,
+    pointsAtY: number,
+    pointsAtZ: number,
+    preserveAlpha: null,
+    preserveAspectRatio: null,
+    primitiveUnits: null,
+    propagate: null,
+    property: commaOrSpaceSeparated,
+    r: null,
+    radius: null,
+    referrerPolicy: null,
+    refX: null,
+    refY: null,
+    rel: commaOrSpaceSeparated,
+    rev: commaOrSpaceSeparated,
+    renderingIntent: null,
+    repeatCount: null,
+    repeatDur: null,
+    requiredExtensions: commaOrSpaceSeparated,
+    requiredFeatures: commaOrSpaceSeparated,
+    requiredFonts: commaOrSpaceSeparated,
+    requiredFormats: commaOrSpaceSeparated,
+    resource: null,
+    restart: null,
+    result: null,
+    rotate: null,
+    rx: null,
+    ry: null,
+    scale: null,
+    seed: null,
+    shapeRendering: null,
+    side: null,
+    slope: null,
+    snapshotTime: null,
+    specularConstant: number,
+    specularExponent: number,
+    spreadMethod: null,
+    spacing: null,
+    startOffset: null,
+    stdDeviation: null,
+    stemh: null,
+    stemv: null,
+    stitchTiles: null,
+    stopColor: null,
+    stopOpacity: null,
+    strikethroughPosition: number,
+    strikethroughThickness: number,
+    string: null,
+    stroke: null,
+    strokeDashArray: commaOrSpaceSeparated,
+    strokeDashOffset: null,
+    strokeLineCap: null,
+    strokeLineJoin: null,
+    strokeMiterLimit: number,
+    strokeOpacity: number,
+    strokeWidth: null,
+    style: null,
+    surfaceScale: number,
+    syncBehavior: null,
+    syncBehaviorDefault: null,
+    syncMaster: null,
+    syncTolerance: null,
+    syncToleranceDefault: null,
+    systemLanguage: commaOrSpaceSeparated,
+    tabIndex: number,
+    tableValues: null,
+    target: null,
+    targetX: number,
+    targetY: number,
+    textAnchor: null,
+    textDecoration: null,
+    textRendering: null,
+    textLength: null,
+    timelineBegin: null,
+    title: null,
+    transformBehavior: null,
+    type: null,
+    typeOf: commaOrSpaceSeparated,
+    to: null,
+    transform: null,
+    u1: null,
+    u2: null,
+    underlinePosition: number,
+    underlineThickness: number,
+    unicode: null,
+    unicodeBidi: null,
+    unicodeRange: null,
+    unitsPerEm: number,
+    values: null,
+    vAlphabetic: number,
+    vMathematical: number,
+    vectorEffect: null,
+    vHanging: number,
+    vIdeographic: number,
+    version: null,
+    vertAdvY: number,
+    vertOriginX: number,
+    vertOriginY: number,
+    viewBox: null,
+    viewTarget: null,
+    visibility: null,
+    width: null,
+    widths: null,
+    wordSpacing: null,
+    writingMode: null,
+    x: null,
+    x1: null,
+    x2: null,
+    xChannelSelector: null,
+    xHeight: number,
+    y: null,
+    y1: null,
+    y2: null,
+    yChannelSelector: null,
+    z: null,
+    zoomAndPan: null
+  }
+})
+
+
+/***/ }),
+
+/***/ 855:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var caseSensitiveTransform = __webpack_require__(8740)
+
+module.exports = caseInsensitiveTransform
+
+function caseInsensitiveTransform(attributes, property) {
+  return caseSensitiveTransform(attributes, property.toLowerCase())
+}
+
+
+/***/ }),
+
+/***/ 8740:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = caseSensitiveTransform
+
+function caseSensitiveTransform(attributes, attribute) {
+  return attribute in attributes ? attributes[attribute] : attribute
+}
+
+
+/***/ }),
+
+/***/ 7596:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var normalize = __webpack_require__(6632)
+var Schema = __webpack_require__(9607)
+var DefinedInfo = __webpack_require__(8805)
+
+module.exports = create
+
+function create(definition) {
+  var space = definition.space
+  var mustUseProperty = definition.mustUseProperty || []
+  var attributes = definition.attributes || {}
+  var props = definition.properties
+  var transform = definition.transform
+  var property = {}
+  var normal = {}
+  var prop
+  var info
+
+  for (prop in props) {
+    info = new DefinedInfo(
+      prop,
+      transform(attributes, prop),
+      props[prop],
+      space
+    )
+
+    if (mustUseProperty.indexOf(prop) !== -1) {
+      info.mustUseProperty = true
+    }
+
+    property[prop] = info
+
+    normal[normalize(prop)] = prop
+    normal[normalize(info.attribute)] = prop
+  }
+
+  return new Schema(property, normal, space)
+}
+
+
+/***/ }),
+
+/***/ 8805:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var Info = __webpack_require__(7643)
+var types = __webpack_require__(7000)
+
+module.exports = DefinedInfo
+
+DefinedInfo.prototype = new Info()
+DefinedInfo.prototype.defined = true
+
+var checks = [
+  'boolean',
+  'booleanish',
+  'overloadedBoolean',
+  'number',
+  'commaSeparated',
+  'spaceSeparated',
+  'commaOrSpaceSeparated'
+]
+var checksLength = checks.length
+
+function DefinedInfo(property, attribute, mask, space) {
+  var index = -1
+  var check
+
+  mark(this, 'space', space)
+
+  Info.call(this, property, attribute)
+
+  while (++index < checksLength) {
+    check = checks[index]
+    mark(this, check, (mask & types[check]) === types[check])
+  }
+}
+
+function mark(values, key, value) {
+  if (value) {
+    values[key] = value
+  }
+}
+
+
+/***/ }),
+
+/***/ 7643:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = Info
+
+var proto = Info.prototype
+
+proto.space = null
+proto.attribute = null
+proto.property = null
+proto.boolean = false
+proto.booleanish = false
+proto.overloadedBoolean = false
+proto.number = false
+proto.commaSeparated = false
+proto.spaceSeparated = false
+proto.commaOrSpaceSeparated = false
+proto.mustUseProperty = false
+proto.defined = false
+
+function Info(property, attribute) {
+  this.property = property
+  this.attribute = attribute
+}
+
+
+/***/ }),
+
+/***/ 9940:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var xtend = __webpack_require__(7529)
+var Schema = __webpack_require__(9607)
+
+module.exports = merge
+
+function merge(definitions) {
+  var length = definitions.length
+  var property = []
+  var normal = []
+  var index = -1
+  var info
+  var space
+
+  while (++index < length) {
+    info = definitions[index]
+    property.push(info.property)
+    normal.push(info.normal)
+    space = info.space
+  }
+
+  return new Schema(
+    xtend.apply(null, property),
+    xtend.apply(null, normal),
+    space
+  )
+}
+
+
+/***/ }),
+
+/***/ 9607:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = Schema
+
+var proto = Schema.prototype
+
+proto.space = null
+proto.normal = {}
+proto.property = {}
+
+function Schema(property, normal, space) {
+  this.property = property
+  this.normal = normal
+
+  if (space) {
+    this.space = space
+  }
+}
+
+
+/***/ }),
+
+/***/ 7000:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+var powers = 0
+
+exports.boolean = increment()
+exports.booleanish = increment()
+exports.overloadedBoolean = increment()
+exports.number = increment()
+exports.spaceSeparated = increment()
+exports.commaSeparated = increment()
+exports.commaOrSpaceSeparated = increment()
+
+function increment() {
+  return Math.pow(2, ++powers)
+}
+
+
+/***/ }),
+
+/***/ 8289:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var create = __webpack_require__(7596)
+
+module.exports = create({
+  space: 'xlink',
+  transform: xlinkTransform,
+  properties: {
+    xLinkActuate: null,
+    xLinkArcRole: null,
+    xLinkHref: null,
+    xLinkRole: null,
+    xLinkShow: null,
+    xLinkTitle: null,
+    xLinkType: null
+  }
+})
+
+function xlinkTransform(_, prop) {
+  return 'xlink:' + prop.slice(5).toLowerCase()
+}
+
+
+/***/ }),
+
+/***/ 5812:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var create = __webpack_require__(7596)
+
+module.exports = create({
+  space: 'xml',
+  transform: xmlTransform,
+  properties: {
+    xmlLang: null,
+    xmlBase: null,
+    xmlSpace: null
+  }
+})
+
+function xmlTransform(_, prop) {
+  return 'xml:' + prop.slice(3).toLowerCase()
+}
+
+
+/***/ }),
+
+/***/ 4397:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var create = __webpack_require__(7596)
+var caseInsensitiveTransform = __webpack_require__(855)
+
+module.exports = create({
+  space: 'xmlns',
+  attributes: {
+    xmlnsxlink: 'xmlns:xlink'
+  },
+  transform: caseInsensitiveTransform,
+  properties: {
+    xmlns: null,
+    xmlnsXLink: null
+  }
+})
+
+
+/***/ }),
+
+/***/ 6632:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = normalize
+
+function normalize(value) {
+  return value.toLowerCase()
+}
+
+
+/***/ }),
+
+/***/ 1218:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var merge = __webpack_require__(9940)
+var xlink = __webpack_require__(8289)
+var xml = __webpack_require__(5812)
+var xmlns = __webpack_require__(4397)
+var aria = __webpack_require__(7716)
+var svg = __webpack_require__(5789)
+
+module.exports = merge([xml, xlink, xmlns, aria, svg])
+
+
+/***/ }),
+
+/***/ 4448:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -262,7 +10290,7 @@ var __webpack_unused_export__;
 /*
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var aa=__webpack_require__(294),m=__webpack_require__(418),r=__webpack_require__(840);function y(a){for(var b="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=1;c<arguments.length;c++)b+="&args[]="+encodeURIComponent(arguments[c]);return"Minified React error #"+a+"; visit "+b+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}if(!aa)throw Error(y(227));var ba=new Set,ca={};function da(a,b){ea(a,b);ea(a+"Capture",b)}
+var aa=__webpack_require__(7294),m=__webpack_require__(7418),r=__webpack_require__(3840);function y(a){for(var b="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=1;c<arguments.length;c++)b+="&args[]="+encodeURIComponent(arguments[c]);return"Minified React error #"+a+"; visit "+b+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}if(!aa)throw Error(y(227));var ba=new Set,ca={};function da(a,b){ea(a,b);ea(a+"Capture",b)}
 function ea(a,b){ca[a]=b;for(a=0;a<b.length;a++)ba.add(b[a])}
 var fa=!("undefined"===typeof window||"undefined"===typeof window.document||"undefined"===typeof window.document.createElement),ha=/^[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$/,ia=Object.prototype.hasOwnProperty,
 ja={},ka={};function la(a){if(ia.call(ka,a))return!0;if(ia.call(ja,a))return!1;if(ha.test(a))return ka[a]=!0;ja[a]=!0;return!1}function ma(a,b,c,d){if(null!==c&&0===c.type)return!1;switch(typeof b){case "function":case "symbol":return!0;case "boolean":if(d)return!1;if(null!==c)return!c.acceptsBooleans;a=a.toLowerCase().slice(0,5);return"data-"!==a&&"aria-"!==a;default:return!1}}
@@ -552,7 +10580,7 @@ __webpack_unused_export__=function(a,b,c,d){if(!rk(c))throw Error(y(200));if(nul
 
 /***/ }),
 
-/***/ 935:
+/***/ 3935:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -581,13 +10609,13 @@ if (true) {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(448);
+  module.exports = __webpack_require__(4448);
 } else {}
 
 
 /***/ }),
 
-/***/ 921:
+/***/ 9921:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -610,20 +10638,1355 @@ exports.isValidElementType=function(a){return"string"===typeof a||"function"===t
 
 /***/ }),
 
-/***/ 864:
+/***/ 9864:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
 if (true) {
-  module.exports = __webpack_require__(921);
+  module.exports = __webpack_require__(9921);
 } else {}
 
 
 /***/ }),
 
-/***/ 408:
+/***/ 1471:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+/** @license React v17.0.2
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var b=60103,c=60106,d=60107,e=60108,f=60114,g=60109,h=60110,k=60112,l=60113,m=60120,n=60115,p=60116,q=60121,r=60122,u=60117,v=60129,w=60131;
+if("function"===typeof Symbol&&Symbol.for){var x=Symbol.for;b=x("react.element");c=x("react.portal");d=x("react.fragment");e=x("react.strict_mode");f=x("react.profiler");g=x("react.provider");h=x("react.context");k=x("react.forward_ref");l=x("react.suspense");m=x("react.suspense_list");n=x("react.memo");p=x("react.lazy");q=x("react.block");r=x("react.server.block");u=x("react.fundamental");v=x("react.debug_trace_mode");w=x("react.legacy_hidden")}
+function y(a){if("object"===typeof a&&null!==a){var t=a.$$typeof;switch(t){case b:switch(a=a.type,a){case d:case f:case e:case l:case m:return a;default:switch(a=a&&a.$$typeof,a){case h:case k:case p:case n:case g:return a;default:return t}}case c:return t}}}var z=g,A=b,B=k,C=d,D=p,E=n,F=c,G=f,H=e,I=l;exports.ContextConsumer=h;exports.ContextProvider=z;exports.Element=A;exports.ForwardRef=B;exports.Fragment=C;exports.Lazy=D;exports.Memo=E;exports.Portal=F;exports.Profiler=G;exports.StrictMode=H;
+exports.Suspense=I;exports.isAsyncMode=function(){return!1};exports.isConcurrentMode=function(){return!1};exports.isContextConsumer=function(a){return y(a)===h};exports.isContextProvider=function(a){return y(a)===g};exports.isElement=function(a){return"object"===typeof a&&null!==a&&a.$$typeof===b};exports.isForwardRef=function(a){return y(a)===k};exports.isFragment=function(a){return y(a)===d};exports.isLazy=function(a){return y(a)===p};exports.isMemo=function(a){return y(a)===n};
+exports.isPortal=function(a){return y(a)===c};exports.isProfiler=function(a){return y(a)===f};exports.isStrictMode=function(a){return y(a)===e};exports.isSuspense=function(a){return y(a)===l};exports.isValidElementType=function(a){return"string"===typeof a||"function"===typeof a||a===d||a===f||a===v||a===e||a===l||a===m||a===w||"object"===typeof a&&null!==a&&(a.$$typeof===p||a.$$typeof===n||a.$$typeof===g||a.$$typeof===h||a.$$typeof===k||a.$$typeof===u||a.$$typeof===q||a[0]===r)?!0:!1};
+exports.typeOf=y;
+
+
+/***/ }),
+
+/***/ 2143:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+if (true) {
+  module.exports = __webpack_require__(1471);
+} else {}
+
+
+/***/ }),
+
+/***/ 2076:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+var __webpack_unused_export__;
+
+
+const React = __webpack_require__(7294)
+const ReactIs = __webpack_require__(2143)
+const svg = __webpack_require__(1218)
+const find = __webpack_require__(9560)
+const hastToReact = __webpack_require__(9640)
+const spaces = __webpack_require__(6582)
+const commas = __webpack_require__(6851)
+const style = __webpack_require__(7848)
+
+__webpack_unused_export__ = toReact
+exports.D = childrenToReact
+
+/**
+ * @typedef {JSX.IntrinsicElements} IntrinsicElements
+ * @typedef {import('react').ReactNode} ReactNode
+ * @typedef {import('unist').Position} Position
+ * @typedef {import('hast').Element} Element
+ * @typedef {import('hast').Root} Root
+ * @typedef {import('hast').Text} Text
+ * @typedef {import('hast').Comment} Comment
+ * @typedef {import('hast').DocType} Doctype
+ */
+
+/**
+ * @typedef Info
+ * @property {string?} space
+ * @property {string?} attribute
+ * @property {string?} property
+ * @property {boolean} boolean
+ * @property {boolean} booleanish
+ * @property {boolean} overloadedBoolean
+ * @property {boolean} number
+ * @property {boolean} commaSeparated
+ * @property {boolean} spaceSeparated
+ * @property {boolean} commaOrSpaceSeparated
+ * @property {boolean} mustUseProperty
+ * @property {boolean} defined
+ *
+ * @typedef Schema
+ * @property {Object.<string, Info>} property
+ * @property {Object.<string, string>} normal
+ * @property {string?} space
+ *
+ * @typedef Raw
+ * @property {'raw'} type
+ * @property {string} value
+ *
+ * @typedef Context
+ * @property {TransformOptions} options
+ * @property {Schema} schema
+ * @property {number} listDepth
+ *
+ * @callback TransformLink
+ * @param {string} href
+ * @param {Array.<Comment|Element|Text>} children
+ * @param {string?} title
+ * @returns {string}
+ *
+ * @callback TransformImage
+ * @param {string} src
+ * @param {string} alt
+ * @param {string?} title
+ * @returns {string}
+ *
+ * @callback TransformLinkTarget
+ * @param {string} href
+ * @param {Array.<Comment|Element|Text>} children
+ * @param {string?} title
+ * @returns {string|undefined}
+ *
+ * @typedef {keyof IntrinsicElements} ReactMarkdownNames
+ *
+ * To do: is `data-sourcepos` typeable?
+ *
+ * @typedef ReactMarkdownProps
+ * @property {Element} node
+ * @property {string} key
+ * @property {ReactNode[]} children
+ * @property {Position?} [sourcePosition] Passed when `options.rawSourcePos` is given
+ * @property {number} [index] Passed when `options.includeElementIndex` is given
+ * @property {number} [siblingCount] Passed when `options.includeElementIndex` is given
+ *
+ * @callback CodeComponent
+ * @param {JSX.IntrinsicElements['code'] & ReactMarkdownProps & {inline?: boolean}} props
+ * @returns {ReactNode}
+ *
+ * @callback HeadingComponent
+ * @param {JSX.IntrinsicElements['h1'] & ReactMarkdownProps & {level: number}} props
+ * @returns {ReactNode}
+ *
+ * @callback LiComponent
+ * @param {JSX.IntrinsicElements['li'] & ReactMarkdownProps & {checked: boolean|null, index: number, ordered: boolean}} props
+ * @returns {ReactNode}
+ *
+ * @callback OrderedListComponent
+ * @param {JSX.IntrinsicElements['ol'] & ReactMarkdownProps & {depth: number, ordered: true}} props
+ * @returns {ReactNode}
+ *
+ * @callback TableCellComponent
+ * @param {JSX.IntrinsicElements['table'] & ReactMarkdownProps & {style?: Object.<string, unknown>, isHeader: boolean}} props
+ * @returns {ReactNode}
+ *
+ * @callback TableRowComponent
+ * @param {JSX.IntrinsicElements['tr'] & ReactMarkdownProps & {isHeader: boolean}} props
+ * @returns {ReactNode}
+ *
+ * @callback UnorderedListComponent
+ * @param {JSX.IntrinsicElements['ul'] & ReactMarkdownProps & {depth: number, ordered: false}} props
+ * @returns {ReactNode}
+ *
+ * @typedef SpecialComponents
+ * @property {CodeComponent|ReactMarkdownNames} code
+ * @property {HeadingComponent|ReactMarkdownNames} h1
+ * @property {HeadingComponent|ReactMarkdownNames} h2
+ * @property {HeadingComponent|ReactMarkdownNames} h3
+ * @property {HeadingComponent|ReactMarkdownNames} h4
+ * @property {HeadingComponent|ReactMarkdownNames} h5
+ * @property {HeadingComponent|ReactMarkdownNames} h6
+ * @property {LiComponent|ReactMarkdownNames} li
+ * @property {OrderedListComponent|ReactMarkdownNames} ol
+ * @property {TableCellComponent|ReactMarkdownNames} td
+ * @property {TableCellComponent|ReactMarkdownNames} th
+ * @property {TableRowComponent|ReactMarkdownNames} tr
+ * @property {UnorderedListComponent|ReactMarkdownNames} ul
+ *
+ * @typedef {{[TagName in keyof IntrinsicElements]: TagName | ((props: IntrinsicElements[TagName] & ReactMarkdownProps) => ReactNode)}} NormalComponents
+ * @typedef {Partial<Omit<NormalComponents, keyof SpecialComponents> & SpecialComponents>} Components
+ */
+
+/**
+ * @typedef TransformOptions
+ * @property {boolean} [sourcePos=false]
+ * @property {boolean} [rawSourcePos=false]
+ * @property {boolean} [skipHtml=false]
+ * @property {boolean} [includeElementIndex=false]
+ * @property {null|false|TransformLink} [transformLinkUri]
+ * @property {TransformImage} [transformImageUri]
+ * @property {string|TransformLinkTarget} [linkTarget]
+ * @property {Components} [components]
+ */
+
+const own = {}.hasOwnProperty
+
+// The table-related elements that must not contain whitespace text according
+// to React.
+const tableElements = new Set(['table', 'thead', 'tbody', 'tfoot', 'tr'])
+
+/**
+ * @param {Context} context
+ * @param {Element|Root} node
+ */
+function childrenToReact(context, node) {
+  /** @type {Array.<ReactNode>} */
+  const children = []
+  let childIndex = -1
+  /** @type {Comment|Doctype|Element|Raw|Text} */
+  let child
+
+  while (++childIndex < node.children.length) {
+    child = node.children[childIndex]
+
+    if (child.type === 'element') {
+      children.push(toReact(context, child, childIndex, node))
+    } else if (child.type === 'text') {
+      // React does not permit whitespace text elements as children of table:
+      // cf. https://github.com/remarkjs/react-markdown/issues/576
+      if (
+        node.type !== 'element' ||
+        !tableElements.has(node.tagName) ||
+        child.value !== '\n'
+      ) {
+        children.push(child.value)
+      }
+    }
+    // @ts-expect-error `raw` nodes are non-standard
+    else if (child.type === 'raw' && !context.options.skipHtml) {
+      // Default behavior is to show (encoded) HTML.
+      // @ts-expect-error `raw` nodes are non-standard
+      children.push(child.value)
+    }
+  }
+
+  return children
+}
+
+/**
+ * @param {Context} context
+ * @param {Element} node
+ * @param {number} index
+ * @param {Element|Root} parent
+ */
+function toReact(context, node, index, parent) {
+  const options = context.options
+  const parentSchema = context.schema
+  /** @type {ReactMarkdownNames} */
+  // @ts-expect-error assume a known HTML/SVG element.
+  const name = node.tagName
+  /** @type {Object.<string, unknown>} */
+  const properties = {}
+  let schema = parentSchema
+  /** @type {string} */
+  let property
+
+  if (parentSchema.space === 'html' && name === 'svg') {
+    schema = svg
+    context.schema = schema
+  }
+
+  /* istanbul ignore else - types say they’re optional. */
+  if (node.properties) {
+    for (property in node.properties) {
+      /* istanbul ignore else - prototype polution. */
+      if (own.call(node.properties, property)) {
+        addProperty(properties, property, node.properties[property], context)
+      }
+    }
+  }
+
+  if (name === 'ol' || name === 'ul') {
+    context.listDepth++
+  }
+
+  const children = childrenToReact(context, node)
+
+  if (name === 'ol' || name === 'ul') {
+    context.listDepth--
+  }
+
+  // Restore parent schema.
+  context.schema = parentSchema
+
+  // Nodes created by plugins do not have positional info, in which case we use
+  // an object that matches the positon interface.
+  const position = node.position || {
+    start: {line: null, column: null, offset: null},
+    end: {line: null, column: null, offset: null}
+  }
+  const component =
+    options.components && own.call(options.components, name)
+      ? options.components[name]
+      : name
+  const basic = typeof component === 'string' || component === React.Fragment
+
+  if (!ReactIs.isValidElementType(component)) {
+    throw new TypeError(
+      `Component for name \`${name}\` not defined or is not renderable`
+    )
+  }
+
+  properties.key = [
+    name,
+    position.start.line,
+    position.start.column,
+    index
+  ].join('-')
+
+  if (name === 'a' && options.linkTarget) {
+    properties.target =
+      typeof options.linkTarget === 'function'
+        ? // @ts-expect-error assume `href` is a string
+          options.linkTarget(properties.href, node.children, properties.title)
+        : options.linkTarget
+  }
+
+  if (name === 'a' && options.transformLinkUri) {
+    properties.href = options.transformLinkUri(
+      // @ts-expect-error assume `href` is a string
+      properties.href,
+      node.children,
+      properties.title
+    )
+  }
+
+  if (
+    !basic &&
+    name === 'code' &&
+    parent.type === 'element' &&
+    parent.tagName !== 'pre'
+  ) {
+    properties.inline = true
+  }
+
+  if (
+    !basic &&
+    (name === 'h1' ||
+      name === 'h2' ||
+      name === 'h3' ||
+      name === 'h4' ||
+      name === 'h5' ||
+      name === 'h6')
+  ) {
+    properties.level = parseInt(name.charAt(1), 10)
+  }
+
+  if (name === 'img' && options.transformImageUri) {
+    properties.src = options.transformImageUri(
+      // @ts-expect-error assume `src` is a string
+      properties.src,
+      properties.alt,
+      properties.title
+    )
+  }
+
+  if (!basic && name === 'li' && parent.type === 'element') {
+    const input = getInputElement(node)
+    properties.checked =
+      input && input.properties ? Boolean(input.properties.checked) : null
+    properties.index = getElementsBeforeCount(parent, node)
+    properties.ordered = parent.tagName === 'ol'
+  }
+
+  if (!basic && (name === 'ol' || name === 'ul')) {
+    properties.ordered = name === 'ol'
+    properties.depth = context.listDepth
+  }
+
+  if (name === 'td' || name === 'th') {
+    if (properties.align) {
+      if (!properties.style) properties.style = {}
+      // @ts-expect-error assume `style` is an object
+      properties.style.textAlign = properties.align
+      delete properties.align
+    }
+
+    if (!basic) {
+      properties.isHeader = name === 'th'
+    }
+  }
+
+  if (!basic && name === 'tr' && parent.type === 'element') {
+    properties.isHeader = Boolean(parent.tagName === 'thead')
+  }
+
+  // If `sourcePos` is given, pass source information (line/column info from markdown source).
+  if (options.sourcePos) {
+    properties['data-sourcepos'] = flattenPosition(position)
+  }
+
+  if (!basic && options.rawSourcePos) {
+    properties.sourcePosition = node.position
+  }
+
+  // If `includeElementIndex` is given, pass node index info to components.
+  if (!basic && options.includeElementIndex) {
+    properties.index = getElementsBeforeCount(parent, node)
+    properties.siblingCount = getElementsBeforeCount(parent)
+  }
+
+  if (!basic) {
+    properties.node = node
+  }
+
+  // Ensure no React warnings are emitted for void elements w/ children.
+  return children.length > 0
+    ? React.createElement(component, properties, children)
+    : React.createElement(component, properties)
+}
+
+/**
+ * @param {Element|Root} node
+ * @returns {Element?}
+ */
+function getInputElement(node) {
+  let index = -1
+
+  while (++index < node.children.length) {
+    const child = node.children[index]
+
+    if (child.type === 'element' && child.tagName === 'input') {
+      return child
+    }
+  }
+
+  return null
+}
+
+/**
+ * @param {Element|Root} parent
+ * @param {Element} [node]
+ * @returns {number}
+ */
+function getElementsBeforeCount(parent, node) {
+  let index = -1
+  let count = 0
+
+  while (++index < parent.children.length) {
+    if (parent.children[index] === node) break
+    if (parent.children[index].type === 'element') count++
+  }
+
+  return count
+}
+
+/**
+ * @param {Object.<string, unknown>} props
+ * @param {string} prop
+ * @param {unknown} value
+ * @param {Context} ctx
+ */
+function addProperty(props, prop, value, ctx) {
+  /** @type {Info} */
+  const info = find(ctx.schema, prop)
+  let result = value
+
+  // Ignore nullish and `NaN` values.
+  // eslint-disable-next-line no-self-compare
+  if (result === null || result === undefined || result !== result) {
+    return
+  }
+
+  // Accept `array`.
+  // Most props are space-separated.
+  if (result && typeof result === 'object' && 'length' in result) {
+    // type-coverage:ignore-next-line remove when typed.
+    result = (info.commaSeparated ? commas : spaces).stringify(result)
+  }
+
+  if (info.property === 'style' && typeof result === 'string') {
+    result = parseStyle(result)
+  }
+
+  /* istanbul ignore else - types say they’re optional. */
+  if (info.space && info.property) {
+    props[
+      own.call(hastToReact, info.property)
+        ? hastToReact[info.property]
+        : info.property
+    ] = result
+  } else if (info.attribute) {
+    props[info.attribute] = result
+  }
+}
+
+/**
+ * @param {string} value
+ * @returns {Object.<string, string>}
+ */
+function parseStyle(value) {
+  /** @type {Object.<string, string>} */
+  const result = {}
+
+  try {
+    style(value, iterator)
+  } catch (/** @type {unknown} */ _) {
+    // Silent.
+  }
+
+  return result
+
+  /**
+   * @param {string} name
+   * @param {string} v
+   */
+  function iterator(name, v) {
+    const k = name.slice(0, 4) === '-ms-' ? `ms-${name.slice(4)}` : name
+    result[k.replace(/-([a-z])/g, styleReplacer)] = v
+  }
+}
+
+/**
+ * @param {unknown} _
+ * @param {string} $1
+ */
+function styleReplacer(_, $1) {
+  return $1.toUpperCase()
+}
+
+/**
+ * @param {Position|{start: {line: null, column: null, offset: null}, end: {line: null, column: null, offset: null}}} pos
+ * @returns {string}
+ */
+function flattenPosition(pos) {
+  return [
+    pos.start.line,
+    ':',
+    pos.start.column,
+    '-',
+    pos.end.line,
+    ':',
+    pos.end.column
+  ]
+    .map((d) => String(d))
+    .join('')
+}
+
+
+/***/ }),
+
+/***/ 8456:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const React = __webpack_require__(7294)
+const vfile = __webpack_require__(939)
+const unified = __webpack_require__(8835)
+const parse = __webpack_require__(2861)
+const remarkRehype = __webpack_require__(8818)
+const PropTypes = __webpack_require__(5697)
+const html = __webpack_require__(7247)
+const filter = __webpack_require__(6625)
+const uriTransformer = __webpack_require__(100)
+const childrenToReact = (__webpack_require__(2076)/* .hastChildrenToReact */ .D)
+
+/**
+ * @typedef {import('react').ReactNode} ReactNode
+ * @typedef {import('react').ReactElement<{}>} ReactElement
+ * @typedef {import('unified').PluggableList} PluggableList
+ * @typedef {import('hast').Root} Root
+ * @typedef {import('./rehype-filter.js').RehypeFilterOptions} FilterOptions
+ * @typedef {import('./ast-to-react.js').TransformOptions} TransformOptions
+ *
+ * @typedef CoreOptions
+ * @property {string} children
+ *
+ * @typedef PluginOptions
+ * @property {PluggableList} [plugins=[]] **deprecated**: use `remarkPlugins` instead
+ * @property {PluggableList} [remarkPlugins=[]]
+ * @property {PluggableList} [rehypePlugins=[]]
+ *
+ * @typedef LayoutOptions
+ * @property {string} [className]
+ *
+ * @typedef {CoreOptions & PluginOptions & LayoutOptions & FilterOptions & TransformOptions} ReactMarkdownOptions
+ */
+
+module.exports = ReactMarkdown
+
+const own = {}.hasOwnProperty
+const changelog =
+  'https://github.com/remarkjs/react-markdown/blob/main/changelog.md'
+
+/**
+ * @typedef Deprecation
+ * @property {string} id
+ * @property {string} [to]
+ */
+
+/**
+ * @type {Object.<string, Deprecation>}
+ */
+const deprecated = {
+  renderers: {to: 'components', id: 'change-renderers-to-components'},
+  astPlugins: {id: 'remove-buggy-html-in-markdown-parser'},
+  allowDangerousHtml: {id: 'remove-buggy-html-in-markdown-parser'},
+  escapeHtml: {id: 'remove-buggy-html-in-markdown-parser'},
+  source: {to: 'children', id: 'change-source-to-children'},
+  allowNode: {
+    to: 'allowElement',
+    id: 'replace-allownode-allowedtypes-and-disallowedtypes'
+  },
+  allowedTypes: {
+    to: 'allowedElements',
+    id: 'replace-allownode-allowedtypes-and-disallowedtypes'
+  },
+  disallowedTypes: {
+    to: 'disallowedElements',
+    id: 'replace-allownode-allowedtypes-and-disallowedtypes'
+  },
+  includeNodeIndex: {
+    to: 'includeElementIndex',
+    id: 'change-includenodeindex-to-includeelementindex'
+  }
+}
+
+/**
+ * @param {ReactMarkdownOptions} options
+ * @returns {ReactElement}
+ */
+function ReactMarkdown(options) {
+  for (const key in deprecated) {
+    if (own.call(deprecated, key) && own.call(options, key)) {
+      /** @type {Deprecation} */
+      const deprecation = deprecated[key]
+      console.warn(
+        `[react-markdown] Warning: please ${
+          deprecation.to ? `use \`${deprecation.to}\` instead of` : 'remove'
+        } \`${key}\` (see <${changelog}#${deprecation.id}> for more info)`
+      )
+      delete deprecated[key]
+    }
+  }
+
+  const processor = unified()
+    .use(parse)
+    // TODO: deprecate `plugins` in v7.0.0.
+    .use(options.remarkPlugins || options.plugins || [])
+    .use(remarkRehype, {allowDangerousHtml: true})
+    .use(options.rehypePlugins || [])
+    .use(filter, options)
+
+  /** @type {vfile} */
+  let file
+
+  if (typeof options.children === 'string') {
+    file = vfile(options.children)
+  } else {
+    if (options.children !== undefined && options.children !== null) {
+      console.warn(
+        `[react-markdown] Warning: please pass a string as \`children\` (not: \`${options.children}\`)`
+      )
+    }
+
+    file = vfile()
+  }
+
+  /** @type {Root} */
+  // @ts-expect-error we’ll throw if it isn’t a root next.
+  const hastNode = processor.runSync(processor.parse(file), file)
+
+  if (hastNode.type !== 'root') {
+    throw new TypeError('Expected a `root` node')
+  }
+
+  /** @type {ReactElement} */
+  let result = React.createElement(
+    React.Fragment,
+    {},
+    childrenToReact({options: options, schema: html, listDepth: 0}, hastNode)
+  )
+
+  if (options.className) {
+    result = React.createElement('div', {className: options.className}, result)
+  }
+
+  return result
+}
+
+ReactMarkdown.defaultProps = {transformLinkUri: uriTransformer}
+
+ReactMarkdown.propTypes = {
+  // Core options:
+  children: PropTypes.string,
+  // Layout options:
+  className: PropTypes.string,
+  // Filter options:
+  allowElement: PropTypes.func,
+  allowedElements: PropTypes.arrayOf(PropTypes.string),
+  disallowedElements: PropTypes.arrayOf(PropTypes.string),
+  unwrapDisallowed: PropTypes.bool,
+  // Plugin options:
+  // type-coverage:ignore-next-line
+  remarkPlugins: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.func,
+      PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object, PropTypes.func]))
+    ])
+  ),
+  // type-coverage:ignore-next-line
+  rehypePlugins: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.func,
+      PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object, PropTypes.func]))
+    ])
+  ),
+  // Transform options:
+  sourcePos: PropTypes.bool,
+  rawSourcePos: PropTypes.bool,
+  skipHtml: PropTypes.bool,
+  includeElementIndex: PropTypes.bool,
+  transformLinkUri: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
+  linkTarget: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+  transformImageUri: PropTypes.func,
+  components: PropTypes.object
+}
+
+ReactMarkdown.uriTransformer = uriTransformer
+
+
+/***/ }),
+
+/***/ 6625:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const visit = __webpack_require__(2854)
+
+module.exports = rehypeFilter
+
+/**
+ * @typedef {import('unist').Node} Node
+ * @typedef {import('hast').Root} Root
+ * @typedef {import('hast').Element} Element
+ *
+ * @callback AllowElement
+ * @param {Element} element
+ * @param {number} index
+ * @param {Element|Root} parent
+ * @returns {boolean|undefined}
+ *
+ * @typedef RehypeFilterOptions
+ * @property {Array.<string>} [allowedElements]
+ * @property {Array.<string>} [disallowedElements=[]]
+ * @property {AllowElement} [allowElement]
+ * @property {boolean} [unwrapDisallowed=false]
+ */
+
+/**
+ * @type {import('unified').Plugin<[RehypeFilterOptions]>}
+ */
+function rehypeFilter(options) {
+  if (options.allowedElements && options.disallowedElements) {
+    throw new TypeError(
+      'Only one of `allowedElements` and `disallowedElements` should be defined'
+    )
+  }
+
+  if (
+    options.allowedElements ||
+    options.disallowedElements ||
+    options.allowElement
+  ) {
+    return (tree) => {
+      const node = /** @type {Root} */ (tree)
+      visit(node, 'element', onelement)
+    }
+  }
+
+  /**
+   * @param {Node} node_
+   * @param {number|null|undefined} index
+   * @param {Node|null|undefined} parent_
+   * @returns {number|void}
+   */
+  function onelement(node_, index, parent_) {
+    const node = /** @type {Element} */ (node_)
+    const parent = /** @type {Element|Root} */ (parent_)
+    /** @type {boolean|undefined} */
+    let remove
+
+    if (options.allowedElements) {
+      remove = !options.allowedElements.includes(node.tagName)
+    } else if (options.disallowedElements) {
+      remove = options.disallowedElements.includes(node.tagName)
+    }
+
+    if (!remove && options.allowElement && typeof index === 'number') {
+      remove = !options.allowElement(node, index, parent)
+    }
+
+    if (remove && typeof index === 'number') {
+      if (options.unwrapDisallowed && node.children) {
+        parent.children.splice(index, 1, ...node.children)
+      } else {
+        parent.children.splice(index, 1)
+      }
+
+      return index
+    }
+
+    return undefined
+  }
+}
+
+
+/***/ }),
+
+/***/ 100:
+/***/ ((module) => {
+
+const protocols = ['http', 'https', 'mailto', 'tel']
+
+module.exports = uriTransformer
+
+/**
+ * @param {string} uri
+ * @returns {string}
+ */
+function uriTransformer(uri) {
+  const url = (uri || '').trim()
+  const first = url.charAt(0)
+
+  if (first === '#' || first === '/') {
+    return url
+  }
+
+  const colon = url.indexOf(':')
+  if (colon === -1) {
+    return url
+  }
+
+  let index = -1
+
+  while (++index < protocols.length) {
+    const protocol = protocols[index]
+
+    if (
+      colon === protocol.length &&
+      url.slice(0, protocol.length).toLowerCase() === protocol
+    ) {
+      return url
+    }
+  }
+
+  index = url.indexOf('?')
+  if (index !== -1 && colon > index) {
+    return url
+  }
+
+  index = url.indexOf('#')
+  if (index !== -1 && colon > index) {
+    return url
+  }
+
+  // eslint-disable-next-line no-script-url
+  return 'javascript:void(0)'
+}
+
+
+/***/ }),
+
+/***/ 6585:
+/***/ ((module) => {
+
+module.exports = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
+
+/***/ 9658:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isarray = __webpack_require__(6585)
+
+/**
+ * Expose `pathToRegexp`.
+ */
+module.exports = pathToRegexp
+module.exports.parse = parse
+module.exports.compile = compile
+module.exports.tokensToFunction = tokensToFunction
+module.exports.tokensToRegExp = tokensToRegExp
+
+/**
+ * The main path matching regexp utility.
+ *
+ * @type {RegExp}
+ */
+var PATH_REGEXP = new RegExp([
+  // Match escaped characters that would otherwise appear in future matches.
+  // This allows the user to escape special characters that won't transform.
+  '(\\\\.)',
+  // Match Express-style parameters and un-named parameters with a prefix
+  // and optional suffixes. Matches appear as:
+  //
+  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
+  // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
+  // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
+  '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?|(\\*))'
+].join('|'), 'g')
+
+/**
+ * Parse a string for the raw tokens.
+ *
+ * @param  {string}  str
+ * @param  {Object=} options
+ * @return {!Array}
+ */
+function parse (str, options) {
+  var tokens = []
+  var key = 0
+  var index = 0
+  var path = ''
+  var defaultDelimiter = options && options.delimiter || '/'
+  var res
+
+  while ((res = PATH_REGEXP.exec(str)) != null) {
+    var m = res[0]
+    var escaped = res[1]
+    var offset = res.index
+    path += str.slice(index, offset)
+    index = offset + m.length
+
+    // Ignore already escaped sequences.
+    if (escaped) {
+      path += escaped[1]
+      continue
+    }
+
+    var next = str[index]
+    var prefix = res[2]
+    var name = res[3]
+    var capture = res[4]
+    var group = res[5]
+    var modifier = res[6]
+    var asterisk = res[7]
+
+    // Push the current path onto the tokens.
+    if (path) {
+      tokens.push(path)
+      path = ''
+    }
+
+    var partial = prefix != null && next != null && next !== prefix
+    var repeat = modifier === '+' || modifier === '*'
+    var optional = modifier === '?' || modifier === '*'
+    var delimiter = res[2] || defaultDelimiter
+    var pattern = capture || group
+
+    tokens.push({
+      name: name || key++,
+      prefix: prefix || '',
+      delimiter: delimiter,
+      optional: optional,
+      repeat: repeat,
+      partial: partial,
+      asterisk: !!asterisk,
+      pattern: pattern ? escapeGroup(pattern) : (asterisk ? '.*' : '[^' + escapeString(delimiter) + ']+?')
+    })
+  }
+
+  // Match any characters still remaining.
+  if (index < str.length) {
+    path += str.substr(index)
+  }
+
+  // If the path exists, push it onto the end.
+  if (path) {
+    tokens.push(path)
+  }
+
+  return tokens
+}
+
+/**
+ * Compile a string to a template function for the path.
+ *
+ * @param  {string}             str
+ * @param  {Object=}            options
+ * @return {!function(Object=, Object=)}
+ */
+function compile (str, options) {
+  return tokensToFunction(parse(str, options), options)
+}
+
+/**
+ * Prettier encoding of URI path segments.
+ *
+ * @param  {string}
+ * @return {string}
+ */
+function encodeURIComponentPretty (str) {
+  return encodeURI(str).replace(/[\/?#]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
+  })
+}
+
+/**
+ * Encode the asterisk parameter. Similar to `pretty`, but allows slashes.
+ *
+ * @param  {string}
+ * @return {string}
+ */
+function encodeAsterisk (str) {
+  return encodeURI(str).replace(/[?#]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
+  })
+}
+
+/**
+ * Expose a method for transforming tokens into the path function.
+ */
+function tokensToFunction (tokens, options) {
+  // Compile all the tokens into regexps.
+  var matches = new Array(tokens.length)
+
+  // Compile all the patterns before compilation.
+  for (var i = 0; i < tokens.length; i++) {
+    if (typeof tokens[i] === 'object') {
+      matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$', flags(options))
+    }
+  }
+
+  return function (obj, opts) {
+    var path = ''
+    var data = obj || {}
+    var options = opts || {}
+    var encode = options.pretty ? encodeURIComponentPretty : encodeURIComponent
+
+    for (var i = 0; i < tokens.length; i++) {
+      var token = tokens[i]
+
+      if (typeof token === 'string') {
+        path += token
+
+        continue
+      }
+
+      var value = data[token.name]
+      var segment
+
+      if (value == null) {
+        if (token.optional) {
+          // Prepend partial segment prefixes.
+          if (token.partial) {
+            path += token.prefix
+          }
+
+          continue
+        } else {
+          throw new TypeError('Expected "' + token.name + '" to be defined')
+        }
+      }
+
+      if (isarray(value)) {
+        if (!token.repeat) {
+          throw new TypeError('Expected "' + token.name + '" to not repeat, but received `' + JSON.stringify(value) + '`')
+        }
+
+        if (value.length === 0) {
+          if (token.optional) {
+            continue
+          } else {
+            throw new TypeError('Expected "' + token.name + '" to not be empty')
+          }
+        }
+
+        for (var j = 0; j < value.length; j++) {
+          segment = encode(value[j])
+
+          if (!matches[i].test(segment)) {
+            throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received `' + JSON.stringify(segment) + '`')
+          }
+
+          path += (j === 0 ? token.prefix : token.delimiter) + segment
+        }
+
+        continue
+      }
+
+      segment = token.asterisk ? encodeAsterisk(value) : encode(value)
+
+      if (!matches[i].test(segment)) {
+        throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
+      }
+
+      path += token.prefix + segment
+    }
+
+    return path
+  }
+}
+
+/**
+ * Escape a regular expression string.
+ *
+ * @param  {string} str
+ * @return {string}
+ */
+function escapeString (str) {
+  return str.replace(/([.+*?=^!:${}()[\]|\/\\])/g, '\\$1')
+}
+
+/**
+ * Escape the capturing group by escaping special characters and meaning.
+ *
+ * @param  {string} group
+ * @return {string}
+ */
+function escapeGroup (group) {
+  return group.replace(/([=!:$\/()])/g, '\\$1')
+}
+
+/**
+ * Attach the keys as a property of the regexp.
+ *
+ * @param  {!RegExp} re
+ * @param  {Array}   keys
+ * @return {!RegExp}
+ */
+function attachKeys (re, keys) {
+  re.keys = keys
+  return re
+}
+
+/**
+ * Get the flags for a regexp from the options.
+ *
+ * @param  {Object} options
+ * @return {string}
+ */
+function flags (options) {
+  return options && options.sensitive ? '' : 'i'
+}
+
+/**
+ * Pull out keys from a regexp.
+ *
+ * @param  {!RegExp} path
+ * @param  {!Array}  keys
+ * @return {!RegExp}
+ */
+function regexpToRegexp (path, keys) {
+  // Use a negative lookahead to match only capturing groups.
+  var groups = path.source.match(/\((?!\?)/g)
+
+  if (groups) {
+    for (var i = 0; i < groups.length; i++) {
+      keys.push({
+        name: i,
+        prefix: null,
+        delimiter: null,
+        optional: false,
+        repeat: false,
+        partial: false,
+        asterisk: false,
+        pattern: null
+      })
+    }
+  }
+
+  return attachKeys(path, keys)
+}
+
+/**
+ * Transform an array into a regexp.
+ *
+ * @param  {!Array}  path
+ * @param  {Array}   keys
+ * @param  {!Object} options
+ * @return {!RegExp}
+ */
+function arrayToRegexp (path, keys, options) {
+  var parts = []
+
+  for (var i = 0; i < path.length; i++) {
+    parts.push(pathToRegexp(path[i], keys, options).source)
+  }
+
+  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options))
+
+  return attachKeys(regexp, keys)
+}
+
+/**
+ * Create a path regexp from string input.
+ *
+ * @param  {string}  path
+ * @param  {!Array}  keys
+ * @param  {!Object} options
+ * @return {!RegExp}
+ */
+function stringToRegexp (path, keys, options) {
+  return tokensToRegExp(parse(path, options), keys, options)
+}
+
+/**
+ * Expose a function for taking tokens and returning a RegExp.
+ *
+ * @param  {!Array}          tokens
+ * @param  {(Array|Object)=} keys
+ * @param  {Object=}         options
+ * @return {!RegExp}
+ */
+function tokensToRegExp (tokens, keys, options) {
+  if (!isarray(keys)) {
+    options = /** @type {!Object} */ (keys || options)
+    keys = []
+  }
+
+  options = options || {}
+
+  var strict = options.strict
+  var end = options.end !== false
+  var route = ''
+
+  // Iterate over the tokens and create our regexp string.
+  for (var i = 0; i < tokens.length; i++) {
+    var token = tokens[i]
+
+    if (typeof token === 'string') {
+      route += escapeString(token)
+    } else {
+      var prefix = escapeString(token.prefix)
+      var capture = '(?:' + token.pattern + ')'
+
+      keys.push(token)
+
+      if (token.repeat) {
+        capture += '(?:' + prefix + capture + ')*'
+      }
+
+      if (token.optional) {
+        if (!token.partial) {
+          capture = '(?:' + prefix + '(' + capture + '))?'
+        } else {
+          capture = prefix + '(' + capture + ')?'
+        }
+      } else {
+        capture = prefix + '(' + capture + ')'
+      }
+
+      route += capture
+    }
+  }
+
+  var delimiter = escapeString(options.delimiter || '/')
+  var endsWithDelimiter = route.slice(-delimiter.length) === delimiter
+
+  // In non-strict mode we allow a slash at the end of match. If the path to
+  // match already ends with a slash, we remove it for consistency. The slash
+  // is valid at the end of a path match, not in the middle. This is important
+  // in non-ending mode, where "/test/" shouldn't match "/test//route".
+  if (!strict) {
+    route = (endsWithDelimiter ? route.slice(0, -delimiter.length) : route) + '(?:' + delimiter + '(?=$))?'
+  }
+
+  if (end) {
+    route += '$'
+  } else {
+    // In non-ending mode, we need the capturing groups to match as much as
+    // possible by using a positive lookahead to the end or next path segment.
+    route += strict && endsWithDelimiter ? '' : '(?=' + delimiter + '|$)'
+  }
+
+  return attachKeys(new RegExp('^' + route, flags(options)), keys)
+}
+
+/**
+ * Normalize the given path string, returning a regular expression.
+ *
+ * An empty array can be passed in for the keys, which will hold the
+ * placeholder key descriptions. For example, using `/user/:id`, `keys` will
+ * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
+ *
+ * @param  {(string|RegExp|Array)} path
+ * @param  {(Array|Object)=}       keys
+ * @param  {Object=}               options
+ * @return {!RegExp}
+ */
+function pathToRegexp (path, keys, options) {
+  if (!isarray(keys)) {
+    options = /** @type {!Object} */ (keys || options)
+    keys = []
+  }
+
+  options = options || {}
+
+  if (path instanceof RegExp) {
+    return regexpToRegexp(path, /** @type {!Array} */ (keys))
+  }
+
+  if (isarray(path)) {
+    return arrayToRegexp(/** @type {!Array} */ (path), /** @type {!Array} */ (keys), options)
+  }
+
+  return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
+}
+
+
+/***/ }),
+
+/***/ 86:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+var __webpack_unused_export__;
+/** @license React v16.13.1
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var b="function"===typeof Symbol&&Symbol.for,c=b?Symbol.for("react.element"):60103,d=b?Symbol.for("react.portal"):60106,e=b?Symbol.for("react.fragment"):60107,f=b?Symbol.for("react.strict_mode"):60108,g=b?Symbol.for("react.profiler"):60114,h=b?Symbol.for("react.provider"):60109,k=b?Symbol.for("react.context"):60110,l=b?Symbol.for("react.async_mode"):60111,m=b?Symbol.for("react.concurrent_mode"):60111,n=b?Symbol.for("react.forward_ref"):60112,p=b?Symbol.for("react.suspense"):60113,q=b?
+Symbol.for("react.suspense_list"):60120,r=b?Symbol.for("react.memo"):60115,t=b?Symbol.for("react.lazy"):60116,v=b?Symbol.for("react.block"):60121,w=b?Symbol.for("react.fundamental"):60117,x=b?Symbol.for("react.responder"):60118,y=b?Symbol.for("react.scope"):60119;
+function z(a){if("object"===typeof a&&null!==a){var u=a.$$typeof;switch(u){case c:switch(a=a.type,a){case l:case m:case e:case g:case f:case p:return a;default:switch(a=a&&a.$$typeof,a){case k:case n:case t:case r:case h:return a;default:return u}}case d:return u}}}function A(a){return z(a)===m}__webpack_unused_export__=l;__webpack_unused_export__=m;__webpack_unused_export__=k;__webpack_unused_export__=h;__webpack_unused_export__=c;__webpack_unused_export__=n;__webpack_unused_export__=e;__webpack_unused_export__=t;__webpack_unused_export__=r;__webpack_unused_export__=d;
+__webpack_unused_export__=g;__webpack_unused_export__=f;__webpack_unused_export__=p;__webpack_unused_export__=function(a){return A(a)||z(a)===l};__webpack_unused_export__=A;__webpack_unused_export__=function(a){return z(a)===k};__webpack_unused_export__=function(a){return z(a)===h};__webpack_unused_export__=function(a){return"object"===typeof a&&null!==a&&a.$$typeof===c};__webpack_unused_export__=function(a){return z(a)===n};__webpack_unused_export__=function(a){return z(a)===e};__webpack_unused_export__=function(a){return z(a)===t};
+__webpack_unused_export__=function(a){return z(a)===r};__webpack_unused_export__=function(a){return z(a)===d};__webpack_unused_export__=function(a){return z(a)===g};__webpack_unused_export__=function(a){return z(a)===f};__webpack_unused_export__=function(a){return z(a)===p};
+__webpack_unused_export__=function(a){return"string"===typeof a||"function"===typeof a||a===e||a===m||a===g||a===f||a===p||a===q||"object"===typeof a&&null!==a&&(a.$$typeof===t||a.$$typeof===r||a.$$typeof===h||a.$$typeof===k||a.$$typeof===n||a.$$typeof===w||a.$$typeof===x||a.$$typeof===y||a.$$typeof===v)};__webpack_unused_export__=z;
+
+
+/***/ }),
+
+/***/ 663:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+if (true) {
+  /* unused reexport */ __webpack_require__(86);
+} else {}
+
+
+/***/ }),
+
+/***/ 2408:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -635,7 +11998,7 @@ if (true) {
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-var l=__webpack_require__(418),n=60103,p=60106;exports.Fragment=60107;exports.StrictMode=60108;exports.Profiler=60114;var q=60109,r=60110,t=60112;exports.Suspense=60113;var u=60115,v=60116;
+var l=__webpack_require__(7418),n=60103,p=60106;exports.Fragment=60107;exports.StrictMode=60108;exports.Profiler=60114;var q=60109,r=60110,t=60112;exports.Suspense=60113;var u=60115,v=60116;
 if("function"===typeof Symbol&&Symbol.for){var w=Symbol.for;n=w("react.element");p=w("react.portal");exports.Fragment=w("react.fragment");exports.StrictMode=w("react.strict_mode");exports.Profiler=w("react.profiler");q=w("react.provider");r=w("react.context");t=w("react.forward_ref");exports.Suspense=w("react.suspense");u=w("react.memo");v=w("react.lazy")}var x="function"===typeof Symbol&&Symbol.iterator;
 function y(a){if(null===a||"object"!==typeof a)return null;a=x&&a[x]||a["@@iterator"];return"function"===typeof a?a:null}function z(a){for(var b="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=1;c<arguments.length;c++)b+="&args[]="+encodeURIComponent(arguments[c]);return"Minified React error #"+a+"; visit "+b+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}
 var A={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},B={};function C(a,b,c){this.props=a;this.context=b;this.refs=B;this.updater=c||A}C.prototype.isReactComponent={};C.prototype.setState=function(a,b){if("object"!==typeof a&&"function"!==typeof a&&null!=a)throw Error(z(85));this.updater.enqueueSetState(this,a,b,"setState")};C.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate")};
@@ -654,15 +12017,98 @@ exports.useLayoutEffect=function(a,b){return S().useLayoutEffect(a,b)};exports.u
 
 /***/ }),
 
-/***/ 294:
+/***/ 7294:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
 if (true) {
-  module.exports = __webpack_require__(408);
+  module.exports = __webpack_require__(2408);
 } else {}
+
+
+/***/ }),
+
+/***/ 2861:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = parse
+
+var fromMarkdown = __webpack_require__(9671)
+
+function parse(options) {
+  var self = this
+
+  this.Parser = parse
+
+  function parse(doc) {
+    return fromMarkdown(
+      doc,
+      Object.assign({}, self.data('settings'), options, {
+        // Note: these options are not in the readme.
+        // The goal is for them to be set by plugins on `data` instead of being
+        // passed by users.
+        extensions: self.data('micromarkExtensions') || [],
+        mdastExtensions: self.data('fromMarkdownExtensions') || []
+      })
+    )
+  }
+}
+
+
+/***/ }),
+
+/***/ 8818:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var mdast2hast = __webpack_require__(5288)
+
+module.exports = remark2rehype
+
+// Attacher.
+// If a destination is given, runs the destination with the new hast tree
+// (bridge mode).
+// Without destination, returns the tree: further plugins run on that tree
+// (mutate mode).
+function remark2rehype(destination, options) {
+  if (destination && !destination.process) {
+    options = destination
+    destination = null
+  }
+
+  return destination ? bridge(destination, options) : mutate(options)
+}
+
+// Bridge mode.
+// Runs the destination with the new hast tree.
+function bridge(destination, options) {
+  return transformer
+
+  function transformer(node, file, next) {
+    destination.run(mdast2hast(node, options), file, done)
+
+    function done(error) {
+      next(error)
+    }
+  }
+}
+
+// Mutate-mode.
+// Further transformers run on the hast tree.
+function mutate(options) {
+  return transformer
+
+  function transformer(node) {
+    return mdast2hast(node, options)
+  }
+}
 
 
 /***/ }),
@@ -695,7 +12141,7 @@ exports.unstable_wrapCallback=function(a){var b=P;return function(){var c=P;P=b;
 
 /***/ }),
 
-/***/ 840:
+/***/ 3840:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -708,7 +12154,7 @@ if (true) {
 
 /***/ }),
 
-/***/ 774:
+/***/ 6774:
 /***/ ((module) => {
 
 //
@@ -758,6 +12204,1888 @@ module.exports = function shallowEqual(objA, objB, compare, compareContext) {
   return true;
 };
 
+
+/***/ }),
+
+/***/ 6582:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+exports.parse = parse
+exports.stringify = stringify
+
+var empty = ''
+var space = ' '
+var whiteSpace = /[ \t\n\r\f]+/g
+
+function parse(value) {
+  var input = String(value || empty).trim()
+  return input === empty ? [] : input.split(whiteSpace)
+}
+
+function stringify(values) {
+  return values.join(space).trim()
+}
+
+
+/***/ }),
+
+/***/ 7848:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var parse = __webpack_require__(8139);
+
+/**
+ * Parses inline style to object.
+ *
+ * @example
+ * // returns { 'line-height': '42' }
+ * StyleToObject('line-height: 42;');
+ *
+ * @param  {String}      style      - The inline style.
+ * @param  {Function}    [iterator] - The iterator function.
+ * @return {null|Object}
+ */
+function StyleToObject(style, iterator) {
+  var output = null;
+  if (!style || typeof style !== 'string') {
+    return output;
+  }
+
+  var declaration;
+  var declarations = parse(style);
+  var hasIterator = typeof iterator === 'function';
+  var property;
+  var value;
+
+  for (var i = 0, len = declarations.length; i < len; i++) {
+    declaration = declarations[i];
+    property = declaration.property;
+    value = declaration.value;
+
+    if (hasIterator) {
+      iterator(property, value, declaration);
+    } else if (value) {
+      output || (output = {});
+      output[property] = value;
+    }
+  }
+
+  return output;
+}
+
+module.exports = StyleToObject;
+
+
+/***/ }),
+
+/***/ 8281:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var wrap = __webpack_require__(3368)
+
+module.exports = trough
+
+trough.wrap = wrap
+
+var slice = [].slice
+
+// Create new middleware.
+function trough() {
+  var fns = []
+  var middleware = {}
+
+  middleware.run = run
+  middleware.use = use
+
+  return middleware
+
+  // Run `fns`.  Last argument must be a completion handler.
+  function run() {
+    var index = -1
+    var input = slice.call(arguments, 0, -1)
+    var done = arguments[arguments.length - 1]
+
+    if (typeof done !== 'function') {
+      throw new Error('Expected function as last argument, not ' + done)
+    }
+
+    next.apply(null, [null].concat(input))
+
+    // Run the next `fn`, if any.
+    function next(err) {
+      var fn = fns[++index]
+      var params = slice.call(arguments, 0)
+      var values = params.slice(1)
+      var length = input.length
+      var pos = -1
+
+      if (err) {
+        done(err)
+        return
+      }
+
+      // Copy non-nully input into values.
+      while (++pos < length) {
+        if (values[pos] === null || values[pos] === undefined) {
+          values[pos] = input[pos]
+        }
+      }
+
+      input = values
+
+      // Next or done.
+      if (fn) {
+        wrap(fn, next).apply(null, input)
+      } else {
+        done.apply(null, [null].concat(input))
+      }
+    }
+  }
+
+  // Add `fn` to the list.
+  function use(fn) {
+    if (typeof fn !== 'function') {
+      throw new Error('Expected `fn` to be a function, not ' + fn)
+    }
+
+    fns.push(fn)
+
+    return middleware
+  }
+}
+
+
+/***/ }),
+
+/***/ 3368:
+/***/ ((module) => {
+
+"use strict";
+
+
+var slice = [].slice
+
+module.exports = wrap
+
+// Wrap `fn`.
+// Can be sync or async; return a promise, receive a completion handler, return
+// new values and errors.
+function wrap(fn, callback) {
+  var invoked
+
+  return wrapped
+
+  function wrapped() {
+    var params = slice.call(arguments, 0)
+    var callback = fn.length > params.length
+    var result
+
+    if (callback) {
+      params.push(done)
+    }
+
+    try {
+      result = fn.apply(null, params)
+    } catch (error) {
+      // Well, this is quite the pickle.
+      // `fn` received a callback and invoked it (thus continuing the pipeline),
+      // but later also threw an error.
+      // We’re not about to restart the pipeline again, so the only thing left
+      // to do is to throw the thing instead.
+      if (callback && invoked) {
+        throw error
+      }
+
+      return done(error)
+    }
+
+    if (!callback) {
+      if (result && typeof result.then === 'function') {
+        result.then(then, done)
+      } else if (result instanceof Error) {
+        done(result)
+      } else {
+        then(result)
+      }
+    }
+  }
+
+  // Invoke `next`, only once.
+  function done() {
+    if (!invoked) {
+      invoked = true
+
+      callback.apply(null, arguments)
+    }
+  }
+
+  // Invoke `done` with one value.
+  // Tracks if an error is passed, too.
+  function then(value) {
+    done(null, value)
+  }
+}
+
+
+/***/ }),
+
+/***/ 8835:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var bail = __webpack_require__(8869)
+var buffer = __webpack_require__(8738)
+var extend = __webpack_require__(4470)
+var plain = __webpack_require__(8568)
+var trough = __webpack_require__(8281)
+var vfile = __webpack_require__(939)
+
+// Expose a frozen processor.
+module.exports = unified().freeze()
+
+var slice = [].slice
+var own = {}.hasOwnProperty
+
+// Process pipeline.
+var pipeline = trough()
+  .use(pipelineParse)
+  .use(pipelineRun)
+  .use(pipelineStringify)
+
+function pipelineParse(p, ctx) {
+  ctx.tree = p.parse(ctx.file)
+}
+
+function pipelineRun(p, ctx, next) {
+  p.run(ctx.tree, ctx.file, done)
+
+  function done(error, tree, file) {
+    if (error) {
+      next(error)
+    } else {
+      ctx.tree = tree
+      ctx.file = file
+      next()
+    }
+  }
+}
+
+function pipelineStringify(p, ctx) {
+  var result = p.stringify(ctx.tree, ctx.file)
+
+  if (result === undefined || result === null) {
+    // Empty.
+  } else if (typeof result === 'string' || buffer(result)) {
+    if ('value' in ctx.file) {
+      ctx.file.value = result
+    }
+
+    ctx.file.contents = result
+  } else {
+    ctx.file.result = result
+  }
+}
+
+// Function to create the first processor.
+function unified() {
+  var attachers = []
+  var transformers = trough()
+  var namespace = {}
+  var freezeIndex = -1
+  var frozen
+
+  // Data management.
+  processor.data = data
+
+  // Lock.
+  processor.freeze = freeze
+
+  // Plugins.
+  processor.attachers = attachers
+  processor.use = use
+
+  // API.
+  processor.parse = parse
+  processor.stringify = stringify
+  processor.run = run
+  processor.runSync = runSync
+  processor.process = process
+  processor.processSync = processSync
+
+  // Expose.
+  return processor
+
+  // Create a new processor based on the processor in the current scope.
+  function processor() {
+    var destination = unified()
+    var index = -1
+
+    while (++index < attachers.length) {
+      destination.use.apply(null, attachers[index])
+    }
+
+    destination.data(extend(true, {}, namespace))
+
+    return destination
+  }
+
+  // Freeze: used to signal a processor that has finished configuration.
+  //
+  // For example, take unified itself: it’s frozen.
+  // Plugins should not be added to it.
+  // Rather, it should be extended, by invoking it, before modifying it.
+  //
+  // In essence, always invoke this when exporting a processor.
+  function freeze() {
+    var values
+    var transformer
+
+    if (frozen) {
+      return processor
+    }
+
+    while (++freezeIndex < attachers.length) {
+      values = attachers[freezeIndex]
+
+      if (values[1] === false) {
+        continue
+      }
+
+      if (values[1] === true) {
+        values[1] = undefined
+      }
+
+      transformer = values[0].apply(processor, values.slice(1))
+
+      if (typeof transformer === 'function') {
+        transformers.use(transformer)
+      }
+    }
+
+    frozen = true
+    freezeIndex = Infinity
+
+    return processor
+  }
+
+  // Data management.
+  // Getter / setter for processor-specific informtion.
+  function data(key, value) {
+    if (typeof key === 'string') {
+      // Set `key`.
+      if (arguments.length === 2) {
+        assertUnfrozen('data', frozen)
+        namespace[key] = value
+        return processor
+      }
+
+      // Get `key`.
+      return (own.call(namespace, key) && namespace[key]) || null
+    }
+
+    // Set space.
+    if (key) {
+      assertUnfrozen('data', frozen)
+      namespace = key
+      return processor
+    }
+
+    // Get space.
+    return namespace
+  }
+
+  // Plugin management.
+  //
+  // Pass it:
+  // *   an attacher and options,
+  // *   a preset,
+  // *   a list of presets, attachers, and arguments (list of attachers and
+  //     options).
+  function use(value) {
+    var settings
+
+    assertUnfrozen('use', frozen)
+
+    if (value === null || value === undefined) {
+      // Empty.
+    } else if (typeof value === 'function') {
+      addPlugin.apply(null, arguments)
+    } else if (typeof value === 'object') {
+      if ('length' in value) {
+        addList(value)
+      } else {
+        addPreset(value)
+      }
+    } else {
+      throw new Error('Expected usable value, not `' + value + '`')
+    }
+
+    if (settings) {
+      namespace.settings = extend(namespace.settings || {}, settings)
+    }
+
+    return processor
+
+    function addPreset(result) {
+      addList(result.plugins)
+
+      if (result.settings) {
+        settings = extend(settings || {}, result.settings)
+      }
+    }
+
+    function add(value) {
+      if (typeof value === 'function') {
+        addPlugin(value)
+      } else if (typeof value === 'object') {
+        if ('length' in value) {
+          addPlugin.apply(null, value)
+        } else {
+          addPreset(value)
+        }
+      } else {
+        throw new Error('Expected usable value, not `' + value + '`')
+      }
+    }
+
+    function addList(plugins) {
+      var index = -1
+
+      if (plugins === null || plugins === undefined) {
+        // Empty.
+      } else if (typeof plugins === 'object' && 'length' in plugins) {
+        while (++index < plugins.length) {
+          add(plugins[index])
+        }
+      } else {
+        throw new Error('Expected a list of plugins, not `' + plugins + '`')
+      }
+    }
+
+    function addPlugin(plugin, value) {
+      var entry = find(plugin)
+
+      if (entry) {
+        if (plain(entry[1]) && plain(value)) {
+          value = extend(true, entry[1], value)
+        }
+
+        entry[1] = value
+      } else {
+        attachers.push(slice.call(arguments))
+      }
+    }
+  }
+
+  function find(plugin) {
+    var index = -1
+
+    while (++index < attachers.length) {
+      if (attachers[index][0] === plugin) {
+        return attachers[index]
+      }
+    }
+  }
+
+  // Parse a file (in string or vfile representation) into a unist node using
+  // the `Parser` on the processor.
+  function parse(doc) {
+    var file = vfile(doc)
+    var Parser
+
+    freeze()
+    Parser = processor.Parser
+    assertParser('parse', Parser)
+
+    if (newable(Parser, 'parse')) {
+      return new Parser(String(file), file).parse()
+    }
+
+    return Parser(String(file), file) // eslint-disable-line new-cap
+  }
+
+  // Run transforms on a unist node representation of a file (in string or
+  // vfile representation), async.
+  function run(node, file, cb) {
+    assertNode(node)
+    freeze()
+
+    if (!cb && typeof file === 'function') {
+      cb = file
+      file = null
+    }
+
+    if (!cb) {
+      return new Promise(executor)
+    }
+
+    executor(null, cb)
+
+    function executor(resolve, reject) {
+      transformers.run(node, vfile(file), done)
+
+      function done(error, tree, file) {
+        tree = tree || node
+        if (error) {
+          reject(error)
+        } else if (resolve) {
+          resolve(tree)
+        } else {
+          cb(null, tree, file)
+        }
+      }
+    }
+  }
+
+  // Run transforms on a unist node representation of a file (in string or
+  // vfile representation), sync.
+  function runSync(node, file) {
+    var result
+    var complete
+
+    run(node, file, done)
+
+    assertDone('runSync', 'run', complete)
+
+    return result
+
+    function done(error, tree) {
+      complete = true
+      result = tree
+      bail(error)
+    }
+  }
+
+  // Stringify a unist node representation of a file (in string or vfile
+  // representation) into a string using the `Compiler` on the processor.
+  function stringify(node, doc) {
+    var file = vfile(doc)
+    var Compiler
+
+    freeze()
+    Compiler = processor.Compiler
+    assertCompiler('stringify', Compiler)
+    assertNode(node)
+
+    if (newable(Compiler, 'compile')) {
+      return new Compiler(node, file).compile()
+    }
+
+    return Compiler(node, file) // eslint-disable-line new-cap
+  }
+
+  // Parse a file (in string or vfile representation) into a unist node using
+  // the `Parser` on the processor, then run transforms on that node, and
+  // compile the resulting node using the `Compiler` on the processor, and
+  // store that result on the vfile.
+  function process(doc, cb) {
+    freeze()
+    assertParser('process', processor.Parser)
+    assertCompiler('process', processor.Compiler)
+
+    if (!cb) {
+      return new Promise(executor)
+    }
+
+    executor(null, cb)
+
+    function executor(resolve, reject) {
+      var file = vfile(doc)
+
+      pipeline.run(processor, {file: file}, done)
+
+      function done(error) {
+        if (error) {
+          reject(error)
+        } else if (resolve) {
+          resolve(file)
+        } else {
+          cb(null, file)
+        }
+      }
+    }
+  }
+
+  // Process the given document (in string or vfile representation), sync.
+  function processSync(doc) {
+    var file
+    var complete
+
+    freeze()
+    assertParser('processSync', processor.Parser)
+    assertCompiler('processSync', processor.Compiler)
+    file = vfile(doc)
+
+    process(file, done)
+
+    assertDone('processSync', 'process', complete)
+
+    return file
+
+    function done(error) {
+      complete = true
+      bail(error)
+    }
+  }
+}
+
+// Check if `value` is a constructor.
+function newable(value, name) {
+  return (
+    typeof value === 'function' &&
+    value.prototype &&
+    // A function with keys in its prototype is probably a constructor.
+    // Classes’ prototype methods are not enumerable, so we check if some value
+    // exists in the prototype.
+    (keys(value.prototype) || name in value.prototype)
+  )
+}
+
+// Check if `value` is an object with keys.
+function keys(value) {
+  var key
+  for (key in value) {
+    return true
+  }
+
+  return false
+}
+
+// Assert a parser is available.
+function assertParser(name, Parser) {
+  if (typeof Parser !== 'function') {
+    throw new Error('Cannot `' + name + '` without `Parser`')
+  }
+}
+
+// Assert a compiler is available.
+function assertCompiler(name, Compiler) {
+  if (typeof Compiler !== 'function') {
+    throw new Error('Cannot `' + name + '` without `Compiler`')
+  }
+}
+
+// Assert the processor is not frozen.
+function assertUnfrozen(name, frozen) {
+  if (frozen) {
+    throw new Error(
+      'Cannot invoke `' +
+        name +
+        '` on a frozen processor.\nCreate a new processor first, by invoking it: use `processor()` instead of `processor`.'
+    )
+  }
+}
+
+// Assert `node` is a unist node.
+function assertNode(node) {
+  if (!node || typeof node.type !== 'string') {
+    throw new Error('Expected node, got `' + node + '`')
+  }
+}
+
+// Assert that `complete` is `true`.
+function assertDone(name, asyncName, complete) {
+  if (!complete) {
+    throw new Error(
+      '`' + name + '` finished async. Use `' + asyncName + '` instead'
+    )
+  }
+}
+
+
+/***/ }),
+
+/***/ 8568:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = value => {
+	if (Object.prototype.toString.call(value) !== '[object Object]') {
+		return false;
+	}
+
+	const prototype = Object.getPrototypeOf(value);
+	return prototype === null || prototype === Object.prototype;
+};
+
+
+/***/ }),
+
+/***/ 914:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = u
+
+function u(type, props, value) {
+  var node
+
+  if (
+    (value === null || value === undefined) &&
+    (typeof props !== 'object' || Array.isArray(props))
+  ) {
+    value = props
+    props = {}
+  }
+
+  node = Object.assign({type: String(type)}, props)
+
+  if (Array.isArray(value)) {
+    node.children = value
+  } else if (value !== null && value !== undefined) {
+    node.value = String(value)
+  }
+
+  return node
+}
+
+
+/***/ }),
+
+/***/ 1744:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = generated
+
+function generated(node) {
+  return (
+    !node ||
+    !node.position ||
+    !node.position.start ||
+    !node.position.start.line ||
+    !node.position.start.column ||
+    !node.position.end ||
+    !node.position.end.line ||
+    !node.position.end.column
+  )
+}
+
+
+/***/ }),
+
+/***/ 8145:
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = convert
+
+function convert(test) {
+  if (test == null) {
+    return ok
+  }
+
+  if (typeof test === 'string') {
+    return typeFactory(test)
+  }
+
+  if (typeof test === 'object') {
+    return 'length' in test ? anyFactory(test) : allFactory(test)
+  }
+
+  if (typeof test === 'function') {
+    return test
+  }
+
+  throw new Error('Expected function, string, or object as test')
+}
+
+// Utility assert each property in `test` is represented in `node`, and each
+// values are strictly equal.
+function allFactory(test) {
+  return all
+
+  function all(node) {
+    var key
+
+    for (key in test) {
+      if (node[key] !== test[key]) return false
+    }
+
+    return true
+  }
+}
+
+function anyFactory(tests) {
+  var checks = []
+  var index = -1
+
+  while (++index < tests.length) {
+    checks[index] = convert(tests[index])
+  }
+
+  return any
+
+  function any() {
+    var index = -1
+
+    while (++index < checks.length) {
+      if (checks[index].apply(this, arguments)) {
+        return true
+      }
+    }
+
+    return false
+  }
+}
+
+// Utility to convert a string into a function which checks a given node’s type
+// for said string.
+function typeFactory(test) {
+  return type
+
+  function type(node) {
+    return Boolean(node && node.type === test)
+  }
+}
+
+// Utility to return true.
+function ok() {
+  return true
+}
+
+
+/***/ }),
+
+/***/ 7361:
+/***/ ((module) => {
+
+"use strict";
+
+
+var start = factory('start')
+var end = factory('end')
+
+module.exports = position
+
+position.start = start
+position.end = end
+
+function position(node) {
+  return {start: start(node), end: end(node)}
+}
+
+function factory(type) {
+  point.displayName = type
+
+  return point
+
+  function point(node) {
+    var point = (node && node.position && node.position[type]) || {}
+
+    return {
+      line: point.line || null,
+      column: point.column || null,
+      offset: isNaN(point.offset) ? null : point.offset
+    }
+  }
+}
+
+
+/***/ }),
+
+/***/ 5432:
+/***/ ((module) => {
+
+"use strict";
+
+
+var own = {}.hasOwnProperty
+
+module.exports = stringify
+
+function stringify(value) {
+  // Nothing.
+  if (!value || typeof value !== 'object') {
+    return ''
+  }
+
+  // Node.
+  if (own.call(value, 'position') || own.call(value, 'type')) {
+    return position(value.position)
+  }
+
+  // Position.
+  if (own.call(value, 'start') || own.call(value, 'end')) {
+    return position(value)
+  }
+
+  // Point.
+  if (own.call(value, 'line') || own.call(value, 'column')) {
+    return point(value)
+  }
+
+  // ?
+  return ''
+}
+
+function point(point) {
+  if (!point || typeof point !== 'object') {
+    point = {}
+  }
+
+  return index(point.line) + ':' + index(point.column)
+}
+
+function position(pos) {
+  if (!pos || typeof pos !== 'object') {
+    pos = {}
+  }
+
+  return point(pos.start) + '-' + point(pos.end)
+}
+
+function index(value) {
+  return value && typeof value === 'number' ? value : 1
+}
+
+
+/***/ }),
+
+/***/ 6750:
+/***/ ((module) => {
+
+module.exports = identity
+function identity(d) {
+  return d
+}
+
+
+/***/ }),
+
+/***/ 9294:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = visitParents
+
+var convert = __webpack_require__(8145)
+var color = __webpack_require__(6750)
+
+var CONTINUE = true
+var SKIP = 'skip'
+var EXIT = false
+
+visitParents.CONTINUE = CONTINUE
+visitParents.SKIP = SKIP
+visitParents.EXIT = EXIT
+
+function visitParents(tree, test, visitor, reverse) {
+  var step
+  var is
+
+  if (typeof test === 'function' && typeof visitor !== 'function') {
+    reverse = visitor
+    visitor = test
+    test = null
+  }
+
+  is = convert(test)
+  step = reverse ? -1 : 1
+
+  factory(tree, null, [])()
+
+  function factory(node, index, parents) {
+    var value = typeof node === 'object' && node !== null ? node : {}
+    var name
+
+    if (typeof value.type === 'string') {
+      name =
+        typeof value.tagName === 'string'
+          ? value.tagName
+          : typeof value.name === 'string'
+          ? value.name
+          : undefined
+
+      visit.displayName =
+        'node (' + color(value.type + (name ? '<' + name + '>' : '')) + ')'
+    }
+
+    return visit
+
+    function visit() {
+      var grandparents = parents.concat(node)
+      var result = []
+      var subresult
+      var offset
+
+      if (!test || is(node, index, parents[parents.length - 1] || null)) {
+        result = toResult(visitor(node, parents))
+
+        if (result[0] === EXIT) {
+          return result
+        }
+      }
+
+      if (node.children && result[0] !== SKIP) {
+        offset = (reverse ? node.children.length : -1) + step
+
+        while (offset > -1 && offset < node.children.length) {
+          subresult = factory(node.children[offset], offset, grandparents)()
+
+          if (subresult[0] === EXIT) {
+            return subresult
+          }
+
+          offset =
+            typeof subresult[1] === 'number' ? subresult[1] : offset + step
+        }
+      }
+
+      return result
+    }
+  }
+}
+
+function toResult(value) {
+  if (value !== null && typeof value === 'object' && 'length' in value) {
+    return value
+  }
+
+  if (typeof value === 'number') {
+    return [CONTINUE, value]
+  }
+
+  return [value]
+}
+
+
+/***/ }),
+
+/***/ 2854:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = visit
+
+var visitParents = __webpack_require__(9294)
+
+var CONTINUE = visitParents.CONTINUE
+var SKIP = visitParents.SKIP
+var EXIT = visitParents.EXIT
+
+visit.CONTINUE = CONTINUE
+visit.SKIP = SKIP
+visit.EXIT = EXIT
+
+function visit(tree, test, visitor, reverse) {
+  if (typeof test === 'function' && typeof visitor !== 'function') {
+    reverse = visitor
+    visitor = test
+    test = null
+  }
+
+  visitParents(tree, test, overload, reverse)
+
+  function overload(node, parents) {
+    var parent = parents[parents.length - 1]
+    var index = parent ? parent.children.indexOf(node) : null
+    return visitor(node, index, parent)
+  }
+}
+
+
+/***/ }),
+
+/***/ 734:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var stringify = __webpack_require__(5432)
+
+module.exports = VMessage
+
+// Inherit from `Error#`.
+function VMessagePrototype() {}
+VMessagePrototype.prototype = Error.prototype
+VMessage.prototype = new VMessagePrototype()
+
+// Message properties.
+var proto = VMessage.prototype
+
+proto.file = ''
+proto.name = ''
+proto.reason = ''
+proto.message = ''
+proto.stack = ''
+proto.fatal = null
+proto.column = null
+proto.line = null
+
+// Construct a new VMessage.
+//
+// Note: We cannot invoke `Error` on the created context, as that adds readonly
+// `line` and `column` attributes on Safari 9, thus throwing and failing the
+// data.
+function VMessage(reason, position, origin) {
+  var parts
+  var range
+  var location
+
+  if (typeof position === 'string') {
+    origin = position
+    position = null
+  }
+
+  parts = parseOrigin(origin)
+  range = stringify(position) || '1:1'
+
+  location = {
+    start: {line: null, column: null},
+    end: {line: null, column: null}
+  }
+
+  // Node.
+  if (position && position.position) {
+    position = position.position
+  }
+
+  if (position) {
+    // Position.
+    if (position.start) {
+      location = position
+      position = position.start
+    } else {
+      // Point.
+      location.start = position
+    }
+  }
+
+  if (reason.stack) {
+    this.stack = reason.stack
+    reason = reason.message
+  }
+
+  this.message = reason
+  this.name = range
+  this.reason = reason
+  this.line = position ? position.line : null
+  this.column = position ? position.column : null
+  this.location = location
+  this.source = parts[0]
+  this.ruleId = parts[1]
+}
+
+function parseOrigin(origin) {
+  var result = [null, null]
+  var index
+
+  if (typeof origin === 'string') {
+    index = origin.indexOf(':')
+
+    if (index === -1) {
+      result[1] = origin
+    } else {
+      result[0] = origin.slice(0, index)
+      result[1] = origin.slice(index + 1)
+    }
+  }
+
+  return result
+}
+
+
+/***/ }),
+
+/***/ 939:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = __webpack_require__(5905)
+
+
+/***/ }),
+
+/***/ 5442:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var p = __webpack_require__(8064)
+var proc = __webpack_require__(4228)
+var buffer = __webpack_require__(8738)
+
+module.exports = VFile
+
+var own = {}.hasOwnProperty
+
+// Order of setting (least specific to most), we need this because otherwise
+// `{stem: 'a', path: '~/b.js'}` would throw, as a path is needed before a
+// stem can be set.
+var order = ['history', 'path', 'basename', 'stem', 'extname', 'dirname']
+
+VFile.prototype.toString = toString
+
+// Access full path (`~/index.min.js`).
+Object.defineProperty(VFile.prototype, 'path', {get: getPath, set: setPath})
+
+// Access parent path (`~`).
+Object.defineProperty(VFile.prototype, 'dirname', {
+  get: getDirname,
+  set: setDirname
+})
+
+// Access basename (`index.min.js`).
+Object.defineProperty(VFile.prototype, 'basename', {
+  get: getBasename,
+  set: setBasename
+})
+
+// Access extname (`.js`).
+Object.defineProperty(VFile.prototype, 'extname', {
+  get: getExtname,
+  set: setExtname
+})
+
+// Access stem (`index.min`).
+Object.defineProperty(VFile.prototype, 'stem', {get: getStem, set: setStem})
+
+// Construct a new file.
+function VFile(options) {
+  var prop
+  var index
+
+  if (!options) {
+    options = {}
+  } else if (typeof options === 'string' || buffer(options)) {
+    options = {contents: options}
+  } else if ('message' in options && 'messages' in options) {
+    return options
+  }
+
+  if (!(this instanceof VFile)) {
+    return new VFile(options)
+  }
+
+  this.data = {}
+  this.messages = []
+  this.history = []
+  this.cwd = proc.cwd()
+
+  // Set path related properties in the correct order.
+  index = -1
+
+  while (++index < order.length) {
+    prop = order[index]
+
+    if (own.call(options, prop)) {
+      this[prop] = options[prop]
+    }
+  }
+
+  // Set non-path related properties.
+  for (prop in options) {
+    if (order.indexOf(prop) < 0) {
+      this[prop] = options[prop]
+    }
+  }
+}
+
+function getPath() {
+  return this.history[this.history.length - 1]
+}
+
+function setPath(path) {
+  assertNonEmpty(path, 'path')
+
+  if (this.path !== path) {
+    this.history.push(path)
+  }
+}
+
+function getDirname() {
+  return typeof this.path === 'string' ? p.dirname(this.path) : undefined
+}
+
+function setDirname(dirname) {
+  assertPath(this.path, 'dirname')
+  this.path = p.join(dirname || '', this.basename)
+}
+
+function getBasename() {
+  return typeof this.path === 'string' ? p.basename(this.path) : undefined
+}
+
+function setBasename(basename) {
+  assertNonEmpty(basename, 'basename')
+  assertPart(basename, 'basename')
+  this.path = p.join(this.dirname || '', basename)
+}
+
+function getExtname() {
+  return typeof this.path === 'string' ? p.extname(this.path) : undefined
+}
+
+function setExtname(extname) {
+  assertPart(extname, 'extname')
+  assertPath(this.path, 'extname')
+
+  if (extname) {
+    if (extname.charCodeAt(0) !== 46 /* `.` */) {
+      throw new Error('`extname` must start with `.`')
+    }
+
+    if (extname.indexOf('.', 1) > -1) {
+      throw new Error('`extname` cannot contain multiple dots')
+    }
+  }
+
+  this.path = p.join(this.dirname, this.stem + (extname || ''))
+}
+
+function getStem() {
+  return typeof this.path === 'string'
+    ? p.basename(this.path, this.extname)
+    : undefined
+}
+
+function setStem(stem) {
+  assertNonEmpty(stem, 'stem')
+  assertPart(stem, 'stem')
+  this.path = p.join(this.dirname || '', stem + (this.extname || ''))
+}
+
+// Get the value of the file.
+function toString(encoding) {
+  return (this.contents || '').toString(encoding)
+}
+
+// Assert that `part` is not a path (i.e., does not contain `p.sep`).
+function assertPart(part, name) {
+  if (part && part.indexOf(p.sep) > -1) {
+    throw new Error(
+      '`' + name + '` cannot be a path: did not expect `' + p.sep + '`'
+    )
+  }
+}
+
+// Assert that `part` is not empty.
+function assertNonEmpty(part, name) {
+  if (!part) {
+    throw new Error('`' + name + '` cannot be empty')
+  }
+}
+
+// Assert `path` exists.
+function assertPath(path, name) {
+  if (!path) {
+    throw new Error('Setting `' + name + '` requires `path` to be set too')
+  }
+}
+
+
+/***/ }),
+
+/***/ 5905:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var VMessage = __webpack_require__(734)
+var VFile = __webpack_require__(5442)
+
+module.exports = VFile
+
+VFile.prototype.message = message
+VFile.prototype.info = info
+VFile.prototype.fail = fail
+
+// Create a message with `reason` at `position`.
+// When an error is passed in as `reason`, copies the stack.
+function message(reason, position, origin) {
+  var message = new VMessage(reason, position, origin)
+
+  if (this.path) {
+    message.name = this.path + ':' + message.name
+    message.file = this.path
+  }
+
+  message.fatal = false
+
+  this.messages.push(message)
+
+  return message
+}
+
+// Fail: creates a vmessage, associates it with the file, and throws it.
+function fail() {
+  var message = this.message.apply(this, arguments)
+
+  message.fatal = true
+
+  throw message
+}
+
+// Info: creates a vmessage, associates it with the file, and marks the fatality
+// as null.
+function info() {
+  var message = this.message.apply(this, arguments)
+
+  message.fatal = null
+
+  return message
+}
+
+
+/***/ }),
+
+/***/ 8064:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+// A derivative work based on:
+// <https://github.com/browserify/path-browserify>.
+// Which is licensed:
+//
+// MIT License
+//
+// Copyright (c) 2013 James Halliday
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of
+// this software and associated documentation files (the "Software"), to deal in
+// the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+// the Software, and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// A derivative work based on:
+//
+// Parts of that are extracted from Node’s internal `path` module:
+// <https://github.com/nodejs/node/blob/master/lib/path.js>.
+// Which is licensed:
+//
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+exports.basename = basename
+exports.dirname = dirname
+exports.extname = extname
+exports.join = join
+exports.sep = '/'
+
+function basename(path, ext) {
+  var start = 0
+  var end = -1
+  var index
+  var firstNonSlashEnd
+  var seenNonSlash
+  var extIndex
+
+  if (ext !== undefined && typeof ext !== 'string') {
+    throw new TypeError('"ext" argument must be a string')
+  }
+
+  assertPath(path)
+  index = path.length
+
+  if (ext === undefined || !ext.length || ext.length > path.length) {
+    while (index--) {
+      if (path.charCodeAt(index) === 47 /* `/` */) {
+        // If we reached a path separator that was not part of a set of path
+        // separators at the end of the string, stop now.
+        if (seenNonSlash) {
+          start = index + 1
+          break
+        }
+      } else if (end < 0) {
+        // We saw the first non-path separator, mark this as the end of our
+        // path component.
+        seenNonSlash = true
+        end = index + 1
+      }
+    }
+
+    return end < 0 ? '' : path.slice(start, end)
+  }
+
+  if (ext === path) {
+    return ''
+  }
+
+  firstNonSlashEnd = -1
+  extIndex = ext.length - 1
+
+  while (index--) {
+    if (path.charCodeAt(index) === 47 /* `/` */) {
+      // If we reached a path separator that was not part of a set of path
+      // separators at the end of the string, stop now.
+      if (seenNonSlash) {
+        start = index + 1
+        break
+      }
+    } else {
+      if (firstNonSlashEnd < 0) {
+        // We saw the first non-path separator, remember this index in case
+        // we need it if the extension ends up not matching.
+        seenNonSlash = true
+        firstNonSlashEnd = index + 1
+      }
+
+      if (extIndex > -1) {
+        // Try to match the explicit extension.
+        if (path.charCodeAt(index) === ext.charCodeAt(extIndex--)) {
+          if (extIndex < 0) {
+            // We matched the extension, so mark this as the end of our path
+            // component
+            end = index
+          }
+        } else {
+          // Extension does not match, so our result is the entire path
+          // component
+          extIndex = -1
+          end = firstNonSlashEnd
+        }
+      }
+    }
+  }
+
+  if (start === end) {
+    end = firstNonSlashEnd
+  } else if (end < 0) {
+    end = path.length
+  }
+
+  return path.slice(start, end)
+}
+
+function dirname(path) {
+  var end
+  var unmatchedSlash
+  var index
+
+  assertPath(path)
+
+  if (!path.length) {
+    return '.'
+  }
+
+  end = -1
+  index = path.length
+
+  // Prefix `--` is important to not run on `0`.
+  while (--index) {
+    if (path.charCodeAt(index) === 47 /* `/` */) {
+      if (unmatchedSlash) {
+        end = index
+        break
+      }
+    } else if (!unmatchedSlash) {
+      // We saw the first non-path separator
+      unmatchedSlash = true
+    }
+  }
+
+  return end < 0
+    ? path.charCodeAt(0) === 47 /* `/` */
+      ? '/'
+      : '.'
+    : end === 1 && path.charCodeAt(0) === 47 /* `/` */
+    ? '//'
+    : path.slice(0, end)
+}
+
+function extname(path) {
+  var startDot = -1
+  var startPart = 0
+  var end = -1
+  // Track the state of characters (if any) we see before our first dot and
+  // after any path separator we find.
+  var preDotState = 0
+  var unmatchedSlash
+  var code
+  var index
+
+  assertPath(path)
+
+  index = path.length
+
+  while (index--) {
+    code = path.charCodeAt(index)
+
+    if (code === 47 /* `/` */) {
+      // If we reached a path separator that was not part of a set of path
+      // separators at the end of the string, stop now.
+      if (unmatchedSlash) {
+        startPart = index + 1
+        break
+      }
+
+      continue
+    }
+
+    if (end < 0) {
+      // We saw the first non-path separator, mark this as the end of our
+      // extension.
+      unmatchedSlash = true
+      end = index + 1
+    }
+
+    if (code === 46 /* `.` */) {
+      // If this is our first dot, mark it as the start of our extension.
+      if (startDot < 0) {
+        startDot = index
+      } else if (preDotState !== 1) {
+        preDotState = 1
+      }
+    } else if (startDot > -1) {
+      // We saw a non-dot and non-path separator before our dot, so we should
+      // have a good chance at having a non-empty extension.
+      preDotState = -1
+    }
+  }
+
+  if (
+    startDot < 0 ||
+    end < 0 ||
+    // We saw a non-dot character immediately before the dot.
+    preDotState === 0 ||
+    // The (right-most) trimmed path component is exactly `..`.
+    (preDotState === 1 && startDot === end - 1 && startDot === startPart + 1)
+  ) {
+    return ''
+  }
+
+  return path.slice(startDot, end)
+}
+
+function join() {
+  var index = -1
+  var joined
+
+  while (++index < arguments.length) {
+    assertPath(arguments[index])
+
+    if (arguments[index]) {
+      joined =
+        joined === undefined
+          ? arguments[index]
+          : joined + '/' + arguments[index]
+    }
+  }
+
+  return joined === undefined ? '.' : normalize(joined)
+}
+
+// Note: `normalize` is not exposed as `path.normalize`, so some code is
+// manually removed from it.
+function normalize(path) {
+  var absolute
+  var value
+
+  assertPath(path)
+
+  absolute = path.charCodeAt(0) === 47 /* `/` */
+
+  // Normalize the path according to POSIX rules.
+  value = normalizeString(path, !absolute)
+
+  if (!value.length && !absolute) {
+    value = '.'
+  }
+
+  if (value.length && path.charCodeAt(path.length - 1) === 47 /* / */) {
+    value += '/'
+  }
+
+  return absolute ? '/' + value : value
+}
+
+// Resolve `.` and `..` elements in a path with directory names.
+function normalizeString(path, allowAboveRoot) {
+  var result = ''
+  var lastSegmentLength = 0
+  var lastSlash = -1
+  var dots = 0
+  var index = -1
+  var code
+  var lastSlashIndex
+
+  while (++index <= path.length) {
+    if (index < path.length) {
+      code = path.charCodeAt(index)
+    } else if (code === 47 /* `/` */) {
+      break
+    } else {
+      code = 47 /* `/` */
+    }
+
+    if (code === 47 /* `/` */) {
+      if (lastSlash === index - 1 || dots === 1) {
+        // Empty.
+      } else if (lastSlash !== index - 1 && dots === 2) {
+        if (
+          result.length < 2 ||
+          lastSegmentLength !== 2 ||
+          result.charCodeAt(result.length - 1) !== 46 /* `.` */ ||
+          result.charCodeAt(result.length - 2) !== 46 /* `.` */
+        ) {
+          if (result.length > 2) {
+            lastSlashIndex = result.lastIndexOf('/')
+
+            /* istanbul ignore else - No clue how to cover it. */
+            if (lastSlashIndex !== result.length - 1) {
+              if (lastSlashIndex < 0) {
+                result = ''
+                lastSegmentLength = 0
+              } else {
+                result = result.slice(0, lastSlashIndex)
+                lastSegmentLength = result.length - 1 - result.lastIndexOf('/')
+              }
+
+              lastSlash = index
+              dots = 0
+              continue
+            }
+          } else if (result.length) {
+            result = ''
+            lastSegmentLength = 0
+            lastSlash = index
+            dots = 0
+            continue
+          }
+        }
+
+        if (allowAboveRoot) {
+          result = result.length ? result + '/..' : '..'
+          lastSegmentLength = 2
+        }
+      } else {
+        if (result.length) {
+          result += '/' + path.slice(lastSlash + 1, index)
+        } else {
+          result = path.slice(lastSlash + 1, index)
+        }
+
+        lastSegmentLength = index - lastSlash - 1
+      }
+
+      lastSlash = index
+      dots = 0
+    } else if (code === 46 /* `.` */ && dots > -1) {
+      dots++
+    } else {
+      dots = -1
+    }
+  }
+
+  return result
+}
+
+function assertPath(path) {
+  if (typeof path !== 'string') {
+    throw new TypeError(
+      'Path must be a string. Received ' + JSON.stringify(path)
+    )
+  }
+}
+
+
+/***/ }),
+
+/***/ 4228:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+// Somewhat based on:
+// <https://github.com/defunctzombie/node-process/blob/master/browser.js>.
+// But I don’t think one tiny line of code can be copyrighted. 😅
+exports.cwd = cwd
+
+function cwd() {
+  return '/'
+}
+
+
+/***/ }),
+
+/***/ 7529:
+/***/ ((module) => {
+
+module.exports = extend
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function extend() {
+    var target = {}
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (hasOwnProperty.call(source, key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+
+/***/ }),
+
+/***/ 9640:
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"classId":"classID","dataType":"datatype","itemId":"itemID","strokeDashArray":"strokeDasharray","strokeDashOffset":"strokeDashoffset","strokeLineCap":"strokeLinecap","strokeLineJoin":"strokeLinejoin","strokeMiterLimit":"strokeMiterlimit","typeOf":"typeof","xLinkActuate":"xlinkActuate","xLinkArcRole":"xlinkArcrole","xLinkHref":"xlinkHref","xLinkRole":"xlinkRole","xLinkShow":"xlinkShow","xLinkTitle":"xlinkTitle","xLinkType":"xlinkType","xmlnsXLink":"xmlnsXlink"}');
 
 /***/ })
 
@@ -812,6 +14140,18 @@ module.exports = function shallowEqual(objA, objB, compare, compareContext) {
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -824,13 +14164,13 @@ var __webpack_exports__ = {};
 "use strict";
 
 // EXTERNAL MODULE: ./node_modules/react/index.js
-var react = __webpack_require__(294);
+var react = __webpack_require__(7294);
 // EXTERNAL MODULE: ./node_modules/react-dom/index.js
-var react_dom = __webpack_require__(935);
+var react_dom = __webpack_require__(3935);
 // EXTERNAL MODULE: ./node_modules/react-is/index.js
-var react_is = __webpack_require__(864);
+var react_is = __webpack_require__(9864);
 // EXTERNAL MODULE: ./node_modules/shallowequal/index.js
-var shallowequal = __webpack_require__(774);
+var shallowequal = __webpack_require__(6774);
 var shallowequal_default = /*#__PURE__*/__webpack_require__.n(shallowequal);
 ;// CONCATENATED MODULE: ./node_modules/@emotion/stylis/dist/stylis.browser.esm.js
 function stylis_min (W) {
@@ -1530,31 +14870,2417 @@ var isPropValid = /* #__PURE__ */emotion_memoize_browser_esm(function (prop) {
 /* harmony default export */ const emotion_is_prop_valid_browser_esm = (isPropValid);
 
 // EXTERNAL MODULE: ./node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js
-var hoist_non_react_statics_cjs = __webpack_require__(679);
+var hoist_non_react_statics_cjs = __webpack_require__(8679);
 var hoist_non_react_statics_cjs_default = /*#__PURE__*/__webpack_require__.n(hoist_non_react_statics_cjs);
 ;// CONCATENATED MODULE: ./node_modules/styled-components/dist/styled-components.browser.esm.js
 function v(){return(v=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e}).apply(this,arguments)}var g=function(e,t){for(var n=[e[0]],r=0,o=t.length;r<o;r+=1)n.push(t[r],e[r+1]);return n},S=function(t){return null!==t&&"object"==typeof t&&"[object Object]"===(t.toString?t.toString():Object.prototype.toString.call(t))&&!(0,react_is.typeOf)(t)},w=Object.freeze([]),E=Object.freeze({});function b(e){return"function"==typeof e}function _(e){return false||e.displayName||e.name||"Component"}function N(e){return e&&"string"==typeof e.styledComponentId}var A="undefined"!=typeof process&&(process.env.REACT_APP_SC_ATTR||process.env.SC_ATTR)||"data-styled",C="5.3.5",I="undefined"!=typeof window&&"HTMLElement"in window,P=Boolean("boolean"==typeof SC_DISABLE_SPEEDY?SC_DISABLE_SPEEDY:"undefined"!=typeof process&&void 0!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&""!==process.env.REACT_APP_SC_DISABLE_SPEEDY?"false"!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&process.env.REACT_APP_SC_DISABLE_SPEEDY:"undefined"!=typeof process&&void 0!==process.env.SC_DISABLE_SPEEDY&&""!==process.env.SC_DISABLE_SPEEDY?"false"!==process.env.SC_DISABLE_SPEEDY&&process.env.SC_DISABLE_SPEEDY:"production"!=="production"),O={},R= false?0:{};function D(){for(var e=arguments.length<=0?void 0:arguments[0],t=[],n=1,r=arguments.length;n<r;n+=1)t.push(n<0||arguments.length<=n?void 0:arguments[n]);return t.forEach((function(t){e=e.replace(/%[a-z]/,t)})),e}function j(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];throw true?new Error("An error occurred. See https://git.io/JUIaE#"+e+" for more information."+(n.length>0?" Args: "+n.join(", "):"")):0}var T=function(){function e(e){this.groupSizes=new Uint32Array(512),this.length=512,this.tag=e}var t=e.prototype;return t.indexOfGroup=function(e){for(var t=0,n=0;n<e;n++)t+=this.groupSizes[n];return t},t.insertRules=function(e,t){if(e>=this.groupSizes.length){for(var n=this.groupSizes,r=n.length,o=r;e>=o;)(o<<=1)<0&&j(16,""+e);this.groupSizes=new Uint32Array(o),this.groupSizes.set(n),this.length=o;for(var s=r;s<o;s++)this.groupSizes[s]=0}for(var i=this.indexOfGroup(e+1),a=0,c=t.length;a<c;a++)this.tag.insertRule(i,t[a])&&(this.groupSizes[e]++,i++)},t.clearGroup=function(e){if(e<this.length){var t=this.groupSizes[e],n=this.indexOfGroup(e),r=n+t;this.groupSizes[e]=0;for(var o=n;o<r;o++)this.tag.deleteRule(n)}},t.getGroup=function(e){var t="";if(e>=this.length||0===this.groupSizes[e])return t;for(var n=this.groupSizes[e],r=this.indexOfGroup(e),o=r+n,s=r;s<o;s++)t+=this.tag.getRule(s)+"/*!sc*/\n";return t},e}(),x=new Map,k=new Map,V=1,B=function(e){if(x.has(e))return x.get(e);for(;k.has(V);)V++;var t=V++;return false&&0,x.set(e,t),k.set(t,e),t},z=function(e){return k.get(e)},M=function(e,t){t>=V&&(V=t+1),x.set(e,t),k.set(t,e)},G="style["+A+'][data-styled-version="5.3.5"]',L=new RegExp("^"+A+'\\.g(\\d+)\\[id="([\\w\\d-]+)"\\].*?"([^"]*)'),F=function(e,t,n){for(var r,o=n.split(","),s=0,i=o.length;s<i;s++)(r=o[s])&&e.registerName(t,r)},Y=function(e,t){for(var n=(t.textContent||"").split("/*!sc*/\n"),r=[],o=0,s=n.length;o<s;o++){var i=n[o].trim();if(i){var a=i.match(L);if(a){var c=0|parseInt(a[1],10),u=a[2];0!==c&&(M(u,c),F(e,u,a[3]),e.getTag().insertRules(c,r)),r.length=0}else r.push(i)}}},q=function(){return"undefined"!=typeof window&&void 0!==window.__webpack_nonce__?window.__webpack_nonce__:null},H=function(e){var t=document.head,n=e||t,r=document.createElement("style"),o=function(e){for(var t=e.childNodes,n=t.length;n>=0;n--){var r=t[n];if(r&&1===r.nodeType&&r.hasAttribute(A))return r}}(n),s=void 0!==o?o.nextSibling:null;r.setAttribute(A,"active"),r.setAttribute("data-styled-version","5.3.5");var i=q();return i&&r.setAttribute("nonce",i),n.insertBefore(r,s),r},$=function(){function e(e){var t=this.element=H(e);t.appendChild(document.createTextNode("")),this.sheet=function(e){if(e.sheet)return e.sheet;for(var t=document.styleSheets,n=0,r=t.length;n<r;n++){var o=t[n];if(o.ownerNode===e)return o}j(17)}(t),this.length=0}var t=e.prototype;return t.insertRule=function(e,t){try{return this.sheet.insertRule(t,e),this.length++,!0}catch(e){return!1}},t.deleteRule=function(e){this.sheet.deleteRule(e),this.length--},t.getRule=function(e){var t=this.sheet.cssRules[e];return void 0!==t&&"string"==typeof t.cssText?t.cssText:""},e}(),W=function(){function e(e){var t=this.element=H(e);this.nodes=t.childNodes,this.length=0}var t=e.prototype;return t.insertRule=function(e,t){if(e<=this.length&&e>=0){var n=document.createTextNode(t),r=this.nodes[e];return this.element.insertBefore(n,r||null),this.length++,!0}return!1},t.deleteRule=function(e){this.element.removeChild(this.nodes[e]),this.length--},t.getRule=function(e){return e<this.length?this.nodes[e].textContent:""},e}(),U=function(){function e(e){this.rules=[],this.length=0}var t=e.prototype;return t.insertRule=function(e,t){return e<=this.length&&(this.rules.splice(e,0,t),this.length++,!0)},t.deleteRule=function(e){this.rules.splice(e,1),this.length--},t.getRule=function(e){return e<this.length?this.rules[e]:""},e}(),J=I,X={isServer:!I,useCSSOMInjection:!P},Z=function(){function e(e,t,n){void 0===e&&(e=E),void 0===t&&(t={}),this.options=v({},X,{},e),this.gs=t,this.names=new Map(n),this.server=!!e.isServer,!this.server&&I&&J&&(J=!1,function(e){for(var t=document.querySelectorAll(G),n=0,r=t.length;n<r;n++){var o=t[n];o&&"active"!==o.getAttribute(A)&&(Y(e,o),o.parentNode&&o.parentNode.removeChild(o))}}(this))}e.registerId=function(e){return B(e)};var t=e.prototype;return t.reconstructWithOptions=function(t,n){return void 0===n&&(n=!0),new e(v({},this.options,{},t),this.gs,n&&this.names||void 0)},t.allocateGSInstance=function(e){return this.gs[e]=(this.gs[e]||0)+1},t.getTag=function(){return this.tag||(this.tag=(n=(t=this.options).isServer,r=t.useCSSOMInjection,o=t.target,e=n?new U(o):r?new $(o):new W(o),new T(e)));var e,t,n,r,o},t.hasNameForId=function(e,t){return this.names.has(e)&&this.names.get(e).has(t)},t.registerName=function(e,t){if(B(e),this.names.has(e))this.names.get(e).add(t);else{var n=new Set;n.add(t),this.names.set(e,n)}},t.insertRules=function(e,t,n){this.registerName(e,t),this.getTag().insertRules(B(e),n)},t.clearNames=function(e){this.names.has(e)&&this.names.get(e).clear()},t.clearRules=function(e){this.getTag().clearGroup(B(e)),this.clearNames(e)},t.clearTag=function(){this.tag=void 0},t.toString=function(){return function(e){for(var t=e.getTag(),n=t.length,r="",o=0;o<n;o++){var s=z(o);if(void 0!==s){var i=e.names.get(s),a=t.getGroup(o);if(i&&a&&i.size){var c=A+".g"+o+'[id="'+s+'"]',u="";void 0!==i&&i.forEach((function(e){e.length>0&&(u+=e+",")})),r+=""+a+c+'{content:"'+u+'"}/*!sc*/\n'}}}return r}(this)},e}(),K=/(a)(d)/gi,Q=function(e){return String.fromCharCode(e+(e>25?39:97))};function ee(e){var t,n="";for(t=Math.abs(e);t>52;t=t/52|0)n=Q(t%52)+n;return(Q(t%52)+n).replace(K,"$1-$2")}var te=function(e,t){for(var n=t.length;n;)e=33*e^t.charCodeAt(--n);return e},ne=function(e){return te(5381,e)};function re(e){for(var t=0;t<e.length;t+=1){var n=e[t];if(b(n)&&!N(n))return!1}return!0}var oe=ne("5.3.5"),se=function(){function e(e,t,n){this.rules=e,this.staticRulesId="",this.isStatic= true&&(void 0===n||n.isStatic)&&re(e),this.componentId=t,this.baseHash=te(oe,t),this.baseStyle=n,Z.registerId(t)}return e.prototype.generateAndInjectStyles=function(e,t,n){var r=this.componentId,o=[];if(this.baseStyle&&o.push(this.baseStyle.generateAndInjectStyles(e,t,n)),this.isStatic&&!n.hash)if(this.staticRulesId&&t.hasNameForId(r,this.staticRulesId))o.push(this.staticRulesId);else{var s=Ne(this.rules,e,t,n).join(""),i=ee(te(this.baseHash,s)>>>0);if(!t.hasNameForId(r,i)){var a=n(s,"."+i,void 0,r);t.insertRules(r,i,a)}o.push(i),this.staticRulesId=i}else{for(var c=this.rules.length,u=te(this.baseHash,n.hash),l="",d=0;d<c;d++){var h=this.rules[d];if("string"==typeof h)l+=h, false&&(0);else if(h){var p=Ne(h,e,t,n),f=Array.isArray(p)?p.join(""):p;u=te(u,f+d),l+=f}}if(l){var m=ee(u>>>0);if(!t.hasNameForId(r,m)){var y=n(l,"."+m,void 0,r);t.insertRules(r,m,y)}o.push(m)}}return o.join(" ")},e}(),ie=/^\s*\/\/.*$/gm,ae=[":","[",".","#"];function ce(e){var t,n,r,o,s=void 0===e?E:e,i=s.options,a=void 0===i?E:i,c=s.plugins,u=void 0===c?w:c,l=new stylis_browser_esm(a),d=[],h=function(e){function t(t){if(t)try{e(t+"}")}catch(e){}}return function(n,r,o,s,i,a,c,u,l,d){switch(n){case 1:if(0===l&&64===r.charCodeAt(0))return e(r+";"),"";break;case 2:if(0===u)return r+"/*|*/";break;case 3:switch(u){case 102:case 112:return e(o[0]+r),"";default:return r+(0===d?"/*|*/":"")}case-2:r.split("/*|*/}").forEach(t)}}}((function(e){d.push(e)})),f=function(e,r,s){return 0===r&&-1!==ae.indexOf(s[n.length])||s.match(o)?e:"."+t};function m(e,s,i,a){void 0===a&&(a="&");var c=e.replace(ie,""),u=s&&i?i+" "+s+" { "+c+" }":c;return t=a,n=s,r=new RegExp("\\"+n+"\\b","g"),o=new RegExp("(\\"+n+"\\b){2,}"),l(i||!s?"":s,u)}return l.use([].concat(u,[function(e,t,o){2===e&&o.length&&o[0].lastIndexOf(n)>0&&(o[0]=o[0].replace(r,f))},h,function(e){if(-2===e){var t=d;return d=[],t}}])),m.hash=u.length?u.reduce((function(e,t){return t.name||j(15),te(e,t.name)}),5381).toString():"",m}var ue=react.createContext(),le=ue.Consumer,de=react.createContext(),he=(de.Consumer,new Z),pe=ce();function fe(){return (0,react.useContext)(ue)||he}function me(){return (0,react.useContext)(de)||pe}function ye(e){var t=(0,react.useState)(e.stylisPlugins),n=t[0],s=t[1],c=fe(),u=(0,react.useMemo)((function(){var t=c;return e.sheet?t=e.sheet:e.target&&(t=t.reconstructWithOptions({target:e.target},!1)),e.disableCSSOMInjection&&(t=t.reconstructWithOptions({useCSSOMInjection:!1})),t}),[e.disableCSSOMInjection,e.sheet,e.target]),l=(0,react.useMemo)((function(){return ce({options:{prefix:!e.disableVendorPrefixes},plugins:n})}),[e.disableVendorPrefixes,n]);return (0,react.useEffect)((function(){shallowequal_default()(n,e.stylisPlugins)||s(e.stylisPlugins)}),[e.stylisPlugins]),react.createElement(ue.Provider,{value:u},react.createElement(de.Provider,{value:l}, false?0:e.children))}var ve=function(){function e(e,t){var n=this;this.inject=function(e,t){void 0===t&&(t=pe);var r=n.name+t.hash;e.hasNameForId(n.id,r)||e.insertRules(n.id,r,t(n.rules,r,"@keyframes"))},this.toString=function(){return j(12,String(n.name))},this.name=e,this.id="sc-keyframes-"+e,this.rules=t}return e.prototype.getName=function(e){return void 0===e&&(e=pe),this.name+e.hash},e}(),ge=/([A-Z])/,Se=/([A-Z])/g,we=/^ms-/,Ee=function(e){return"-"+e.toLowerCase()};function be(e){return ge.test(e)?e.replace(Se,Ee).replace(we,"-ms-"):e}var _e=function(e){return null==e||!1===e||""===e};function Ne(e,n,r,o){if(Array.isArray(e)){for(var s,i=[],a=0,c=e.length;a<c;a+=1)""!==(s=Ne(e[a],n,r,o))&&(Array.isArray(s)?i.push.apply(i,s):i.push(s));return i}if(_e(e))return"";if(N(e))return"."+e.styledComponentId;if(b(e)){if("function"!=typeof(l=e)||l.prototype&&l.prototype.isReactComponent||!n)return e;var u=e(n);return false&&0,Ne(u,n,r,o)}var l;return e instanceof ve?r?(e.inject(r,o),e.getName(o)):e:S(e)?function e(t,n){var r,o,s=[];for(var i in t)t.hasOwnProperty(i)&&!_e(t[i])&&(Array.isArray(t[i])&&t[i].isCss||b(t[i])?s.push(be(i)+":",t[i],";"):S(t[i])?s.push.apply(s,e(t[i],i)):s.push(be(i)+": "+(r=i,null==(o=t[i])||"boolean"==typeof o||""===o?"":"number"!=typeof o||0===o||r in unitless_browser_esm?String(o).trim():o+"px")+";"));return n?[n+" {"].concat(s,["}"]):s}(e):e.toString()}var Ae=function(e){return Array.isArray(e)&&(e.isCss=!0),e};function Ce(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];return b(e)||S(e)?Ae(Ne(g(w,[e].concat(n)))):0===n.length&&1===e.length&&"string"==typeof e[0]?e:Ae(Ne(g(e,n)))}var Ie=/invalid hook call/i,Pe=new Set,Oe=function(e,t){if(false){ var o, n, r; }},Re=function(e,t,n){return void 0===n&&(n=E),e.theme!==n.theme&&e.theme||t||n.theme},De=/[!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~-]+/g,je=/(^-|-$)/g;function Te(e){return e.replace(De,"-").replace(je,"")}var xe=function(e){return ee(ne(e)>>>0)};function ke(e){return"string"==typeof e&&( true||0)}var Ve=function(e){return"function"==typeof e||"object"==typeof e&&null!==e&&!Array.isArray(e)},Be=function(e){return"__proto__"!==e&&"constructor"!==e&&"prototype"!==e};function ze(e,t,n){var r=e[n];Ve(t)&&Ve(r)?Me(r,t):e[n]=t}function Me(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];for(var o=0,s=n;o<s.length;o++){var i=s[o];if(Ve(i))for(var a in i)Be(a)&&ze(e,i[a],a)}return e}var Ge=react.createContext(),Le=Ge.Consumer;function Fe(e){var t=s(Ge),n=i((function(){return function(e,t){if(!e)return j(14);if(b(e)){var n=e(t);return true?n:0}return Array.isArray(e)||"object"!=typeof e?j(8):t?v({},t,{},e):e}(e.theme,t)}),[e.theme,t]);return e.children?r.createElement(Ge.Provider,{value:n},e.children):null}var Ye={};function qe(e,t,n){var o=N(e),i=!ke(e),a=t.attrs,c=void 0===a?w:a,d=t.componentId,h=void 0===d?function(e,t){var n="string"!=typeof e?"sc":Te(e);Ye[n]=(Ye[n]||0)+1;var r=n+"-"+xe("5.3.5"+n+Ye[n]);return t?t+"-"+r:r}(t.displayName,t.parentComponentId):d,p=t.displayName,f=void 0===p?function(e){return ke(e)?"styled."+e:"Styled("+_(e)+")"}(e):p,g=t.displayName&&t.componentId?Te(t.displayName)+"-"+t.componentId:t.componentId||h,S=o&&e.attrs?Array.prototype.concat(e.attrs,c).filter(Boolean):c,A=t.shouldForwardProp;o&&e.shouldForwardProp&&(A=t.shouldForwardProp?function(n,r,o){return e.shouldForwardProp(n,r,o)&&t.shouldForwardProp(n,r,o)}:e.shouldForwardProp);var C,I=new se(n,g,o?e.componentStyle:void 0),P=I.isStatic&&0===c.length,O=function(e,t){return function(e,t,n,r){var o=e.attrs,i=e.componentStyle,a=e.defaultProps,c=e.foldedComponentIds,d=e.shouldForwardProp,h=e.styledComponentId,p=e.target; false&&0;var f=function(e,t,n){void 0===e&&(e=E);var r=v({},t,{theme:e}),o={};return n.forEach((function(e){var t,n,s,i=e;for(t in b(i)&&(i=i(r)),i)r[t]=o[t]="className"===t?(n=o[t],s=i[t],n&&s?n+" "+s:n||s):i[t]})),[r,o]}(Re(t,(0,react.useContext)(Ge),a)||E,t,o),y=f[0],g=f[1],S=function(e,t,n,r){var o=fe(),s=me(),i=t?e.generateAndInjectStyles(E,o,s):e.generateAndInjectStyles(n,o,s);return false&&0, false&&0,i}(i,r,y, false?0:void 0),w=n,_=g.$as||t.$as||g.as||t.as||p,N=ke(_),A=g!==t?v({},t,{},g):t,C={};for(var I in A)"$"!==I[0]&&"as"!==I&&("forwardedAs"===I?C.as=A[I]:(d?d(I,emotion_is_prop_valid_browser_esm,_):!N||emotion_is_prop_valid_browser_esm(I))&&(C[I]=A[I]));return t.style&&g.style!==t.style&&(C.style=v({},t.style,{},g.style)),C.className=Array.prototype.concat(c,h,S!==h?S:null,t.className,g.className).filter(Boolean).join(" "),C.ref=w,(0,react.createElement)(_,C)}(C,e,t,P)};return O.displayName=f,(C=react.forwardRef(O)).attrs=S,C.componentStyle=I,C.displayName=f,C.shouldForwardProp=A,C.foldedComponentIds=o?Array.prototype.concat(e.foldedComponentIds,e.styledComponentId):w,C.styledComponentId=g,C.target=o?e.target:e,C.withComponent=function(e){var r=t.componentId,o=function(e,t){if(null==e)return{};var n,r,o={},s=Object.keys(e);for(r=0;r<s.length;r++)n=s[r],t.indexOf(n)>=0||(o[n]=e[n]);return o}(t,["componentId"]),s=r&&r+"-"+(ke(e)?e:Te(_(e)));return qe(e,v({},o,{attrs:S,componentId:s}),n)},Object.defineProperty(C,"defaultProps",{get:function(){return this._foldedDefaultProps},set:function(t){this._foldedDefaultProps=o?Me({},e.defaultProps,t):t}}), false&&(0),C.toString=function(){return"."+C.styledComponentId},i&&hoist_non_react_statics_cjs_default()(C,e,{attrs:!0,componentStyle:!0,displayName:!0,foldedComponentIds:!0,shouldForwardProp:!0,styledComponentId:!0,target:!0,withComponent:!0}),C}var He=function(e){return function e(t,r,o){if(void 0===o&&(o=E),!(0,react_is.isValidElementType)(r))return j(1,String(r));var s=function(){return t(r,o,Ce.apply(void 0,arguments))};return s.withConfig=function(n){return e(t,r,v({},o,{},n))},s.attrs=function(n){return e(t,r,v({},o,{attrs:Array.prototype.concat(o.attrs,n).filter(Boolean)}))},s}(qe,e)};["a","abbr","address","area","article","aside","audio","b","base","bdi","bdo","big","blockquote","body","br","button","canvas","caption","cite","code","col","colgroup","data","datalist","dd","del","details","dfn","dialog","div","dl","dt","em","embed","fieldset","figcaption","figure","footer","form","h1","h2","h3","h4","h5","h6","head","header","hgroup","hr","html","i","iframe","img","input","ins","kbd","keygen","label","legend","li","link","main","map","mark","marquee","menu","menuitem","meta","meter","nav","noscript","object","ol","optgroup","option","output","p","param","picture","pre","progress","q","rp","rt","ruby","s","samp","script","section","select","small","source","span","strong","style","sub","summary","sup","table","tbody","td","textarea","tfoot","th","thead","time","title","tr","track","u","ul","var","video","wbr","circle","clipPath","defs","ellipse","foreignObject","g","image","line","linearGradient","marker","mask","path","pattern","polygon","polyline","radialGradient","rect","stop","svg","text","textPath","tspan"].forEach((function(e){He[e]=He(e)}));var $e=function(){function e(e,t){this.rules=e,this.componentId=t,this.isStatic=re(e),Z.registerId(this.componentId+1)}var t=e.prototype;return t.createStyles=function(e,t,n,r){var o=r(Ne(this.rules,t,n,r).join(""),""),s=this.componentId+e;n.insertRules(s,s,o)},t.removeStyles=function(e,t){t.clearRules(this.componentId+e)},t.renderStyles=function(e,t,n,r){e>2&&Z.registerId(this.componentId+e),this.removeStyles(e,n),this.createStyles(e,t,n,r)},e}();function We(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),o=1;o<t;o++)n[o-1]=arguments[o];var i=Ce.apply(void 0,[e].concat(n)),a="sc-global-"+xe(JSON.stringify(i)),u=new $e(i,a);function l(e){var t=fe(),n=me(),o=(0,react.useContext)(Ge),l=(0,react.useRef)(t.allocateGSInstance(a)).current;return false&&0, false&&0,t.server&&h(l,e,t,o,n),(0,react.useLayoutEffect)((function(){if(!t.server)return h(l,e,t,o,n),function(){return u.removeStyles(l,t)}}),[l,e,t,o,n]),null}function h(e,t,n,r,o){if(u.isStatic)u.renderStyles(e,O,n,o);else{var s=v({},t,{theme:Re(t,r,l.defaultProps)});u.renderStyles(e,s,n,o)}}return false&&0,react.memo(l)}function Ue(e){ false&&0;for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];var o=Ce.apply(void 0,[e].concat(n)).join(""),s=xe(o);return new ve(s,o)}var Je=function(){function e(){var e=this;this._emitSheetCSS=function(){var t=e.instance.toString();if(!t)return"";var n=q();return"<style "+[n&&'nonce="'+n+'"',A+'="true"','data-styled-version="5.3.5"'].filter(Boolean).join(" ")+">"+t+"</style>"},this.getStyleTags=function(){return e.sealed?j(2):e._emitSheetCSS()},this.getStyleElement=function(){var t;if(e.sealed)return j(2);var n=((t={})[A]="",t["data-styled-version"]="5.3.5",t.dangerouslySetInnerHTML={__html:e.instance.toString()},t),o=q();return o&&(n.nonce=o),[react.createElement("style",v({},n,{key:"sc-0-0"}))]},this.seal=function(){e.sealed=!0},this.instance=new Z({isServer:!0}),this.sealed=!1}var t=e.prototype;return t.collectStyles=function(e){return this.sealed?j(2):react.createElement(ye,{sheet:this.instance},e)},t.interleaveWithNodeStream=function(e){return j(3)},e}(),Xe=function(e){var t=r.forwardRef((function(t,n){var o=s(Ge),i=e.defaultProps,a=Re(t,o,i);return false&&0,r.createElement(e,v({},t,{theme:a,ref:n}))}));return y(t,e),t.displayName="WithTheme("+_(e)+")",t},Ze=function(){return s(Ge)},Ke={StyleSheet:Z,masterSheet:he}; false&&0, false&&(0);/* harmony default export */ const styled_components_browser_esm = (He);
 //# sourceMappingURL=styled-components.browser.esm.js.map
 
-;// CONCATENATED MODULE: ./src/pages/editor.tsx
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+  return _setPrototypeOf(o, p);
+}
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js
+
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+  _setPrototypeOf(subClass, superClass);
+}
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
+function extends_extends() {
+  extends_extends = Object.assign ? Object.assign.bind() : function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+  return extends_extends.apply(this, arguments);
+}
+;// CONCATENATED MODULE: ./node_modules/resolve-pathname/esm/resolve-pathname.js
+function isAbsolute(pathname) {
+  return pathname.charAt(0) === '/';
+}
+
+// About 1.5x faster than the two-arg version of Array#splice()
+function spliceOne(list, index) {
+  for (var i = index, k = i + 1, n = list.length; k < n; i += 1, k += 1) {
+    list[i] = list[k];
+  }
+
+  list.pop();
+}
+
+// This implementation is based heavily on node's url.parse
+function resolvePathname(to, from) {
+  if (from === undefined) from = '';
+
+  var toParts = (to && to.split('/')) || [];
+  var fromParts = (from && from.split('/')) || [];
+
+  var isToAbs = to && isAbsolute(to);
+  var isFromAbs = from && isAbsolute(from);
+  var mustEndAbs = isToAbs || isFromAbs;
+
+  if (to && isAbsolute(to)) {
+    // to is absolute
+    fromParts = toParts;
+  } else if (toParts.length) {
+    // to is relative, drop the filename
+    fromParts.pop();
+    fromParts = fromParts.concat(toParts);
+  }
+
+  if (!fromParts.length) return '/';
+
+  var hasTrailingSlash;
+  if (fromParts.length) {
+    var last = fromParts[fromParts.length - 1];
+    hasTrailingSlash = last === '.' || last === '..' || last === '';
+  } else {
+    hasTrailingSlash = false;
+  }
+
+  var up = 0;
+  for (var i = fromParts.length; i >= 0; i--) {
+    var part = fromParts[i];
+
+    if (part === '.') {
+      spliceOne(fromParts, i);
+    } else if (part === '..') {
+      spliceOne(fromParts, i);
+      up++;
+    } else if (up) {
+      spliceOne(fromParts, i);
+      up--;
+    }
+  }
+
+  if (!mustEndAbs) for (; up--; up) fromParts.unshift('..');
+
+  if (
+    mustEndAbs &&
+    fromParts[0] !== '' &&
+    (!fromParts[0] || !isAbsolute(fromParts[0]))
+  )
+    fromParts.unshift('');
+
+  var result = fromParts.join('/');
+
+  if (hasTrailingSlash && result.substr(-1) !== '/') result += '/';
+
+  return result;
+}
+
+/* harmony default export */ const resolve_pathname = (resolvePathname);
+
+;// CONCATENATED MODULE: ./node_modules/value-equal/esm/value-equal.js
+function value_equal_valueOf(obj) {
+  return obj.valueOf ? obj.valueOf() : Object.prototype.valueOf.call(obj);
+}
+
+function valueEqual(a, b) {
+  // Test for strict equality first.
+  if (a === b) return true;
+
+  // Otherwise, if either of them == null they are not equal.
+  if (a == null || b == null) return false;
+
+  if (Array.isArray(a)) {
+    return (
+      Array.isArray(b) &&
+      a.length === b.length &&
+      a.every(function(item, index) {
+        return valueEqual(item, b[index]);
+      })
+    );
+  }
+
+  if (typeof a === 'object' || typeof b === 'object') {
+    var aValue = value_equal_valueOf(a);
+    var bValue = value_equal_valueOf(b);
+
+    if (aValue !== a || bValue !== b) return valueEqual(aValue, bValue);
+
+    return Object.keys(Object.assign({}, a, b)).every(function(key) {
+      return valueEqual(a[key], b[key]);
+    });
+  }
+
+  return false;
+}
+
+/* harmony default export */ const value_equal = (valueEqual);
+
+;// CONCATENATED MODULE: ./node_modules/tiny-invariant/dist/tiny-invariant.esm.js
+var isProduction = "production" === 'production';
+var prefix = 'Invariant failed';
+function tiny_invariant_esm_invariant(condition, message) {
+    if (condition) {
+        return;
+    }
+    if (isProduction) {
+        throw new Error(prefix);
+    }
+    var provided = typeof message === 'function' ? message() : message;
+    var value = provided ? prefix + ": " + provided : prefix;
+    throw new Error(value);
+}
+
+
+
+;// CONCATENATED MODULE: ./node_modules/history/esm/history.js
+
+
+
+
+
+
+function addLeadingSlash(path) {
+  return path.charAt(0) === '/' ? path : '/' + path;
+}
+function stripLeadingSlash(path) {
+  return path.charAt(0) === '/' ? path.substr(1) : path;
+}
+function hasBasename(path, prefix) {
+  return path.toLowerCase().indexOf(prefix.toLowerCase()) === 0 && '/?#'.indexOf(path.charAt(prefix.length)) !== -1;
+}
+function stripBasename(path, prefix) {
+  return hasBasename(path, prefix) ? path.substr(prefix.length) : path;
+}
+function stripTrailingSlash(path) {
+  return path.charAt(path.length - 1) === '/' ? path.slice(0, -1) : path;
+}
+function parsePath(path) {
+  var pathname = path || '/';
+  var search = '';
+  var hash = '';
+  var hashIndex = pathname.indexOf('#');
+
+  if (hashIndex !== -1) {
+    hash = pathname.substr(hashIndex);
+    pathname = pathname.substr(0, hashIndex);
+  }
+
+  var searchIndex = pathname.indexOf('?');
+
+  if (searchIndex !== -1) {
+    search = pathname.substr(searchIndex);
+    pathname = pathname.substr(0, searchIndex);
+  }
+
+  return {
+    pathname: pathname,
+    search: search === '?' ? '' : search,
+    hash: hash === '#' ? '' : hash
+  };
+}
+function createPath(location) {
+  var pathname = location.pathname,
+      search = location.search,
+      hash = location.hash;
+  var path = pathname || '/';
+  if (search && search !== '?') path += search.charAt(0) === '?' ? search : "?" + search;
+  if (hash && hash !== '#') path += hash.charAt(0) === '#' ? hash : "#" + hash;
+  return path;
+}
+
+function createLocation(path, state, key, currentLocation) {
+  var location;
+
+  if (typeof path === 'string') {
+    // Two-arg form: push(path, state)
+    location = parsePath(path);
+    location.state = state;
+  } else {
+    // One-arg form: push(location)
+    location = extends_extends({}, path);
+    if (location.pathname === undefined) location.pathname = '';
+
+    if (location.search) {
+      if (location.search.charAt(0) !== '?') location.search = '?' + location.search;
+    } else {
+      location.search = '';
+    }
+
+    if (location.hash) {
+      if (location.hash.charAt(0) !== '#') location.hash = '#' + location.hash;
+    } else {
+      location.hash = '';
+    }
+
+    if (state !== undefined && location.state === undefined) location.state = state;
+  }
+
+  try {
+    location.pathname = decodeURI(location.pathname);
+  } catch (e) {
+    if (e instanceof URIError) {
+      throw new URIError('Pathname "' + location.pathname + '" could not be decoded. ' + 'This is likely caused by an invalid percent-encoding.');
+    } else {
+      throw e;
+    }
+  }
+
+  if (key) location.key = key;
+
+  if (currentLocation) {
+    // Resolve incomplete/relative pathname relative to current location.
+    if (!location.pathname) {
+      location.pathname = currentLocation.pathname;
+    } else if (location.pathname.charAt(0) !== '/') {
+      location.pathname = resolve_pathname(location.pathname, currentLocation.pathname);
+    }
+  } else {
+    // When there is no prior location and pathname is empty, set it to /
+    if (!location.pathname) {
+      location.pathname = '/';
+    }
+  }
+
+  return location;
+}
+function locationsAreEqual(a, b) {
+  return a.pathname === b.pathname && a.search === b.search && a.hash === b.hash && a.key === b.key && value_equal(a.state, b.state);
+}
+
+function createTransitionManager() {
+  var prompt = null;
+
+  function setPrompt(nextPrompt) {
+     false ? 0 : void 0;
+    prompt = nextPrompt;
+    return function () {
+      if (prompt === nextPrompt) prompt = null;
+    };
+  }
+
+  function confirmTransitionTo(location, action, getUserConfirmation, callback) {
+    // TODO: If another transition starts while we're still confirming
+    // the previous one, we may end up in a weird state. Figure out the
+    // best way to handle this.
+    if (prompt != null) {
+      var result = typeof prompt === 'function' ? prompt(location, action) : prompt;
+
+      if (typeof result === 'string') {
+        if (typeof getUserConfirmation === 'function') {
+          getUserConfirmation(result, callback);
+        } else {
+           false ? 0 : void 0;
+          callback(true);
+        }
+      } else {
+        // Return false from a transition hook to cancel the transition.
+        callback(result !== false);
+      }
+    } else {
+      callback(true);
+    }
+  }
+
+  var listeners = [];
+
+  function appendListener(fn) {
+    var isActive = true;
+
+    function listener() {
+      if (isActive) fn.apply(void 0, arguments);
+    }
+
+    listeners.push(listener);
+    return function () {
+      isActive = false;
+      listeners = listeners.filter(function (item) {
+        return item !== listener;
+      });
+    };
+  }
+
+  function notifyListeners() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    listeners.forEach(function (listener) {
+      return listener.apply(void 0, args);
+    });
+  }
+
+  return {
+    setPrompt: setPrompt,
+    confirmTransitionTo: confirmTransitionTo,
+    appendListener: appendListener,
+    notifyListeners: notifyListeners
+  };
+}
+
+var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+function getConfirmation(message, callback) {
+  callback(window.confirm(message)); // eslint-disable-line no-alert
+}
+/**
+ * Returns true if the HTML5 history API is supported. Taken from Modernizr.
+ *
+ * https://github.com/Modernizr/Modernizr/blob/master/LICENSE
+ * https://github.com/Modernizr/Modernizr/blob/master/feature-detects/history.js
+ * changed to avoid false negatives for Windows Phones: https://github.com/reactjs/react-router/issues/586
+ */
+
+function supportsHistory() {
+  var ua = window.navigator.userAgent;
+  if ((ua.indexOf('Android 2.') !== -1 || ua.indexOf('Android 4.0') !== -1) && ua.indexOf('Mobile Safari') !== -1 && ua.indexOf('Chrome') === -1 && ua.indexOf('Windows Phone') === -1) return false;
+  return window.history && 'pushState' in window.history;
+}
+/**
+ * Returns true if browser fires popstate on hash change.
+ * IE10 and IE11 do not.
+ */
+
+function supportsPopStateOnHashChange() {
+  return window.navigator.userAgent.indexOf('Trident') === -1;
+}
+/**
+ * Returns false if using go(n) with hash history causes a full page reload.
+ */
+
+function supportsGoWithoutReloadUsingHash() {
+  return window.navigator.userAgent.indexOf('Firefox') === -1;
+}
+/**
+ * Returns true if a given popstate event is an extraneous WebKit event.
+ * Accounts for the fact that Chrome on iOS fires real popstate events
+ * containing undefined state when pressing the back button.
+ */
+
+function isExtraneousPopstateEvent(event) {
+  return event.state === undefined && navigator.userAgent.indexOf('CriOS') === -1;
+}
+
+var PopStateEvent = 'popstate';
+var HashChangeEvent = 'hashchange';
+
+function getHistoryState() {
+  try {
+    return window.history.state || {};
+  } catch (e) {
+    // IE 11 sometimes throws when accessing window.history.state
+    // See https://github.com/ReactTraining/history/pull/289
+    return {};
+  }
+}
+/**
+ * Creates a history object that uses the HTML5 history API including
+ * pushState, replaceState, and the popstate event.
+ */
+
+
+function createBrowserHistory(props) {
+  if (props === void 0) {
+    props = {};
+  }
+
+  !canUseDOM ?  false ? 0 : tiny_invariant_esm_invariant(false) : void 0;
+  var globalHistory = window.history;
+  var canUseHistory = supportsHistory();
+  var needsHashChangeListener = !supportsPopStateOnHashChange();
+  var _props = props,
+      _props$forceRefresh = _props.forceRefresh,
+      forceRefresh = _props$forceRefresh === void 0 ? false : _props$forceRefresh,
+      _props$getUserConfirm = _props.getUserConfirmation,
+      getUserConfirmation = _props$getUserConfirm === void 0 ? getConfirmation : _props$getUserConfirm,
+      _props$keyLength = _props.keyLength,
+      keyLength = _props$keyLength === void 0 ? 6 : _props$keyLength;
+  var basename = props.basename ? stripTrailingSlash(addLeadingSlash(props.basename)) : '';
+
+  function getDOMLocation(historyState) {
+    var _ref = historyState || {},
+        key = _ref.key,
+        state = _ref.state;
+
+    var _window$location = window.location,
+        pathname = _window$location.pathname,
+        search = _window$location.search,
+        hash = _window$location.hash;
+    var path = pathname + search + hash;
+     false ? 0 : void 0;
+    if (basename) path = stripBasename(path, basename);
+    return createLocation(path, state, key);
+  }
+
+  function createKey() {
+    return Math.random().toString(36).substr(2, keyLength);
+  }
+
+  var transitionManager = createTransitionManager();
+
+  function setState(nextState) {
+    extends_extends(history, nextState);
+
+    history.length = globalHistory.length;
+    transitionManager.notifyListeners(history.location, history.action);
+  }
+
+  function handlePopState(event) {
+    // Ignore extraneous popstate events in WebKit.
+    if (isExtraneousPopstateEvent(event)) return;
+    handlePop(getDOMLocation(event.state));
+  }
+
+  function handleHashChange() {
+    handlePop(getDOMLocation(getHistoryState()));
+  }
+
+  var forceNextPop = false;
+
+  function handlePop(location) {
+    if (forceNextPop) {
+      forceNextPop = false;
+      setState();
+    } else {
+      var action = 'POP';
+      transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+        if (ok) {
+          setState({
+            action: action,
+            location: location
+          });
+        } else {
+          revertPop(location);
+        }
+      });
+    }
+  }
+
+  function revertPop(fromLocation) {
+    var toLocation = history.location; // TODO: We could probably make this more reliable by
+    // keeping a list of keys we've seen in sessionStorage.
+    // Instead, we just default to 0 for keys we don't know.
+
+    var toIndex = allKeys.indexOf(toLocation.key);
+    if (toIndex === -1) toIndex = 0;
+    var fromIndex = allKeys.indexOf(fromLocation.key);
+    if (fromIndex === -1) fromIndex = 0;
+    var delta = toIndex - fromIndex;
+
+    if (delta) {
+      forceNextPop = true;
+      go(delta);
+    }
+  }
+
+  var initialLocation = getDOMLocation(getHistoryState());
+  var allKeys = [initialLocation.key]; // Public interface
+
+  function createHref(location) {
+    return basename + createPath(location);
+  }
+
+  function push(path, state) {
+     false ? 0 : void 0;
+    var action = 'PUSH';
+    var location = createLocation(path, state, createKey(), history.location);
+    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+      if (!ok) return;
+      var href = createHref(location);
+      var key = location.key,
+          state = location.state;
+
+      if (canUseHistory) {
+        globalHistory.pushState({
+          key: key,
+          state: state
+        }, null, href);
+
+        if (forceRefresh) {
+          window.location.href = href;
+        } else {
+          var prevIndex = allKeys.indexOf(history.location.key);
+          var nextKeys = allKeys.slice(0, prevIndex + 1);
+          nextKeys.push(location.key);
+          allKeys = nextKeys;
+          setState({
+            action: action,
+            location: location
+          });
+        }
+      } else {
+         false ? 0 : void 0;
+        window.location.href = href;
+      }
+    });
+  }
+
+  function replace(path, state) {
+     false ? 0 : void 0;
+    var action = 'REPLACE';
+    var location = createLocation(path, state, createKey(), history.location);
+    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+      if (!ok) return;
+      var href = createHref(location);
+      var key = location.key,
+          state = location.state;
+
+      if (canUseHistory) {
+        globalHistory.replaceState({
+          key: key,
+          state: state
+        }, null, href);
+
+        if (forceRefresh) {
+          window.location.replace(href);
+        } else {
+          var prevIndex = allKeys.indexOf(history.location.key);
+          if (prevIndex !== -1) allKeys[prevIndex] = location.key;
+          setState({
+            action: action,
+            location: location
+          });
+        }
+      } else {
+         false ? 0 : void 0;
+        window.location.replace(href);
+      }
+    });
+  }
+
+  function go(n) {
+    globalHistory.go(n);
+  }
+
+  function goBack() {
+    go(-1);
+  }
+
+  function goForward() {
+    go(1);
+  }
+
+  var listenerCount = 0;
+
+  function checkDOMListeners(delta) {
+    listenerCount += delta;
+
+    if (listenerCount === 1 && delta === 1) {
+      window.addEventListener(PopStateEvent, handlePopState);
+      if (needsHashChangeListener) window.addEventListener(HashChangeEvent, handleHashChange);
+    } else if (listenerCount === 0) {
+      window.removeEventListener(PopStateEvent, handlePopState);
+      if (needsHashChangeListener) window.removeEventListener(HashChangeEvent, handleHashChange);
+    }
+  }
+
+  var isBlocked = false;
+
+  function block(prompt) {
+    if (prompt === void 0) {
+      prompt = false;
+    }
+
+    var unblock = transitionManager.setPrompt(prompt);
+
+    if (!isBlocked) {
+      checkDOMListeners(1);
+      isBlocked = true;
+    }
+
+    return function () {
+      if (isBlocked) {
+        isBlocked = false;
+        checkDOMListeners(-1);
+      }
+
+      return unblock();
+    };
+  }
+
+  function listen(listener) {
+    var unlisten = transitionManager.appendListener(listener);
+    checkDOMListeners(1);
+    return function () {
+      checkDOMListeners(-1);
+      unlisten();
+    };
+  }
+
+  var history = {
+    length: globalHistory.length,
+    action: 'POP',
+    location: initialLocation,
+    createHref: createHref,
+    push: push,
+    replace: replace,
+    go: go,
+    goBack: goBack,
+    goForward: goForward,
+    block: block,
+    listen: listen
+  };
+  return history;
+}
+
+var HashChangeEvent$1 = 'hashchange';
+var HashPathCoders = {
+  hashbang: {
+    encodePath: function encodePath(path) {
+      return path.charAt(0) === '!' ? path : '!/' + stripLeadingSlash(path);
+    },
+    decodePath: function decodePath(path) {
+      return path.charAt(0) === '!' ? path.substr(1) : path;
+    }
+  },
+  noslash: {
+    encodePath: stripLeadingSlash,
+    decodePath: addLeadingSlash
+  },
+  slash: {
+    encodePath: addLeadingSlash,
+    decodePath: addLeadingSlash
+  }
+};
+
+function stripHash(url) {
+  var hashIndex = url.indexOf('#');
+  return hashIndex === -1 ? url : url.slice(0, hashIndex);
+}
+
+function getHashPath() {
+  // We can't use window.location.hash here because it's not
+  // consistent across browsers - Firefox will pre-decode it!
+  var href = window.location.href;
+  var hashIndex = href.indexOf('#');
+  return hashIndex === -1 ? '' : href.substring(hashIndex + 1);
+}
+
+function pushHashPath(path) {
+  window.location.hash = path;
+}
+
+function replaceHashPath(path) {
+  window.location.replace(stripHash(window.location.href) + '#' + path);
+}
+
+function createHashHistory(props) {
+  if (props === void 0) {
+    props = {};
+  }
+
+  !canUseDOM ?  false ? 0 : tiny_invariant_esm_invariant(false) : void 0;
+  var globalHistory = window.history;
+  var canGoWithoutReload = supportsGoWithoutReloadUsingHash();
+  var _props = props,
+      _props$getUserConfirm = _props.getUserConfirmation,
+      getUserConfirmation = _props$getUserConfirm === void 0 ? getConfirmation : _props$getUserConfirm,
+      _props$hashType = _props.hashType,
+      hashType = _props$hashType === void 0 ? 'slash' : _props$hashType;
+  var basename = props.basename ? stripTrailingSlash(addLeadingSlash(props.basename)) : '';
+  var _HashPathCoders$hashT = HashPathCoders[hashType],
+      encodePath = _HashPathCoders$hashT.encodePath,
+      decodePath = _HashPathCoders$hashT.decodePath;
+
+  function getDOMLocation() {
+    var path = decodePath(getHashPath());
+     false ? 0 : void 0;
+    if (basename) path = stripBasename(path, basename);
+    return createLocation(path);
+  }
+
+  var transitionManager = createTransitionManager();
+
+  function setState(nextState) {
+    extends_extends(history, nextState);
+
+    history.length = globalHistory.length;
+    transitionManager.notifyListeners(history.location, history.action);
+  }
+
+  var forceNextPop = false;
+  var ignorePath = null;
+
+  function locationsAreEqual$$1(a, b) {
+    return a.pathname === b.pathname && a.search === b.search && a.hash === b.hash;
+  }
+
+  function handleHashChange() {
+    var path = getHashPath();
+    var encodedPath = encodePath(path);
+
+    if (path !== encodedPath) {
+      // Ensure we always have a properly-encoded hash.
+      replaceHashPath(encodedPath);
+    } else {
+      var location = getDOMLocation();
+      var prevLocation = history.location;
+      if (!forceNextPop && locationsAreEqual$$1(prevLocation, location)) return; // A hashchange doesn't always == location change.
+
+      if (ignorePath === createPath(location)) return; // Ignore this change; we already setState in push/replace.
+
+      ignorePath = null;
+      handlePop(location);
+    }
+  }
+
+  function handlePop(location) {
+    if (forceNextPop) {
+      forceNextPop = false;
+      setState();
+    } else {
+      var action = 'POP';
+      transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+        if (ok) {
+          setState({
+            action: action,
+            location: location
+          });
+        } else {
+          revertPop(location);
+        }
+      });
+    }
+  }
+
+  function revertPop(fromLocation) {
+    var toLocation = history.location; // TODO: We could probably make this more reliable by
+    // keeping a list of paths we've seen in sessionStorage.
+    // Instead, we just default to 0 for paths we don't know.
+
+    var toIndex = allPaths.lastIndexOf(createPath(toLocation));
+    if (toIndex === -1) toIndex = 0;
+    var fromIndex = allPaths.lastIndexOf(createPath(fromLocation));
+    if (fromIndex === -1) fromIndex = 0;
+    var delta = toIndex - fromIndex;
+
+    if (delta) {
+      forceNextPop = true;
+      go(delta);
+    }
+  } // Ensure the hash is encoded properly before doing anything else.
+
+
+  var path = getHashPath();
+  var encodedPath = encodePath(path);
+  if (path !== encodedPath) replaceHashPath(encodedPath);
+  var initialLocation = getDOMLocation();
+  var allPaths = [createPath(initialLocation)]; // Public interface
+
+  function createHref(location) {
+    var baseTag = document.querySelector('base');
+    var href = '';
+
+    if (baseTag && baseTag.getAttribute('href')) {
+      href = stripHash(window.location.href);
+    }
+
+    return href + '#' + encodePath(basename + createPath(location));
+  }
+
+  function push(path, state) {
+     false ? 0 : void 0;
+    var action = 'PUSH';
+    var location = createLocation(path, undefined, undefined, history.location);
+    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+      if (!ok) return;
+      var path = createPath(location);
+      var encodedPath = encodePath(basename + path);
+      var hashChanged = getHashPath() !== encodedPath;
+
+      if (hashChanged) {
+        // We cannot tell if a hashchange was caused by a PUSH, so we'd
+        // rather setState here and ignore the hashchange. The caveat here
+        // is that other hash histories in the page will consider it a POP.
+        ignorePath = path;
+        pushHashPath(encodedPath);
+        var prevIndex = allPaths.lastIndexOf(createPath(history.location));
+        var nextPaths = allPaths.slice(0, prevIndex + 1);
+        nextPaths.push(path);
+        allPaths = nextPaths;
+        setState({
+          action: action,
+          location: location
+        });
+      } else {
+         false ? 0 : void 0;
+        setState();
+      }
+    });
+  }
+
+  function replace(path, state) {
+     false ? 0 : void 0;
+    var action = 'REPLACE';
+    var location = createLocation(path, undefined, undefined, history.location);
+    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+      if (!ok) return;
+      var path = createPath(location);
+      var encodedPath = encodePath(basename + path);
+      var hashChanged = getHashPath() !== encodedPath;
+
+      if (hashChanged) {
+        // We cannot tell if a hashchange was caused by a REPLACE, so we'd
+        // rather setState here and ignore the hashchange. The caveat here
+        // is that other hash histories in the page will consider it a POP.
+        ignorePath = path;
+        replaceHashPath(encodedPath);
+      }
+
+      var prevIndex = allPaths.indexOf(createPath(history.location));
+      if (prevIndex !== -1) allPaths[prevIndex] = path;
+      setState({
+        action: action,
+        location: location
+      });
+    });
+  }
+
+  function go(n) {
+     false ? 0 : void 0;
+    globalHistory.go(n);
+  }
+
+  function goBack() {
+    go(-1);
+  }
+
+  function goForward() {
+    go(1);
+  }
+
+  var listenerCount = 0;
+
+  function checkDOMListeners(delta) {
+    listenerCount += delta;
+
+    if (listenerCount === 1 && delta === 1) {
+      window.addEventListener(HashChangeEvent$1, handleHashChange);
+    } else if (listenerCount === 0) {
+      window.removeEventListener(HashChangeEvent$1, handleHashChange);
+    }
+  }
+
+  var isBlocked = false;
+
+  function block(prompt) {
+    if (prompt === void 0) {
+      prompt = false;
+    }
+
+    var unblock = transitionManager.setPrompt(prompt);
+
+    if (!isBlocked) {
+      checkDOMListeners(1);
+      isBlocked = true;
+    }
+
+    return function () {
+      if (isBlocked) {
+        isBlocked = false;
+        checkDOMListeners(-1);
+      }
+
+      return unblock();
+    };
+  }
+
+  function listen(listener) {
+    var unlisten = transitionManager.appendListener(listener);
+    checkDOMListeners(1);
+    return function () {
+      checkDOMListeners(-1);
+      unlisten();
+    };
+  }
+
+  var history = {
+    length: globalHistory.length,
+    action: 'POP',
+    location: initialLocation,
+    createHref: createHref,
+    push: push,
+    replace: replace,
+    go: go,
+    goBack: goBack,
+    goForward: goForward,
+    block: block,
+    listen: listen
+  };
+  return history;
+}
+
+function clamp(n, lowerBound, upperBound) {
+  return Math.min(Math.max(n, lowerBound), upperBound);
+}
+/**
+ * Creates a history object that stores locations in memory.
+ */
+
+
+function createMemoryHistory(props) {
+  if (props === void 0) {
+    props = {};
+  }
+
+  var _props = props,
+      getUserConfirmation = _props.getUserConfirmation,
+      _props$initialEntries = _props.initialEntries,
+      initialEntries = _props$initialEntries === void 0 ? ['/'] : _props$initialEntries,
+      _props$initialIndex = _props.initialIndex,
+      initialIndex = _props$initialIndex === void 0 ? 0 : _props$initialIndex,
+      _props$keyLength = _props.keyLength,
+      keyLength = _props$keyLength === void 0 ? 6 : _props$keyLength;
+  var transitionManager = createTransitionManager();
+
+  function setState(nextState) {
+    extends_extends(history, nextState);
+
+    history.length = history.entries.length;
+    transitionManager.notifyListeners(history.location, history.action);
+  }
+
+  function createKey() {
+    return Math.random().toString(36).substr(2, keyLength);
+  }
+
+  var index = clamp(initialIndex, 0, initialEntries.length - 1);
+  var entries = initialEntries.map(function (entry) {
+    return typeof entry === 'string' ? createLocation(entry, undefined, createKey()) : createLocation(entry, undefined, entry.key || createKey());
+  }); // Public interface
+
+  var createHref = createPath;
+
+  function push(path, state) {
+     false ? 0 : void 0;
+    var action = 'PUSH';
+    var location = createLocation(path, state, createKey(), history.location);
+    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+      if (!ok) return;
+      var prevIndex = history.index;
+      var nextIndex = prevIndex + 1;
+      var nextEntries = history.entries.slice(0);
+
+      if (nextEntries.length > nextIndex) {
+        nextEntries.splice(nextIndex, nextEntries.length - nextIndex, location);
+      } else {
+        nextEntries.push(location);
+      }
+
+      setState({
+        action: action,
+        location: location,
+        index: nextIndex,
+        entries: nextEntries
+      });
+    });
+  }
+
+  function replace(path, state) {
+     false ? 0 : void 0;
+    var action = 'REPLACE';
+    var location = createLocation(path, state, createKey(), history.location);
+    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+      if (!ok) return;
+      history.entries[history.index] = location;
+      setState({
+        action: action,
+        location: location
+      });
+    });
+  }
+
+  function go(n) {
+    var nextIndex = clamp(history.index + n, 0, history.entries.length - 1);
+    var action = 'POP';
+    var location = history.entries[nextIndex];
+    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
+      if (ok) {
+        setState({
+          action: action,
+          location: location,
+          index: nextIndex
+        });
+      } else {
+        // Mimic the behavior of DOM histories by
+        // causing a render after a cancelled POP.
+        setState();
+      }
+    });
+  }
+
+  function goBack() {
+    go(-1);
+  }
+
+  function goForward() {
+    go(1);
+  }
+
+  function canGo(n) {
+    var nextIndex = history.index + n;
+    return nextIndex >= 0 && nextIndex < history.entries.length;
+  }
+
+  function block(prompt) {
+    if (prompt === void 0) {
+      prompt = false;
+    }
+
+    return transitionManager.setPrompt(prompt);
+  }
+
+  function listen(listener) {
+    return transitionManager.appendListener(listener);
+  }
+
+  var history = {
+    length: entries.length,
+    action: 'POP',
+    location: entries[index],
+    index: index,
+    entries: entries,
+    createHref: createHref,
+    push: push,
+    replace: replace,
+    go: go,
+    goBack: goBack,
+    goForward: goForward,
+    canGo: canGo,
+    block: block,
+    listen: listen
+  };
+  return history;
+}
+
+
+
+// EXTERNAL MODULE: ./node_modules/prop-types/index.js
+var prop_types = __webpack_require__(5697);
+var prop_types_default = /*#__PURE__*/__webpack_require__.n(prop_types);
+;// CONCATENATED MODULE: ./node_modules/mini-create-react-context/dist/esm/index.js
+
+
+
+
+
+var MAX_SIGNED_31_BIT_INT = 1073741823;
+var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof __webpack_require__.g !== 'undefined' ? __webpack_require__.g : {};
+
+function getUniqueId() {
+  var key = '__global_unique_id__';
+  return commonjsGlobal[key] = (commonjsGlobal[key] || 0) + 1;
+}
+
+function objectIs(x, y) {
+  if (x === y) {
+    return x !== 0 || 1 / x === 1 / y;
+  } else {
+    return x !== x && y !== y;
+  }
+}
+
+function createEventEmitter(value) {
+  var handlers = [];
+  return {
+    on: function on(handler) {
+      handlers.push(handler);
+    },
+    off: function off(handler) {
+      handlers = handlers.filter(function (h) {
+        return h !== handler;
+      });
+    },
+    get: function get() {
+      return value;
+    },
+    set: function set(newValue, changedBits) {
+      value = newValue;
+      handlers.forEach(function (handler) {
+        return handler(value, changedBits);
+      });
+    }
+  };
+}
+
+function onlyChild(children) {
+  return Array.isArray(children) ? children[0] : children;
+}
+
+function createReactContext(defaultValue, calculateChangedBits) {
+  var _Provider$childContex, _Consumer$contextType;
+
+  var contextProp = '__create-react-context-' + getUniqueId() + '__';
+
+  var Provider = /*#__PURE__*/function (_Component) {
+    _inheritsLoose(Provider, _Component);
+
+    function Provider() {
+      var _this;
+
+      _this = _Component.apply(this, arguments) || this;
+      _this.emitter = createEventEmitter(_this.props.value);
+      return _this;
+    }
+
+    var _proto = Provider.prototype;
+
+    _proto.getChildContext = function getChildContext() {
+      var _ref;
+
+      return _ref = {}, _ref[contextProp] = this.emitter, _ref;
+    };
+
+    _proto.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+      if (this.props.value !== nextProps.value) {
+        var oldValue = this.props.value;
+        var newValue = nextProps.value;
+        var changedBits;
+
+        if (objectIs(oldValue, newValue)) {
+          changedBits = 0;
+        } else {
+          changedBits = typeof calculateChangedBits === 'function' ? calculateChangedBits(oldValue, newValue) : MAX_SIGNED_31_BIT_INT;
+
+          if (false) {}
+
+          changedBits |= 0;
+
+          if (changedBits !== 0) {
+            this.emitter.set(nextProps.value, changedBits);
+          }
+        }
+      }
+    };
+
+    _proto.render = function render() {
+      return this.props.children;
+    };
+
+    return Provider;
+  }(react.Component);
+
+  Provider.childContextTypes = (_Provider$childContex = {}, _Provider$childContex[contextProp] = (prop_types_default()).object.isRequired, _Provider$childContex);
+
+  var Consumer = /*#__PURE__*/function (_Component2) {
+    _inheritsLoose(Consumer, _Component2);
+
+    function Consumer() {
+      var _this2;
+
+      _this2 = _Component2.apply(this, arguments) || this;
+      _this2.state = {
+        value: _this2.getValue()
+      };
+
+      _this2.onUpdate = function (newValue, changedBits) {
+        var observedBits = _this2.observedBits | 0;
+
+        if ((observedBits & changedBits) !== 0) {
+          _this2.setState({
+            value: _this2.getValue()
+          });
+        }
+      };
+
+      return _this2;
+    }
+
+    var _proto2 = Consumer.prototype;
+
+    _proto2.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+      var observedBits = nextProps.observedBits;
+      this.observedBits = observedBits === undefined || observedBits === null ? MAX_SIGNED_31_BIT_INT : observedBits;
+    };
+
+    _proto2.componentDidMount = function componentDidMount() {
+      if (this.context[contextProp]) {
+        this.context[contextProp].on(this.onUpdate);
+      }
+
+      var observedBits = this.props.observedBits;
+      this.observedBits = observedBits === undefined || observedBits === null ? MAX_SIGNED_31_BIT_INT : observedBits;
+    };
+
+    _proto2.componentWillUnmount = function componentWillUnmount() {
+      if (this.context[contextProp]) {
+        this.context[contextProp].off(this.onUpdate);
+      }
+    };
+
+    _proto2.getValue = function getValue() {
+      if (this.context[contextProp]) {
+        return this.context[contextProp].get();
+      } else {
+        return defaultValue;
+      }
+    };
+
+    _proto2.render = function render() {
+      return onlyChild(this.props.children)(this.state.value);
+    };
+
+    return Consumer;
+  }(react.Component);
+
+  Consumer.contextTypes = (_Consumer$contextType = {}, _Consumer$contextType[contextProp] = (prop_types_default()).object, _Consumer$contextType);
+  return {
+    Provider: Provider,
+    Consumer: Consumer
+  };
+}
+
+var index = react.createContext || createReactContext;
+
+/* harmony default export */ const esm = (index);
+
+// EXTERNAL MODULE: ./node_modules/react-router/node_modules/path-to-regexp/index.js
+var path_to_regexp = __webpack_require__(9658);
+var path_to_regexp_default = /*#__PURE__*/__webpack_require__.n(path_to_regexp);
+// EXTERNAL MODULE: ./node_modules/react-router/node_modules/react-is/index.js
+var node_modules_react_is = __webpack_require__(663);
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
+function objectWithoutPropertiesLoose_objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+;// CONCATENATED MODULE: ./node_modules/react-router/esm/react-router.js
+
+
+
+
+
+
+
+
+
+
+
+
+
+// TODO: Replace with React.createContext once we can assume React 16+
+
+var createNamedContext = function createNamedContext(name) {
+  var context = esm();
+  context.displayName = name;
+  return context;
+};
+
+var historyContext = /*#__PURE__*/createNamedContext("Router-History");
+
+var context = /*#__PURE__*/createNamedContext("Router");
+
+/**
+ * The public API for putting history on context.
+ */
+
+var Router = /*#__PURE__*/function (_React$Component) {
+  _inheritsLoose(Router, _React$Component);
+
+  Router.computeRootMatch = function computeRootMatch(pathname) {
+    return {
+      path: "/",
+      url: "/",
+      params: {},
+      isExact: pathname === "/"
+    };
+  };
+
+  function Router(props) {
+    var _this;
+
+    _this = _React$Component.call(this, props) || this;
+    _this.state = {
+      location: props.history.location
+    }; // This is a bit of a hack. We have to start listening for location
+    // changes here in the constructor in case there are any <Redirect>s
+    // on the initial render. If there are, they will replace/push when
+    // they mount and since cDM fires in children before parents, we may
+    // get a new location before the <Router> is mounted.
+
+    _this._isMounted = false;
+    _this._pendingLocation = null;
+
+    if (!props.staticContext) {
+      _this.unlisten = props.history.listen(function (location) {
+        _this._pendingLocation = location;
+      });
+    }
+
+    return _this;
+  }
+
+  var _proto = Router.prototype;
+
+  _proto.componentDidMount = function componentDidMount() {
+    var _this2 = this;
+
+    this._isMounted = true;
+
+    if (this.unlisten) {
+      // Any pre-mount location changes have been captured at
+      // this point, so unregister the listener.
+      this.unlisten();
+    }
+
+    if (!this.props.staticContext) {
+      this.unlisten = this.props.history.listen(function (location) {
+        if (_this2._isMounted) {
+          _this2.setState({
+            location: location
+          });
+        }
+      });
+    }
+
+    if (this._pendingLocation) {
+      this.setState({
+        location: this._pendingLocation
+      });
+    }
+  };
+
+  _proto.componentWillUnmount = function componentWillUnmount() {
+    if (this.unlisten) {
+      this.unlisten();
+      this._isMounted = false;
+      this._pendingLocation = null;
+    }
+  };
+
+  _proto.render = function render() {
+    return /*#__PURE__*/react.createElement(context.Provider, {
+      value: {
+        history: this.props.history,
+        location: this.state.location,
+        match: Router.computeRootMatch(this.state.location.pathname),
+        staticContext: this.props.staticContext
+      }
+    }, /*#__PURE__*/react.createElement(historyContext.Provider, {
+      children: this.props.children || null,
+      value: this.props.history
+    }));
+  };
+
+  return Router;
+}(react.Component);
+
+if (false) {}
+
+/**
+ * The public API for a <Router> that stores location in memory.
+ */
+
+var MemoryRouter = /*#__PURE__*/function (_React$Component) {
+  _inheritsLoose(MemoryRouter, _React$Component);
+
+  function MemoryRouter() {
+    var _this;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _React$Component.call.apply(_React$Component, [this].concat(args)) || this;
+    _this.history = createMemoryHistory(_this.props);
+    return _this;
+  }
+
+  var _proto = MemoryRouter.prototype;
+
+  _proto.render = function render() {
+    return /*#__PURE__*/react.createElement(Router, {
+      history: this.history,
+      children: this.props.children
+    });
+  };
+
+  return MemoryRouter;
+}(react.Component);
+
+if (false) {}
+
+var Lifecycle = /*#__PURE__*/function (_React$Component) {
+  _inheritsLoose(Lifecycle, _React$Component);
+
+  function Lifecycle() {
+    return _React$Component.apply(this, arguments) || this;
+  }
+
+  var _proto = Lifecycle.prototype;
+
+  _proto.componentDidMount = function componentDidMount() {
+    if (this.props.onMount) this.props.onMount.call(this, this);
+  };
+
+  _proto.componentDidUpdate = function componentDidUpdate(prevProps) {
+    if (this.props.onUpdate) this.props.onUpdate.call(this, this, prevProps);
+  };
+
+  _proto.componentWillUnmount = function componentWillUnmount() {
+    if (this.props.onUnmount) this.props.onUnmount.call(this, this);
+  };
+
+  _proto.render = function render() {
+    return null;
+  };
+
+  return Lifecycle;
+}(react.Component);
+
+/**
+ * The public API for prompting the user before navigating away from a screen.
+ */
+
+function Prompt(_ref) {
+  var message = _ref.message,
+      _ref$when = _ref.when,
+      when = _ref$when === void 0 ? true : _ref$when;
+  return /*#__PURE__*/React.createElement(context.Consumer, null, function (context) {
+    !context ?  false ? 0 : invariant(false) : void 0;
+    if (!when || context.staticContext) return null;
+    var method = context.history.block;
+    return /*#__PURE__*/React.createElement(Lifecycle, {
+      onMount: function onMount(self) {
+        self.release = method(message);
+      },
+      onUpdate: function onUpdate(self, prevProps) {
+        if (prevProps.message !== message) {
+          self.release();
+          self.release = method(message);
+        }
+      },
+      onUnmount: function onUnmount(self) {
+        self.release();
+      },
+      message: message
+    });
+  });
+}
+
+if (false) { var messageType; }
+
+var cache = {};
+var cacheLimit = 10000;
+var cacheCount = 0;
+
+function compilePath(path) {
+  if (cache[path]) return cache[path];
+  var generator = path_to_regexp_default().compile(path);
+
+  if (cacheCount < cacheLimit) {
+    cache[path] = generator;
+    cacheCount++;
+  }
+
+  return generator;
+}
+/**
+ * Public API for generating a URL pathname from a path and parameters.
+ */
+
+
+function generatePath(path, params) {
+  if (path === void 0) {
+    path = "/";
+  }
+
+  if (params === void 0) {
+    params = {};
+  }
+
+  return path === "/" ? path : compilePath(path)(params, {
+    pretty: true
+  });
+}
+
+/**
+ * The public API for navigating programmatically with a component.
+ */
+
+function Redirect(_ref) {
+  var computedMatch = _ref.computedMatch,
+      to = _ref.to,
+      _ref$push = _ref.push,
+      push = _ref$push === void 0 ? false : _ref$push;
+  return /*#__PURE__*/react.createElement(context.Consumer, null, function (context) {
+    !context ?  false ? 0 : tiny_invariant_esm_invariant(false) : void 0;
+    var history = context.history,
+        staticContext = context.staticContext;
+    var method = push ? history.push : history.replace;
+    var location = createLocation(computedMatch ? typeof to === "string" ? generatePath(to, computedMatch.params) : extends_extends({}, to, {
+      pathname: generatePath(to.pathname, computedMatch.params)
+    }) : to); // When rendering in a static context,
+    // set the new location immediately.
+
+    if (staticContext) {
+      method(location);
+      return null;
+    }
+
+    return /*#__PURE__*/react.createElement(Lifecycle, {
+      onMount: function onMount() {
+        method(location);
+      },
+      onUpdate: function onUpdate(self, prevProps) {
+        var prevLocation = createLocation(prevProps.to);
+
+        if (!locationsAreEqual(prevLocation, extends_extends({}, location, {
+          key: prevLocation.key
+        }))) {
+          method(location);
+        }
+      },
+      to: to
+    });
+  });
+}
+
+if (false) {}
+
+var cache$1 = {};
+var cacheLimit$1 = 10000;
+var cacheCount$1 = 0;
+
+function compilePath$1(path, options) {
+  var cacheKey = "" + options.end + options.strict + options.sensitive;
+  var pathCache = cache$1[cacheKey] || (cache$1[cacheKey] = {});
+  if (pathCache[path]) return pathCache[path];
+  var keys = [];
+  var regexp = path_to_regexp_default()(path, keys, options);
+  var result = {
+    regexp: regexp,
+    keys: keys
+  };
+
+  if (cacheCount$1 < cacheLimit$1) {
+    pathCache[path] = result;
+    cacheCount$1++;
+  }
+
+  return result;
+}
+/**
+ * Public API for matching a URL pathname to a path.
+ */
+
+
+function matchPath(pathname, options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  if (typeof options === "string" || Array.isArray(options)) {
+    options = {
+      path: options
+    };
+  }
+
+  var _options = options,
+      path = _options.path,
+      _options$exact = _options.exact,
+      exact = _options$exact === void 0 ? false : _options$exact,
+      _options$strict = _options.strict,
+      strict = _options$strict === void 0 ? false : _options$strict,
+      _options$sensitive = _options.sensitive,
+      sensitive = _options$sensitive === void 0 ? false : _options$sensitive;
+  var paths = [].concat(path);
+  return paths.reduce(function (matched, path) {
+    if (!path && path !== "") return null;
+    if (matched) return matched;
+
+    var _compilePath = compilePath$1(path, {
+      end: exact,
+      strict: strict,
+      sensitive: sensitive
+    }),
+        regexp = _compilePath.regexp,
+        keys = _compilePath.keys;
+
+    var match = regexp.exec(pathname);
+    if (!match) return null;
+    var url = match[0],
+        values = match.slice(1);
+    var isExact = pathname === url;
+    if (exact && !isExact) return null;
+    return {
+      path: path,
+      // the path used to match
+      url: path === "/" && url === "" ? "/" : url,
+      // the matched portion of the URL
+      isExact: isExact,
+      // whether or not we matched exactly
+      params: keys.reduce(function (memo, key, index) {
+        memo[key.name] = values[index];
+        return memo;
+      }, {})
+    };
+  }, null);
+}
+
+function isEmptyChildren(children) {
+  return react.Children.count(children) === 0;
+}
+
+function evalChildrenDev(children, props, path) {
+  var value = children(props);
+   false ? 0 : void 0;
+  return value || null;
+}
+/**
+ * The public API for matching a single path and rendering.
+ */
+
+
+var Route = /*#__PURE__*/function (_React$Component) {
+  _inheritsLoose(Route, _React$Component);
+
+  function Route() {
+    return _React$Component.apply(this, arguments) || this;
+  }
+
+  var _proto = Route.prototype;
+
+  _proto.render = function render() {
+    var _this = this;
+
+    return /*#__PURE__*/react.createElement(context.Consumer, null, function (context$1) {
+      !context$1 ?  false ? 0 : tiny_invariant_esm_invariant(false) : void 0;
+      var location = _this.props.location || context$1.location;
+      var match = _this.props.computedMatch ? _this.props.computedMatch // <Switch> already computed the match for us
+      : _this.props.path ? matchPath(location.pathname, _this.props) : context$1.match;
+
+      var props = extends_extends({}, context$1, {
+        location: location,
+        match: match
+      });
+
+      var _this$props = _this.props,
+          children = _this$props.children,
+          component = _this$props.component,
+          render = _this$props.render; // Preact uses an empty array as children by
+      // default, so use null if that's the case.
+
+      if (Array.isArray(children) && isEmptyChildren(children)) {
+        children = null;
+      }
+
+      return /*#__PURE__*/react.createElement(context.Provider, {
+        value: props
+      }, props.match ? children ? typeof children === "function" ?  false ? 0 : children(props) : children : component ? /*#__PURE__*/react.createElement(component, props) : render ? render(props) : null : typeof children === "function" ?  false ? 0 : children(props) : null);
+    });
+  };
+
+  return Route;
+}(react.Component);
+
+if (false) {}
+
+function react_router_addLeadingSlash(path) {
+  return path.charAt(0) === "/" ? path : "/" + path;
+}
+
+function addBasename(basename, location) {
+  if (!basename) return location;
+  return extends_extends({}, location, {
+    pathname: react_router_addLeadingSlash(basename) + location.pathname
+  });
+}
+
+function react_router_stripBasename(basename, location) {
+  if (!basename) return location;
+  var base = react_router_addLeadingSlash(basename);
+  if (location.pathname.indexOf(base) !== 0) return location;
+  return extends_extends({}, location, {
+    pathname: location.pathname.substr(base.length)
+  });
+}
+
+function createURL(location) {
+  return typeof location === "string" ? location : createPath(location);
+}
+
+function staticHandler(methodName) {
+  return function () {
+      false ? 0 : tiny_invariant_esm_invariant(false) ;
+  };
+}
+
+function noop() {}
+/**
+ * The public top-level API for a "static" <Router>, so-called because it
+ * can't actually change the current location. Instead, it just records
+ * location changes in a context object. Useful mainly in testing and
+ * server-rendering scenarios.
+ */
+
+
+var StaticRouter = /*#__PURE__*/function (_React$Component) {
+  _inheritsLoose(StaticRouter, _React$Component);
+
+  function StaticRouter() {
+    var _this;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _React$Component.call.apply(_React$Component, [this].concat(args)) || this;
+
+    _this.handlePush = function (location) {
+      return _this.navigateTo(location, "PUSH");
+    };
+
+    _this.handleReplace = function (location) {
+      return _this.navigateTo(location, "REPLACE");
+    };
+
+    _this.handleListen = function () {
+      return noop;
+    };
+
+    _this.handleBlock = function () {
+      return noop;
+    };
+
+    return _this;
+  }
+
+  var _proto = StaticRouter.prototype;
+
+  _proto.navigateTo = function navigateTo(location, action) {
+    var _this$props = this.props,
+        _this$props$basename = _this$props.basename,
+        basename = _this$props$basename === void 0 ? "" : _this$props$basename,
+        _this$props$context = _this$props.context,
+        context = _this$props$context === void 0 ? {} : _this$props$context;
+    context.action = action;
+    context.location = addBasename(basename, createLocation(location));
+    context.url = createURL(context.location);
+  };
+
+  _proto.render = function render() {
+    var _this$props2 = this.props,
+        _this$props2$basename = _this$props2.basename,
+        basename = _this$props2$basename === void 0 ? "" : _this$props2$basename,
+        _this$props2$context = _this$props2.context,
+        context = _this$props2$context === void 0 ? {} : _this$props2$context,
+        _this$props2$location = _this$props2.location,
+        location = _this$props2$location === void 0 ? "/" : _this$props2$location,
+        rest = objectWithoutPropertiesLoose_objectWithoutPropertiesLoose(_this$props2, ["basename", "context", "location"]);
+
+    var history = {
+      createHref: function createHref(path) {
+        return react_router_addLeadingSlash(basename + createURL(path));
+      },
+      action: "POP",
+      location: react_router_stripBasename(basename, createLocation(location)),
+      push: this.handlePush,
+      replace: this.handleReplace,
+      go: staticHandler("go"),
+      goBack: staticHandler("goBack"),
+      goForward: staticHandler("goForward"),
+      listen: this.handleListen,
+      block: this.handleBlock
+    };
+    return /*#__PURE__*/react.createElement(Router, extends_extends({}, rest, {
+      history: history,
+      staticContext: context
+    }));
+  };
+
+  return StaticRouter;
+}(react.Component);
+
+if (false) {}
+
+/**
+ * The public API for rendering the first <Route> that matches.
+ */
+
+var Switch = /*#__PURE__*/function (_React$Component) {
+  _inheritsLoose(Switch, _React$Component);
+
+  function Switch() {
+    return _React$Component.apply(this, arguments) || this;
+  }
+
+  var _proto = Switch.prototype;
+
+  _proto.render = function render() {
+    var _this = this;
+
+    return /*#__PURE__*/react.createElement(context.Consumer, null, function (context) {
+      !context ?  false ? 0 : tiny_invariant_esm_invariant(false) : void 0;
+      var location = _this.props.location || context.location;
+      var element, match; // We use React.Children.forEach instead of React.Children.toArray().find()
+      // here because toArray adds keys to all child elements and we do not want
+      // to trigger an unmount/remount for two <Route>s that render the same
+      // component at different URLs.
+
+      react.Children.forEach(_this.props.children, function (child) {
+        if (match == null && /*#__PURE__*/react.isValidElement(child)) {
+          element = child;
+          var path = child.props.path || child.props.from;
+          match = path ? matchPath(location.pathname, extends_extends({}, child.props, {
+            path: path
+          })) : context.match;
+        }
+      });
+      return match ? /*#__PURE__*/react.cloneElement(element, {
+        location: location,
+        computedMatch: match
+      }) : null;
+    });
+  };
+
+  return Switch;
+}(react.Component);
+
+if (false) {}
+
+/**
+ * A public higher-order component to access the imperative API
+ */
+
+function withRouter(Component) {
+  var displayName = "withRouter(" + (Component.displayName || Component.name) + ")";
+
+  var C = function C(props) {
+    var wrappedComponentRef = props.wrappedComponentRef,
+        remainingProps = _objectWithoutPropertiesLoose(props, ["wrappedComponentRef"]);
+
+    return /*#__PURE__*/React.createElement(context.Consumer, null, function (context) {
+      !context ?  false ? 0 : invariant(false) : void 0;
+      return /*#__PURE__*/React.createElement(Component, _extends({}, remainingProps, context, {
+        ref: wrappedComponentRef
+      }));
+    });
+  };
+
+  C.displayName = displayName;
+  C.WrappedComponent = Component;
+
+  if (false) {}
+
+  return hoistStatics(C, Component);
+}
+
+var useContext = react.useContext;
+function useHistory() {
+  if (false) {}
+
+  return useContext(historyContext);
+}
+function useLocation() {
+  if (false) {}
+
+  return useContext(context).location;
+}
+function useParams() {
+  if (false) {}
+
+  var match = useContext(context).match;
+  return match ? match.params : {};
+}
+function useRouteMatch(path) {
+  if (false) {}
+
+  var location = useLocation();
+  var match = useContext(context).match;
+  return path ? matchPath(location.pathname, path) : match;
+}
+
+if (false) { var secondaryBuildName, initialBuildName, buildNames, key, react_router_global; }
+
+
+//# sourceMappingURL=react-router.js.map
+
+;// CONCATENATED MODULE: ./node_modules/react-router-dom/esm/react-router-dom.js
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * The public API for a <Router> that uses HTML5 history.
+ */
+
+var BrowserRouter = /*#__PURE__*/function (_React$Component) {
+  _inheritsLoose(BrowserRouter, _React$Component);
+
+  function BrowserRouter() {
+    var _this;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _React$Component.call.apply(_React$Component, [this].concat(args)) || this;
+    _this.history = createBrowserHistory(_this.props);
+    return _this;
+  }
+
+  var _proto = BrowserRouter.prototype;
+
+  _proto.render = function render() {
+    return /*#__PURE__*/react.createElement(Router, {
+      history: this.history,
+      children: this.props.children
+    });
+  };
+
+  return BrowserRouter;
+}(react.Component);
+
+if (false) {}
+
+/**
+ * The public API for a <Router> that uses window.location.hash.
+ */
+
+var HashRouter = /*#__PURE__*/function (_React$Component) {
+  _inheritsLoose(HashRouter, _React$Component);
+
+  function HashRouter() {
+    var _this;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _React$Component.call.apply(_React$Component, [this].concat(args)) || this;
+    _this.history = createHashHistory(_this.props);
+    return _this;
+  }
+
+  var _proto = HashRouter.prototype;
+
+  _proto.render = function render() {
+    return /*#__PURE__*/react.createElement(Router, {
+      history: this.history,
+      children: this.props.children
+    });
+  };
+
+  return HashRouter;
+}(react.Component);
+
+if (false) {}
+
+var resolveToLocation = function resolveToLocation(to, currentLocation) {
+  return typeof to === "function" ? to(currentLocation) : to;
+};
+var normalizeToLocation = function normalizeToLocation(to, currentLocation) {
+  return typeof to === "string" ? createLocation(to, null, null, currentLocation) : to;
+};
+
+var forwardRefShim = function forwardRefShim(C) {
+  return C;
+};
+
+var forwardRef = react.forwardRef;
+
+if (typeof forwardRef === "undefined") {
+  forwardRef = forwardRefShim;
+}
+
+function isModifiedEvent(event) {
+  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
+}
+
+var LinkAnchor = forwardRef(function (_ref, forwardedRef) {
+  var innerRef = _ref.innerRef,
+      navigate = _ref.navigate,
+      _onClick = _ref.onClick,
+      rest = objectWithoutPropertiesLoose_objectWithoutPropertiesLoose(_ref, ["innerRef", "navigate", "onClick"]);
+
+  var target = rest.target;
+
+  var props = extends_extends({}, rest, {
+    onClick: function onClick(event) {
+      try {
+        if (_onClick) _onClick(event);
+      } catch (ex) {
+        event.preventDefault();
+        throw ex;
+      }
+
+      if (!event.defaultPrevented && // onClick prevented default
+      event.button === 0 && ( // ignore everything but left clicks
+      !target || target === "_self") && // let browser handle "target=_blank" etc.
+      !isModifiedEvent(event) // ignore clicks with modifier keys
+      ) {
+          event.preventDefault();
+          navigate();
+        }
+    }
+  }); // React 15 compat
+
+
+  if (forwardRefShim !== forwardRef) {
+    props.ref = forwardedRef || innerRef;
+  } else {
+    props.ref = innerRef;
+  }
+  /* eslint-disable-next-line jsx-a11y/anchor-has-content */
+
+
+  return /*#__PURE__*/react.createElement("a", props);
+});
+
+if (false) {}
+/**
+ * The public API for rendering a history-aware <a>.
+ */
+
+
+var Link = forwardRef(function (_ref2, forwardedRef) {
+  var _ref2$component = _ref2.component,
+      component = _ref2$component === void 0 ? LinkAnchor : _ref2$component,
+      replace = _ref2.replace,
+      to = _ref2.to,
+      innerRef = _ref2.innerRef,
+      rest = objectWithoutPropertiesLoose_objectWithoutPropertiesLoose(_ref2, ["component", "replace", "to", "innerRef"]);
+
+  return /*#__PURE__*/react.createElement(context.Consumer, null, function (context) {
+    !context ?  false ? 0 : tiny_invariant_esm_invariant(false) : void 0;
+    var history = context.history;
+    var location = normalizeToLocation(resolveToLocation(to, context.location), context.location);
+    var href = location ? history.createHref(location) : "";
+
+    var props = extends_extends({}, rest, {
+      href: href,
+      navigate: function navigate() {
+        var location = resolveToLocation(to, context.location);
+        var isDuplicateNavigation = createPath(context.location) === createPath(normalizeToLocation(location));
+        var method = replace || isDuplicateNavigation ? history.replace : history.push;
+        method(location);
+      }
+    }); // React 15 compat
+
+
+    if (forwardRefShim !== forwardRef) {
+      props.ref = forwardedRef || innerRef;
+    } else {
+      props.innerRef = innerRef;
+    }
+
+    return /*#__PURE__*/react.createElement(component, props);
+  });
+});
+
+if (false) { var refType, toType; }
+
+var forwardRefShim$1 = function forwardRefShim(C) {
+  return C;
+};
+
+var forwardRef$1 = react.forwardRef;
+
+if (typeof forwardRef$1 === "undefined") {
+  forwardRef$1 = forwardRefShim$1;
+}
+
+function joinClassnames() {
+  for (var _len = arguments.length, classnames = new Array(_len), _key = 0; _key < _len; _key++) {
+    classnames[_key] = arguments[_key];
+  }
+
+  return classnames.filter(function (i) {
+    return i;
+  }).join(" ");
+}
+/**
+ * A <Link> wrapper that knows if it's "active" or not.
+ */
+
+
+var NavLink = forwardRef$1(function (_ref, forwardedRef) {
+  var _ref$ariaCurrent = _ref["aria-current"],
+      ariaCurrent = _ref$ariaCurrent === void 0 ? "page" : _ref$ariaCurrent,
+      _ref$activeClassName = _ref.activeClassName,
+      activeClassName = _ref$activeClassName === void 0 ? "active" : _ref$activeClassName,
+      activeStyle = _ref.activeStyle,
+      classNameProp = _ref.className,
+      exact = _ref.exact,
+      isActiveProp = _ref.isActive,
+      locationProp = _ref.location,
+      sensitive = _ref.sensitive,
+      strict = _ref.strict,
+      styleProp = _ref.style,
+      to = _ref.to,
+      innerRef = _ref.innerRef,
+      rest = objectWithoutPropertiesLoose_objectWithoutPropertiesLoose(_ref, ["aria-current", "activeClassName", "activeStyle", "className", "exact", "isActive", "location", "sensitive", "strict", "style", "to", "innerRef"]);
+
+  return /*#__PURE__*/react.createElement(context.Consumer, null, function (context) {
+    !context ?  false ? 0 : tiny_invariant_esm_invariant(false) : void 0;
+    var currentLocation = locationProp || context.location;
+    var toLocation = normalizeToLocation(resolveToLocation(to, currentLocation), currentLocation);
+    var path = toLocation.pathname; // Regex taken from: https://github.com/pillarjs/path-to-regexp/blob/master/index.js#L202
+
+    var escapedPath = path && path.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
+    var match = escapedPath ? matchPath(currentLocation.pathname, {
+      path: escapedPath,
+      exact: exact,
+      sensitive: sensitive,
+      strict: strict
+    }) : null;
+    var isActive = !!(isActiveProp ? isActiveProp(match, currentLocation) : match);
+    var className = typeof classNameProp === "function" ? classNameProp(isActive) : classNameProp;
+    var style = typeof styleProp === "function" ? styleProp(isActive) : styleProp;
+
+    if (isActive) {
+      className = joinClassnames(className, activeClassName);
+      style = extends_extends({}, style, activeStyle);
+    }
+
+    var props = extends_extends({
+      "aria-current": isActive && ariaCurrent || null,
+      className: className,
+      style: style,
+      to: toLocation
+    }, rest); // React 15 compat
+
+
+    if (forwardRefShim$1 !== forwardRef$1) {
+      props.ref = forwardedRef || innerRef;
+    } else {
+      props.innerRef = innerRef;
+    }
+
+    return /*#__PURE__*/react.createElement(Link, props);
+  });
+});
+
+if (false) { var ariaCurrentType; }
+
+
+//# sourceMappingURL=react-router-dom.js.map
+
+// EXTERNAL MODULE: ./node_modules/react-markdown/src/react-markdown.js
+var react_markdown = __webpack_require__(8456);
+;// CONCATENATED MODULE: ./node_modules/dexie/dist/modern/dexie.min.mjs
+const e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:"undefined"!=typeof window?window:global,t=Object.keys,n=Array.isArray;function dexie_min_r(e,n){return"object"!=typeof n||t(n).forEach((function(t){e[t]=n[t]})),e}"undefined"==typeof Promise||e.Promise||(e.Promise=Promise);const dexie_min_s=Object.getPrototypeOf,dexie_min_i={}.hasOwnProperty;function o(e,t){return dexie_min_i.call(e,t)}function a(e,n){"function"==typeof n&&(n=n(dexie_min_s(e))),("undefined"==typeof Reflect?t:Reflect.ownKeys)(n).forEach((t=>{l(e,t,n[t])}))}const u=Object.defineProperty;function l(e,t,n,s){u(e,t,dexie_min_r(n&&o(n,"get")&&"function"==typeof n.get?{get:n.get,set:n.set,configurable:!0}:{value:n,configurable:!0,writable:!0},s))}function c(e){return{from:function(t){return e.prototype=Object.create(t.prototype),l(e.prototype,"constructor",e),{extend:a.bind(null,e.prototype)}}}}const h=Object.getOwnPropertyDescriptor;function d(e,t){let n;return h(e,t)||(n=dexie_min_s(e))&&d(n,t)}const f=[].slice;function p(e,t,n){return f.call(e,t,n)}function dexie_min_y(e,t){return t(e)}function m(e){if(!e)throw new Error("Assertion Failed")}function dexie_min_v(t){e.setImmediate?setImmediate(t):setTimeout(t,0)}function dexie_min_g(e,t){return e.reduce(((e,n,r)=>{var s=t(n,r);return s&&(e[s[0]]=s[1]),e}),{})}function dexie_min_b(e,t){if(o(e,t))return e[t];if(!t)return e;if("string"!=typeof t){for(var n=[],r=0,s=t.length;r<s;++r){var i=dexie_min_b(e,t[r]);n.push(i)}return n}var a=t.indexOf(".");if(-1!==a){var u=e[t.substr(0,a)];return void 0===u?void 0:dexie_min_b(u,t.substr(a+1))}}function dexie_min_(e,t,r){if(e&&void 0!==t&&(!("isFrozen"in Object)||!Object.isFrozen(e)))if("string"!=typeof t&&"length"in t){m("string"!=typeof r&&"length"in r);for(var s=0,i=t.length;s<i;++s)dexie_min_(e,t[s],r[s])}else{var a=t.indexOf(".");if(-1!==a){var u=t.substr(0,a),l=t.substr(a+1);if(""===l)void 0===r?n(e)&&!isNaN(parseInt(u))?e.splice(u,1):delete e[u]:e[u]=r;else{var c=e[u];c&&o(e,u)||(c=e[u]={}),dexie_min_(c,l,r)}}else void 0===r?n(e)&&!isNaN(parseInt(t))?e.splice(t,1):delete e[t]:e[t]=r}}function dexie_min_w(e){var t={};for(var n in e)o(e,n)&&(t[n]=e[n]);return t}const dexie_min_x=[].concat;function dexie_min_k(e){return dexie_min_x.apply([],e)}const dexie_min_E="Boolean,String,Date,RegExp,Blob,File,FileList,FileSystemFileHandle,ArrayBuffer,DataView,Uint8ClampedArray,ImageBitmap,ImageData,Map,Set,CryptoKey".split(",").concat(dexie_min_k([8,16,32,64].map((e=>["Int","Uint","Float"].map((t=>t+e+"Array")))))).filter((t=>e[t])),dexie_min_P=dexie_min_E.map((t=>e[t]));dexie_min_g(dexie_min_E,(e=>[e,!0]));let dexie_min_K=null;function dexie_min_O(e){dexie_min_K="undefined"!=typeof WeakMap&&new WeakMap;const t=dexie_min_S(e);return dexie_min_K=null,t}function dexie_min_S(e){if(!e||"object"!=typeof e)return e;let t=dexie_min_K&&dexie_min_K.get(e);if(t)return t;if(n(e)){t=[],dexie_min_K&&dexie_min_K.set(e,t);for(var r=0,i=e.length;r<i;++r)t.push(dexie_min_S(e[r]))}else if(dexie_min_P.indexOf(e.constructor)>=0)t=e;else{const n=dexie_min_s(e);for(var a in t=n===Object.prototype?{}:Object.create(n),dexie_min_K&&dexie_min_K.set(e,t),e)o(e,a)&&(t[a]=dexie_min_S(e[a]))}return t}const{toString:dexie_min_A}={};function dexie_min_C(e){return dexie_min_A.call(e).slice(8,-1)}const dexie_min_j="undefined"!=typeof Symbol?Symbol.iterator:"@@iterator",dexie_min_D="symbol"==typeof dexie_min_j?function(e){var t;return null!=e&&(t=e[dexie_min_j])&&t.apply(e)}:function(){return null},dexie_min_I={};function dexie_min_B(e){var t,r,s,i;if(1===arguments.length){if(n(e))return e.slice();if(this===dexie_min_I&&"string"==typeof e)return[e];if(i=dexie_min_D(e)){for(r=[];!(s=i.next()).done;)r.push(s.value);return r}if(null==e)return[e];if("number"==typeof(t=e.length)){for(r=new Array(t);t--;)r[t]=e[t];return r}return[e]}for(t=arguments.length,r=new Array(t);t--;)r[t]=arguments[t];return r}const dexie_min_T="undefined"!=typeof Symbol?e=>"AsyncFunction"===e[Symbol.toStringTag]:()=>!1;var dexie_min_R="undefined"!=typeof location&&/^(http|https):\/\/(localhost|127\.0\.0\.1)/.test(location.href);function dexie_min_F(e,t){dexie_min_R=e,dexie_min_M=t}var dexie_min_M=()=>!0;const dexie_min_N=!new Error("").stack;function dexie_min_q(){if(dexie_min_N)try{throw dexie_min_q.arguments,new Error}catch(e){return e}return new Error}function dexie_min_$(e,t){var n=e.stack;return n?(t=t||0,0===n.indexOf(e.name)&&(t+=(e.name+e.message).split("\n").length),n.split("\n").slice(t).filter(dexie_min_M).map((e=>"\n"+e)).join("")):""}var dexie_min_U=["Unknown","Constraint","Data","TransactionInactive","ReadOnly","Version","NotFound","InvalidState","InvalidAccess","Abort","Timeout","QuotaExceeded","Syntax","DataClone"],dexie_min_L=["Modify","Bulk","OpenFailed","VersionChange","Schema","Upgrade","InvalidTable","MissingAPI","NoSuchDatabase","InvalidArgument","SubTransaction","Unsupported","Internal","DatabaseClosed","PrematureCommit","ForeignAwait"].concat(dexie_min_U),dexie_min_V={VersionChanged:"Database version changed by other database connection",DatabaseClosed:"Database has been closed",Abort:"Transaction aborted",TransactionInactive:"Transaction has already completed or failed",MissingAPI:"IndexedDB API missing. Please visit https://tinyurl.com/y2uuvskb"};function dexie_min_W(e,t){this._e=dexie_min_q(),this.name=e,this.message=t}function dexie_min_Y(e,t){return e+". Errors: "+Object.keys(t).map((e=>t[e].toString())).filter(((e,t,n)=>n.indexOf(e)===t)).join("\n")}function dexie_min_z(e,t,n,r){this._e=dexie_min_q(),this.failures=t,this.failedKeys=r,this.successCount=n,this.message=dexie_min_Y(e,t)}function dexie_min_G(e,t){this._e=dexie_min_q(),this.name="BulkError",this.failures=Object.keys(t).map((e=>t[e])),this.failuresByPos=t,this.message=dexie_min_Y(e,t)}c(dexie_min_W).from(Error).extend({stack:{get:function(){return this._stack||(this._stack=this.name+": "+this.message+dexie_min_$(this._e,2))}},toString:function(){return this.name+": "+this.message}}),c(dexie_min_z).from(dexie_min_W),c(dexie_min_G).from(dexie_min_W);var dexie_min_H=dexie_min_L.reduce(((e,t)=>(e[t]=t+"Error",e)),{});const dexie_min_Q=dexie_min_W;var dexie_min_X=dexie_min_L.reduce(((e,t)=>{var n=t+"Error";function r(e,r){this._e=dexie_min_q(),this.name=n,e?"string"==typeof e?(this.message=`${e}${r?"\n "+r:""}`,this.inner=r||null):"object"==typeof e&&(this.message=`${e.name} ${e.message}`,this.inner=e):(this.message=dexie_min_V[t]||n,this.inner=null)}return c(r).from(dexie_min_Q),e[t]=r,e}),{});dexie_min_X.Syntax=SyntaxError,dexie_min_X.Type=TypeError,dexie_min_X.Range=RangeError;var dexie_min_J=dexie_min_U.reduce(((e,t)=>(e[t+"Error"]=dexie_min_X[t],e)),{});var dexie_min_Z=dexie_min_L.reduce(((e,t)=>(-1===["Syntax","Type","Range"].indexOf(t)&&(e[t+"Error"]=dexie_min_X[t]),e)),{});function dexie_min_ee(){}function dexie_min_te(e){return e}function dexie_min_ne(e,t){return null==e||e===dexie_min_te?t:function(n){return t(e(n))}}function dexie_min_re(e,t){return function(){e.apply(this,arguments),t.apply(this,arguments)}}function dexie_min_se(e,t){return e===dexie_min_ee?t:function(){var n=e.apply(this,arguments);void 0!==n&&(arguments[0]=n);var r=this.onsuccess,s=this.onerror;this.onsuccess=null,this.onerror=null;var i=t.apply(this,arguments);return r&&(this.onsuccess=this.onsuccess?dexie_min_re(r,this.onsuccess):r),s&&(this.onerror=this.onerror?dexie_min_re(s,this.onerror):s),void 0!==i?i:n}}function dexie_min_ie(e,t){return e===dexie_min_ee?t:function(){e.apply(this,arguments);var n=this.onsuccess,r=this.onerror;this.onsuccess=this.onerror=null,t.apply(this,arguments),n&&(this.onsuccess=this.onsuccess?dexie_min_re(n,this.onsuccess):n),r&&(this.onerror=this.onerror?dexie_min_re(r,this.onerror):r)}}function dexie_min_oe(e,t){return e===dexie_min_ee?t:function(n){var s=e.apply(this,arguments);dexie_min_r(n,s);var i=this.onsuccess,o=this.onerror;this.onsuccess=null,this.onerror=null;var a=t.apply(this,arguments);return i&&(this.onsuccess=this.onsuccess?dexie_min_re(i,this.onsuccess):i),o&&(this.onerror=this.onerror?dexie_min_re(o,this.onerror):o),void 0===s?void 0===a?void 0:a:dexie_min_r(s,a)}}function dexie_min_ae(e,t){return e===dexie_min_ee?t:function(){return!1!==t.apply(this,arguments)&&e.apply(this,arguments)}}function dexie_min_ue(e,t){return e===dexie_min_ee?t:function(){var n=e.apply(this,arguments);if(n&&"function"==typeof n.then){for(var r=this,s=arguments.length,i=new Array(s);s--;)i[s]=arguments[s];return n.then((function(){return t.apply(r,i)}))}return t.apply(this,arguments)}}dexie_min_Z.ModifyError=dexie_min_z,dexie_min_Z.DexieError=dexie_min_W,dexie_min_Z.BulkError=dexie_min_G;var dexie_min_le={};const[dexie_min_ce,dexie_min_he,dexie_min_de]="undefined"==typeof Promise?[]:(()=>{let e=Promise.resolve();if("undefined"==typeof crypto||!crypto.subtle)return[e,dexie_min_s(e),e];const t=crypto.subtle.digest("SHA-512",new Uint8Array([0]));return[t,dexie_min_s(t),e]})(),dexie_min_fe=dexie_min_he&&dexie_min_he.then,dexie_min_pe=dexie_min_ce&&dexie_min_ce.constructor,dexie_min_ye=!!dexie_min_de;var dexie_min_me=!1,dexie_min_ve=dexie_min_de?()=>{dexie_min_de.then(dexie_min_qe)}:e.setImmediate?setImmediate.bind(null,dexie_min_qe):e.MutationObserver?()=>{var e=document.createElement("div");new MutationObserver((()=>{dexie_min_qe(),e=null})).observe(e,{attributes:!0}),e.setAttribute("i","1")}:()=>{setTimeout(dexie_min_qe,0)},dexie_min_ge=function(e,t){dexie_min_Oe.push([e,t]),dexie_min_e&&(dexie_min_ve(),dexie_min_e=!1)},dexie_min_be=!0,dexie_min_e=!0,dexie_min_we=[],dexie_min_xe=[],dexie_min_ke=null,dexie_min_Ee=dexie_min_te,dexie_min_Pe={id:"global",global:!0,ref:0,unhandleds:[],onunhandled:ct,pgp:!1,env:{},finalize:function(){this.unhandleds.forEach((e=>{try{ct(e[0],e[1])}catch(e){}}))}},dexie_min_Ke=dexie_min_Pe,dexie_min_Oe=[],dexie_min_Se=0,dexie_min_Ae=[];function dexie_min_Ce(e){if("object"!=typeof this)throw new TypeError("Promises must be constructed via new");this._listeners=[],this.onuncatched=dexie_min_ee,this._lib=!1;var t=this._PSD=dexie_min_Ke;if(dexie_min_R&&(this._stackHolder=dexie_min_q(),this._prev=null,this._numPrev=0),"function"!=typeof e){if(e!==dexie_min_le)throw new TypeError("Not a function");return this._state=arguments[1],this._value=arguments[2],void(!1===this._state&&dexie_min_Be(this,this._value))}this._state=null,this._value=null,++t.ref,dexie_min_Ie(this,e)}const dexie_min_je={get:function(){var e=dexie_min_Ke,t=Qe;function n(n,r){var s=!e.global&&(e!==dexie_min_Ke||t!==Qe);const i=s&&!et();var o=new dexie_min_Ce(((t,o)=>{dexie_min_Re(this,new dexie_min_De(ut(n,e,s,i),ut(r,e,s,i),t,o,e))}));return dexie_min_R&&dexie_min_Ne(o,this),o}return n.prototype=dexie_min_le,n},set:function(e){l(this,"then",e&&e.prototype===dexie_min_le?dexie_min_je:{get:function(){return e},set:dexie_min_je.set})}};function dexie_min_De(e,t,n,r,s){this.onFulfilled="function"==typeof e?e:null,this.onRejected="function"==typeof t?t:null,this.resolve=n,this.reject=r,this.psd=s}function dexie_min_Ie(e,t){try{t((t=>{if(null===e._state){if(t===e)throw new TypeError("A promise cannot be resolved with itself.");var n=e._lib&&dexie_min_$e();t&&"function"==typeof t.then?dexie_min_Ie(e,((e,n)=>{t instanceof dexie_min_Ce?t._then(e,n):t.then(e,n)})):(e._state=!0,e._value=t,dexie_min_Te(e)),n&&dexie_min_Ue()}}),dexie_min_Be.bind(null,e))}catch(t){dexie_min_Be(e,t)}}function dexie_min_Be(e,t){if(dexie_min_xe.push(t),null===e._state){var n=e._lib&&dexie_min_$e();t=dexie_min_Ee(t),e._state=!1,e._value=t,dexie_min_R&&null!==t&&"object"==typeof t&&!t._promise&&function(e,t,n){try{e.apply(null,n)}catch(e){t&&t(e)}}((()=>{var n=d(t,"stack");t._promise=e,l(t,"stack",{get:()=>dexie_min_me?n&&(n.get?n.get.apply(t):n.value):e.stack})})),function(e){dexie_min_we.some((t=>t._value===e._value))||dexie_min_we.push(e)}(e),dexie_min_Te(e),n&&dexie_min_Ue()}}function dexie_min_Te(e){var t=e._listeners;e._listeners=[];for(var n=0,r=t.length;n<r;++n)dexie_min_Re(e,t[n]);var s=e._PSD;--s.ref||s.finalize(),0===dexie_min_Se&&(++dexie_min_Se,dexie_min_ge((()=>{0==--dexie_min_Se&&dexie_min_Le()}),[]))}function dexie_min_Re(e,t){if(null!==e._state){var n=e._state?t.onFulfilled:t.onRejected;if(null===n)return(e._state?t.resolve:t.reject)(e._value);++t.psd.ref,++dexie_min_Se,dexie_min_ge(dexie_min_Fe,[n,e,t])}else e._listeners.push(t)}function dexie_min_Fe(e,t,n){try{dexie_min_ke=t;var r,s=t._value;t._state?r=e(s):(dexie_min_xe.length&&(dexie_min_xe=[]),r=e(s),-1===dexie_min_xe.indexOf(s)&&function(e){var t=dexie_min_we.length;for(;t;)if(dexie_min_we[--t]._value===e._value)return void dexie_min_we.splice(t,1)}(t)),n.resolve(r)}catch(e){n.reject(e)}finally{dexie_min_ke=null,0==--dexie_min_Se&&dexie_min_Le(),--n.psd.ref||n.psd.finalize()}}function dexie_min_Me(e,t,n){if(t.length===n)return t;var r="";if(!1===e._state){var s,i,o=e._value;null!=o?(s=o.name||"Error",i=o.message||o,r=dexie_min_$(o,0)):(s=o,i=""),t.push(s+(i?": "+i:"")+r)}return dexie_min_R&&((r=dexie_min_$(e._stackHolder,2))&&-1===t.indexOf(r)&&t.push(r),e._prev&&dexie_min_Me(e._prev,t,n)),t}function dexie_min_Ne(e,t){var n=t?t._numPrev+1:0;n<100&&(e._prev=t,e._numPrev=n)}function dexie_min_qe(){dexie_min_$e()&&dexie_min_Ue()}function dexie_min_$e(){var e=dexie_min_be;return dexie_min_be=!1,dexie_min_e=!1,e}function dexie_min_Ue(){var e,t,n;do{for(;dexie_min_Oe.length>0;)for(e=dexie_min_Oe,dexie_min_Oe=[],n=e.length,t=0;t<n;++t){var r=e[t];r[0].apply(null,r[1])}}while(dexie_min_Oe.length>0);dexie_min_be=!0,dexie_min_e=!0}function dexie_min_Le(){var e=dexie_min_we;dexie_min_we=[],e.forEach((e=>{e._PSD.onunhandled.call(null,e._value,e)}));for(var t=dexie_min_Ae.slice(0),n=t.length;n;)t[--n]()}function dexie_min_Ve(e){return new dexie_min_Ce(dexie_min_le,!1,e)}function dexie_min_We(e,t){var n=dexie_min_Ke;return function(){var r=dexie_min_$e(),s=dexie_min_Ke;try{return st(n,!0),e.apply(this,arguments)}catch(e){t&&t(e)}finally{st(s,!1),r&&dexie_min_Ue()}}}a(dexie_min_Ce.prototype,{then:dexie_min_je,_then:function(e,t){dexie_min_Re(this,new dexie_min_De(null,null,e,t,dexie_min_Ke))},catch:function(e){if(1===arguments.length)return this.then(null,e);var t=arguments[0],n=arguments[1];return"function"==typeof t?this.then(null,(e=>e instanceof t?n(e):dexie_min_Ve(e))):this.then(null,(e=>e&&e.name===t?n(e):dexie_min_Ve(e)))},finally:function(e){return this.then((t=>(e(),t)),(t=>(e(),dexie_min_Ve(t))))},stack:{get:function(){if(this._stack)return this._stack;try{dexie_min_me=!0;var e=dexie_min_Me(this,[],20).join("\nFrom previous: ");return null!==this._state&&(this._stack=e),e}finally{dexie_min_me=!1}}},timeout:function(e,t){return e<1/0?new dexie_min_Ce(((n,r)=>{var s=setTimeout((()=>r(new dexie_min_X.Timeout(t))),e);this.then(n,r).finally(clearTimeout.bind(null,s))})):this}}),"undefined"!=typeof Symbol&&Symbol.toStringTag&&l(dexie_min_Ce.prototype,Symbol.toStringTag,"Dexie.Promise"),dexie_min_Pe.env=it(),a(dexie_min_Ce,{all:function(){var e=dexie_min_B.apply(null,arguments).map(tt);return new dexie_min_Ce((function(t,n){0===e.length&&t([]);var r=e.length;e.forEach(((s,i)=>dexie_min_Ce.resolve(s).then((n=>{e[i]=n,--r||t(e)}),n)))}))},resolve:e=>{if(e instanceof dexie_min_Ce)return e;if(e&&"function"==typeof e.then)return new dexie_min_Ce(((t,n)=>{e.then(t,n)}));var t=new dexie_min_Ce(dexie_min_le,!0,e);return dexie_min_Ne(t,dexie_min_ke),t},reject:dexie_min_Ve,race:function(){var e=dexie_min_B.apply(null,arguments).map(tt);return new dexie_min_Ce(((t,n)=>{e.map((e=>dexie_min_Ce.resolve(e).then(t,n)))}))},PSD:{get:()=>dexie_min_Ke,set:e=>dexie_min_Ke=e},totalEchoes:{get:()=>Qe},newPSD:dexie_min_Je,usePSD:ot,scheduler:{get:()=>dexie_min_ge,set:e=>{dexie_min_ge=e}},rejectionMapper:{get:()=>dexie_min_Ee,set:e=>{dexie_min_Ee=e}},follow:(e,t)=>new dexie_min_Ce(((n,r)=>dexie_min_Je(((t,n)=>{var r=dexie_min_Ke;r.unhandleds=[],r.onunhandled=n,r.finalize=dexie_min_re((function(){!function(e){function t(){e(),dexie_min_Ae.splice(dexie_min_Ae.indexOf(t),1)}dexie_min_Ae.push(t),++dexie_min_Se,dexie_min_ge((()=>{0==--dexie_min_Se&&dexie_min_Le()}),[])}((()=>{0===this.unhandleds.length?t():n(this.unhandleds[0])}))}),r.finalize),e()}),t,n,r)))}),dexie_min_pe&&(dexie_min_pe.allSettled&&l(dexie_min_Ce,"allSettled",(function(){const e=dexie_min_B.apply(null,arguments).map(tt);return new dexie_min_Ce((t=>{0===e.length&&t([]);let n=e.length;const r=new Array(n);e.forEach(((e,s)=>dexie_min_Ce.resolve(e).then((e=>r[s]={status:"fulfilled",value:e}),(e=>r[s]={status:"rejected",reason:e})).then((()=>--n||t(r)))))}))})),dexie_min_pe.any&&"undefined"!=typeof AggregateError&&l(dexie_min_Ce,"any",(function(){const e=dexie_min_B.apply(null,arguments).map(tt);return new dexie_min_Ce(((t,n)=>{0===e.length&&n(new AggregateError([]));let r=e.length;const s=new Array(r);e.forEach(((e,i)=>dexie_min_Ce.resolve(e).then((e=>t(e)),(e=>{s[i]=e,--r||n(new AggregateError(s))}))))}))})));const dexie_min_Ye={awaits:0,echoes:0,id:0};var dexie_min_ze=0,dexie_min_Ge=[],dexie_min_He=0,Qe=0,dexie_min_Xe=0;function dexie_min_Je(e,t,n,s){var i=dexie_min_Ke,o=Object.create(i);o.parent=i,o.ref=0,o.global=!1,o.id=++dexie_min_Xe;var a=dexie_min_Pe.env;o.env=dexie_min_ye?{Promise:dexie_min_Ce,PromiseProp:{value:dexie_min_Ce,configurable:!0,writable:!0},all:dexie_min_Ce.all,race:dexie_min_Ce.race,allSettled:dexie_min_Ce.allSettled,any:dexie_min_Ce.any,resolve:dexie_min_Ce.resolve,reject:dexie_min_Ce.reject,nthen:lt(a.nthen,o),gthen:lt(a.gthen,o)}:{},t&&dexie_min_r(o,t),++i.ref,o.finalize=function(){--this.parent.ref||this.parent.finalize()};var u=ot(o,e,n,s);return 0===o.ref&&o.finalize(),u}function dexie_min_Ze(){return dexie_min_Ye.id||(dexie_min_Ye.id=++dexie_min_ze),++dexie_min_Ye.awaits,dexie_min_Ye.echoes+=100,dexie_min_Ye.id}function et(){return!!dexie_min_Ye.awaits&&(0==--dexie_min_Ye.awaits&&(dexie_min_Ye.id=0),dexie_min_Ye.echoes=100*dexie_min_Ye.awaits,!0)}function tt(e){return dexie_min_Ye.echoes&&e&&e.constructor===dexie_min_pe?(dexie_min_Ze(),e.then((e=>(et(),e)),(e=>(et(),ht(e))))):e}function nt(e){++Qe,dexie_min_Ye.echoes&&0!=--dexie_min_Ye.echoes||(dexie_min_Ye.echoes=dexie_min_Ye.id=0),dexie_min_Ge.push(dexie_min_Ke),st(e,!0)}function rt(){var e=dexie_min_Ge[dexie_min_Ge.length-1];dexie_min_Ge.pop(),st(e,!1)}function st(t,n){var r=dexie_min_Ke;if((n?!dexie_min_Ye.echoes||dexie_min_He++&&t===dexie_min_Ke:!dexie_min_He||--dexie_min_He&&t===dexie_min_Ke)||at(n?nt.bind(null,t):rt),t!==dexie_min_Ke&&(dexie_min_Ke=t,r===dexie_min_Pe&&(dexie_min_Pe.env=it()),dexie_min_ye)){var s=dexie_min_Pe.env.Promise,i=t.env;dexie_min_he.then=i.nthen,s.prototype.then=i.gthen,(r.global||t.global)&&(Object.defineProperty(e,"Promise",i.PromiseProp),s.all=i.all,s.race=i.race,s.resolve=i.resolve,s.reject=i.reject,i.allSettled&&(s.allSettled=i.allSettled),i.any&&(s.any=i.any))}}function it(){var t=e.Promise;return dexie_min_ye?{Promise:t,PromiseProp:Object.getOwnPropertyDescriptor(e,"Promise"),all:t.all,race:t.race,allSettled:t.allSettled,any:t.any,resolve:t.resolve,reject:t.reject,nthen:dexie_min_he.then,gthen:t.prototype.then}:{}}function ot(e,t,n,r,s){var i=dexie_min_Ke;try{return st(e,!0),t(n,r,s)}finally{st(i,!1)}}function at(e){dexie_min_fe.call(dexie_min_ce,e)}function ut(e,t,n,r){return"function"!=typeof e?e:function(){var s=dexie_min_Ke;n&&dexie_min_Ze(),st(t,!0);try{return e.apply(this,arguments)}finally{st(s,!1),r&&at(et)}}}function lt(e,t){return function(n,r){return e.call(this,ut(n,t),ut(r,t))}}-1===(""+dexie_min_fe).indexOf("[native code]")&&(dexie_min_Ze=et=dexie_min_ee);function ct(t,n){var s;try{s=n.onuncatched(t)}catch(e){}if(!1!==s)try{var i,o={promise:n,reason:t};if(e.document&&document.createEvent?((i=document.createEvent("Event")).initEvent("unhandledrejection",!0,!0),dexie_min_r(i,o)):e.CustomEvent&&dexie_min_r(i=new CustomEvent("unhandledrejection",{detail:o}),o),i&&e.dispatchEvent&&(dispatchEvent(i),!e.PromiseRejectionEvent&&e.onunhandledrejection))try{e.onunhandledrejection(i)}catch(e){}dexie_min_R&&i&&!i.defaultPrevented&&console.warn(`Unhandled rejection: ${t.stack||t}`)}catch(e){}}var ht=dexie_min_Ce.reject;function dt(e,t,n,r){if(e.idbdb&&(e._state.openComplete||dexie_min_Ke.letThrough||e._vip)){var s=e._createTransaction(t,n,e._dbSchema);try{s.create(),e._state.PR1398_maxLoop=3}catch(s){return s.name===dexie_min_H.InvalidState&&e.isOpen()&&--e._state.PR1398_maxLoop>0?(console.warn("Dexie: Need to reopen db"),e._close(),e.open().then((()=>dt(e,t,n,r)))):ht(s)}return s._promise(t,((e,t)=>dexie_min_Je((()=>(dexie_min_Ke.trans=s,r(e,t,s)))))).then((e=>s._completion.then((()=>e))))}if(e._state.openComplete)return ht(new dexie_min_X.DatabaseClosed(e._state.dbOpenError));if(!e._state.isBeingOpened){if(!e._options.autoOpen)return ht(new dexie_min_X.DatabaseClosed);e.open().catch(dexie_min_ee)}return e._state.dbReadyPromise.then((()=>dt(e,t,n,r)))}const ft=String.fromCharCode(65535),pt="Invalid key provided. Keys must be of type string, number, Date or Array<string | number | Date>.",yt=[],mt="undefined"!=typeof navigator&&/(MSIE|Trident|Edge)/.test(navigator.userAgent),vt=mt,gt=mt,bt=e=>!/(dexie\.js|dexie\.min\.js)/.test(e);function _t(e,t){return e?t?function(){return e.apply(this,arguments)&&t.apply(this,arguments)}:e:t}const wt={type:3,lower:-1/0,lowerOpen:!1,upper:[[]],upperOpen:!1};function xt(e){return"string"!=typeof e||/\./.test(e)?e=>e:t=>(void 0===t[e]&&e in t&&delete(t=dexie_min_O(t))[e],t)}class kt{_trans(e,t,n){const r=this._tx||dexie_min_Ke.trans,s=this.name;function i(e,n,r){if(!r.schema[s])throw new dexie_min_X.NotFound("Table "+s+" not part of transaction");return t(r.idbtrans,r)}const o=dexie_min_$e();try{return r&&r.db===this.db?r===dexie_min_Ke.trans?r._promise(e,i,n):dexie_min_Je((()=>r._promise(e,i,n)),{trans:r,transless:dexie_min_Ke.transless||dexie_min_Ke}):dt(this.db,e,[this.name],i)}finally{o&&dexie_min_Ue()}}get(e,t){return e&&e.constructor===Object?this.where(e).first(t):this._trans("readonly",(t=>this.core.get({trans:t,key:e}).then((e=>this.hook.reading.fire(e))))).then(t)}where(e){if("string"==typeof e)return new this.db.WhereClause(this,e);if(n(e))return new this.db.WhereClause(this,`[${e.join("+")}]`);const r=t(e);if(1===r.length)return this.where(r[0]).equals(e[r[0]]);const s=this.schema.indexes.concat(this.schema.primKey).filter((e=>e.compound&&r.every((t=>e.keyPath.indexOf(t)>=0))&&e.keyPath.every((e=>r.indexOf(e)>=0))))[0];if(s&&this.db._maxKey!==ft)return this.where(s.name).equals(s.keyPath.map((t=>e[t])));!s&&dexie_min_R&&console.warn(`The query ${JSON.stringify(e)} on ${this.name} would benefit of a compound index [${r.join("+")}]`);const{idxByName:i}=this.schema,o=this.db._deps.indexedDB;function a(e,t){try{return 0===o.cmp(e,t)}catch(e){return!1}}const[u,l]=r.reduce((([t,r],s)=>{const o=i[s],u=e[s];return[t||o,t||!o?_t(r,o&&o.multi?e=>{const t=dexie_min_b(e,s);return n(t)&&t.some((e=>a(u,e)))}:e=>a(u,dexie_min_b(e,s))):r]}),[null,null]);return u?this.where(u.name).equals(e[u.keyPath]).filter(l):s?this.filter(l):this.where(r).equals("")}filter(e){return this.toCollection().and(e)}count(e){return this.toCollection().count(e)}offset(e){return this.toCollection().offset(e)}limit(e){return this.toCollection().limit(e)}each(e){return this.toCollection().each(e)}toArray(e){return this.toCollection().toArray(e)}toCollection(){return new this.db.Collection(new this.db.WhereClause(this))}orderBy(e){return new this.db.Collection(new this.db.WhereClause(this,n(e)?`[${e.join("+")}]`:e))}reverse(){return this.toCollection().reverse()}mapToClass(e){this.schema.mappedClass=e;const t=t=>{if(!t)return t;const n=Object.create(e.prototype);for(var r in t)if(o(t,r))try{n[r]=t[r]}catch(e){}return n};return this.schema.readHook&&this.hook.reading.unsubscribe(this.schema.readHook),this.schema.readHook=t,this.hook("reading",t),e}defineClass(){return this.mapToClass((function(e){dexie_min_r(this,e)}))}add(e,t){const{auto:n,keyPath:r}=this.schema.primKey;let s=e;return r&&n&&(s=xt(r)(e)),this._trans("readwrite",(e=>this.core.mutate({trans:e,type:"add",keys:null!=t?[t]:null,values:[s]}))).then((e=>e.numFailures?dexie_min_Ce.reject(e.failures[0]):e.lastResult)).then((t=>{if(r)try{dexie_min_(e,r,t)}catch(e){}return t}))}update(e,r){if("object"!=typeof e||n(e))return this.where(":id").equals(e).modify(r);{const n=dexie_min_b(e,this.schema.primKey.keyPath);if(void 0===n)return ht(new dexie_min_X.InvalidArgument("Given object does not contain its primary key"));try{"function"!=typeof r?t(r).forEach((t=>{dexie_min_(e,t,r[t])})):r(e,{value:e,primKey:n})}catch(e){}return this.where(":id").equals(n).modify(r)}}put(e,t){const{auto:n,keyPath:r}=this.schema.primKey;let s=e;return r&&n&&(s=xt(r)(e)),this._trans("readwrite",(e=>this.core.mutate({trans:e,type:"put",values:[s],keys:null!=t?[t]:null}))).then((e=>e.numFailures?dexie_min_Ce.reject(e.failures[0]):e.lastResult)).then((t=>{if(r)try{dexie_min_(e,r,t)}catch(e){}return t}))}delete(e){return this._trans("readwrite",(t=>this.core.mutate({trans:t,type:"delete",keys:[e]}))).then((e=>e.numFailures?dexie_min_Ce.reject(e.failures[0]):void 0))}clear(){return this._trans("readwrite",(e=>this.core.mutate({trans:e,type:"deleteRange",range:wt}))).then((e=>e.numFailures?dexie_min_Ce.reject(e.failures[0]):void 0))}bulkGet(e){return this._trans("readonly",(t=>this.core.getMany({keys:e,trans:t}).then((e=>e.map((e=>this.hook.reading.fire(e)))))))}bulkAdd(e,t,n){const r=Array.isArray(t)?t:void 0,s=(n=n||(r?void 0:t))?n.allKeys:void 0;return this._trans("readwrite",(t=>{const{auto:n,keyPath:i}=this.schema.primKey;if(i&&r)throw new dexie_min_X.InvalidArgument("bulkAdd(): keys argument invalid on tables with inbound keys");if(r&&r.length!==e.length)throw new dexie_min_X.InvalidArgument("Arguments objects and keys must have the same length");const o=e.length;let a=i&&n?e.map(xt(i)):e;return this.core.mutate({trans:t,type:"add",keys:r,values:a,wantResults:s}).then((({numFailures:e,results:t,lastResult:n,failures:r})=>{if(0===e)return s?t:n;throw new dexie_min_G(`${this.name}.bulkAdd(): ${e} of ${o} operations failed`,r)}))}))}bulkPut(e,t,n){const r=Array.isArray(t)?t:void 0,s=(n=n||(r?void 0:t))?n.allKeys:void 0;return this._trans("readwrite",(t=>{const{auto:n,keyPath:i}=this.schema.primKey;if(i&&r)throw new dexie_min_X.InvalidArgument("bulkPut(): keys argument invalid on tables with inbound keys");if(r&&r.length!==e.length)throw new dexie_min_X.InvalidArgument("Arguments objects and keys must have the same length");const o=e.length;let a=i&&n?e.map(xt(i)):e;return this.core.mutate({trans:t,type:"put",keys:r,values:a,wantResults:s}).then((({numFailures:e,results:t,lastResult:n,failures:r})=>{if(0===e)return s?t:n;throw new dexie_min_G(`${this.name}.bulkPut(): ${e} of ${o} operations failed`,r)}))}))}bulkDelete(e){const t=e.length;return this._trans("readwrite",(t=>this.core.mutate({trans:t,type:"delete",keys:e}))).then((({numFailures:e,lastResult:n,failures:r})=>{if(0===e)return n;throw new dexie_min_G(`${this.name}.bulkDelete(): ${e} of ${t} operations failed`,r)}))}}function Et(e){var r={},s=function(t,n){if(n){for(var s=arguments.length,i=new Array(s-1);--s;)i[s-1]=arguments[s];return r[t].subscribe.apply(null,i),e}if("string"==typeof t)return r[t]};s.addEventType=a;for(var i=1,o=arguments.length;i<o;++i)a(arguments[i]);return s;function a(e,t,n){if("object"==typeof e)return u(e);t||(t=dexie_min_ae),n||(n=dexie_min_ee);var i={subscribers:[],fire:n,subscribe:function(e){-1===i.subscribers.indexOf(e)&&(i.subscribers.push(e),i.fire=t(i.fire,e))},unsubscribe:function(e){i.subscribers=i.subscribers.filter((function(t){return t!==e})),i.fire=i.subscribers.reduce(t,n)}};return r[e]=s[e]=i,i}function u(e){t(e).forEach((function(t){var r=e[t];if(n(r))a(t,e[t][0],e[t][1]);else{if("asap"!==r)throw new dexie_min_X.InvalidArgument("Invalid event config");var s=a(t,dexie_min_te,(function(){for(var e=arguments.length,t=new Array(e);e--;)t[e]=arguments[e];s.subscribers.forEach((function(e){dexie_min_v((function(){e.apply(null,t)}))}))}))}}))}}function Pt(e,t){return c(t).from({prototype:e}),t}function Kt(e,t){return!(e.filter||e.algorithm||e.or)&&(t?e.justLimit:!e.replayFilter)}function Ot(e,t){e.filter=_t(e.filter,t)}function St(e,t,n){var r=e.replayFilter;e.replayFilter=r?()=>_t(r(),t()):t,e.justLimit=n&&!r}function At(e,t){if(e.isPrimKey)return t.primaryKey;const n=t.getIndexByKeyPath(e.index);if(!n)throw new dexie_min_X.Schema("KeyPath "+e.index+" on object store "+t.name+" is not indexed");return n}function Ct(e,t,n){const r=At(e,t.schema);return t.openCursor({trans:n,values:!e.keysOnly,reverse:"prev"===e.dir,unique:!!e.unique,query:{index:r,range:e.range}})}function jt(e,t,n,r){const s=e.replayFilter?_t(e.filter,e.replayFilter()):e.filter;if(e.or){const i={},a=(e,n,r)=>{if(!s||s(n,r,(e=>n.stop(e)),(e=>n.fail(e)))){var a=n.primaryKey,u=""+a;"[object ArrayBuffer]"===u&&(u=""+new Uint8Array(a)),o(i,u)||(i[u]=!0,t(e,n,r))}};return Promise.all([e.or._iterate(a,n),Dt(Ct(e,r,n),e.algorithm,a,!e.keysOnly&&e.valueMapper)])}return Dt(Ct(e,r,n),_t(e.algorithm,s),t,!e.keysOnly&&e.valueMapper)}function Dt(e,t,n,r){var s=dexie_min_We(r?(e,t,s)=>n(r(e),t,s):n);return e.then((e=>{if(e)return e.start((()=>{var n=()=>e.continue();t&&!t(e,(e=>n=e),(t=>{e.stop(t),n=dexie_min_ee}),(t=>{e.fail(t),n=dexie_min_ee}))||s(e.value,e,(e=>n=e)),n()}))}))}function It(e,t){try{const n=Bt(e),r=Bt(t);if(n!==r)return"Array"===n?1:"Array"===r?-1:"binary"===n?1:"binary"===r?-1:"string"===n?1:"string"===r?-1:"Date"===n?1:"Date"!==r?NaN:-1;switch(n){case"number":case"Date":case"string":return e>t?1:e<t?-1:0;case"binary":return function(e,t){const n=e.length,r=t.length,s=n<r?n:r;for(let n=0;n<s;++n)if(e[n]!==t[n])return e[n]<t[n]?-1:1;return n===r?0:n<r?-1:1}(Tt(e),Tt(t));case"Array":return function(e,t){const n=e.length,r=t.length,s=n<r?n:r;for(let n=0;n<s;++n){const r=It(e[n],t[n]);if(0!==r)return r}return n===r?0:n<r?-1:1}(e,t)}}catch(e){}return NaN}function Bt(e){const t=typeof e;if("object"!==t)return t;if(ArrayBuffer.isView(e))return"binary";const n=dexie_min_C(e);return"ArrayBuffer"===n?"binary":n}function Tt(e){return e instanceof Uint8Array?e:ArrayBuffer.isView(e)?new Uint8Array(e.buffer,e.byteOffset,e.byteLength):new Uint8Array(e)}class Rt{_read(e,t){var n=this._ctx;return n.error?n.table._trans(null,ht.bind(null,n.error)):n.table._trans("readonly",e).then(t)}_write(e){var t=this._ctx;return t.error?t.table._trans(null,ht.bind(null,t.error)):t.table._trans("readwrite",e,"locked")}_addAlgorithm(e){var t=this._ctx;t.algorithm=_t(t.algorithm,e)}_iterate(e,t){return jt(this._ctx,e,t,this._ctx.table.core)}clone(e){var t=Object.create(this.constructor.prototype),n=Object.create(this._ctx);return e&&dexie_min_r(n,e),t._ctx=n,t}raw(){return this._ctx.valueMapper=null,this}each(e){var t=this._ctx;return this._read((n=>jt(t,e,n,t.table.core)))}count(e){return this._read((e=>{const t=this._ctx,n=t.table.core;if(Kt(t,!0))return n.count({trans:e,query:{index:At(t,n.schema),range:t.range}}).then((e=>Math.min(e,t.limit)));var r=0;return jt(t,(()=>(++r,!1)),e,n).then((()=>r))})).then(e)}sortBy(e,t){const n=e.split(".").reverse(),r=n[0],s=n.length-1;function i(e,t){return t?i(e[n[t]],t-1):e[r]}var o="next"===this._ctx.dir?1:-1;function a(e,t){var n=i(e,s),r=i(t,s);return n<r?-o:n>r?o:0}return this.toArray((function(e){return e.sort(a)})).then(t)}toArray(e){return this._read((e=>{var t=this._ctx;if("next"===t.dir&&Kt(t,!0)&&t.limit>0){const{valueMapper:n}=t,r=At(t,t.table.core.schema);return t.table.core.query({trans:e,limit:t.limit,values:!0,query:{index:r,range:t.range}}).then((({result:e})=>n?e.map(n):e))}{const n=[];return jt(t,(e=>n.push(e)),e,t.table.core).then((()=>n))}}),e)}offset(e){var t=this._ctx;return e<=0||(t.offset+=e,Kt(t)?St(t,(()=>{var t=e;return(e,n)=>0===t||(1===t?(--t,!1):(n((()=>{e.advance(t),t=0})),!1))})):St(t,(()=>{var t=e;return()=>--t<0}))),this}limit(e){return this._ctx.limit=Math.min(this._ctx.limit,e),St(this._ctx,(()=>{var t=e;return function(e,n,r){return--t<=0&&n(r),t>=0}}),!0),this}until(e,t){return Ot(this._ctx,(function(n,r,s){return!e(n.value)||(r(s),t)})),this}first(e){return this.limit(1).toArray((function(e){return e[0]})).then(e)}last(e){return this.reverse().first(e)}filter(e){var t,n;return Ot(this._ctx,(function(t){return e(t.value)})),t=this._ctx,n=e,t.isMatch=_t(t.isMatch,n),this}and(e){return this.filter(e)}or(e){return new this.db.WhereClause(this._ctx.table,e,this)}reverse(){return this._ctx.dir="prev"===this._ctx.dir?"next":"prev",this._ondirectionchange&&this._ondirectionchange(this._ctx.dir),this}desc(){return this.reverse()}eachKey(e){var t=this._ctx;return t.keysOnly=!t.isMatch,this.each((function(t,n){e(n.key,n)}))}eachUniqueKey(e){return this._ctx.unique="unique",this.eachKey(e)}eachPrimaryKey(e){var t=this._ctx;return t.keysOnly=!t.isMatch,this.each((function(t,n){e(n.primaryKey,n)}))}keys(e){var t=this._ctx;t.keysOnly=!t.isMatch;var n=[];return this.each((function(e,t){n.push(t.key)})).then((function(){return n})).then(e)}primaryKeys(e){var t=this._ctx;if("next"===t.dir&&Kt(t,!0)&&t.limit>0)return this._read((e=>{var n=At(t,t.table.core.schema);return t.table.core.query({trans:e,values:!1,limit:t.limit,query:{index:n,range:t.range}})})).then((({result:e})=>e)).then(e);t.keysOnly=!t.isMatch;var n=[];return this.each((function(e,t){n.push(t.primaryKey)})).then((function(){return n})).then(e)}uniqueKeys(e){return this._ctx.unique="unique",this.keys(e)}firstKey(e){return this.limit(1).keys((function(e){return e[0]})).then(e)}lastKey(e){return this.reverse().firstKey(e)}distinct(){var e=this._ctx,t=e.index&&e.table.schema.idxByName[e.index];if(!t||!t.multi)return this;var n={};return Ot(this._ctx,(function(e){var t=e.primaryKey.toString(),r=o(n,t);return n[t]=!0,!r})),this}modify(e){var n=this._ctx;return this._write((r=>{var s;if("function"==typeof e)s=e;else{var i=t(e),o=i.length;s=function(t){for(var n=!1,r=0;r<o;++r){var s=i[r],a=e[s];dexie_min_b(t,s)!==a&&(dexie_min_(t,s,a),n=!0)}return n}}const a=n.table.core,{outbound:u,extractKey:l}=a.schema.primaryKey,c=this.db._options.modifyChunkSize||200,h=[];let d=0;const f=[],p=(e,n)=>{const{failures:r,numFailures:s}=n;d+=e-s;for(let e of t(r))h.push(r[e])};return this.clone().primaryKeys().then((t=>{const i=o=>{const h=Math.min(c,t.length-o);return a.getMany({trans:r,keys:t.slice(o,o+h),cache:"immutable"}).then((d=>{const f=[],y=[],m=u?[]:null,v=[];for(let e=0;e<h;++e){const n=d[e],r={value:dexie_min_O(n),primKey:t[o+e]};!1!==s.call(r,r.value,r)&&(null==r.value?v.push(t[o+e]):u||0===It(l(n),l(r.value))?(y.push(r.value),u&&m.push(t[o+e])):(v.push(t[o+e]),f.push(r.value)))}const g=Kt(n)&&n.limit===1/0&&("function"!=typeof e||e===Ft)&&{index:n.index,range:n.range};return Promise.resolve(f.length>0&&a.mutate({trans:r,type:"add",values:f}).then((e=>{for(let t in e.failures)v.splice(parseInt(t),1);p(f.length,e)}))).then((()=>(y.length>0||g&&"object"==typeof e)&&a.mutate({trans:r,type:"put",keys:m,values:y,criteria:g,changeSpec:"function"!=typeof e&&e}).then((e=>p(y.length,e))))).then((()=>(v.length>0||g&&e===Ft)&&a.mutate({trans:r,type:"delete",keys:v,criteria:g}).then((e=>p(v.length,e))))).then((()=>t.length>o+h&&i(o+c)))}))};return i(0).then((()=>{if(h.length>0)throw new dexie_min_z("Error modifying one or more objects",h,d,f);return t.length}))}))}))}delete(){var e=this._ctx,t=e.range;return Kt(e)&&(e.isPrimKey&&!gt||3===t.type)?this._write((n=>{const{primaryKey:r}=e.table.core.schema,s=t;return e.table.core.count({trans:n,query:{index:r,range:s}}).then((t=>e.table.core.mutate({trans:n,type:"deleteRange",range:s}).then((({failures:e,lastResult:n,results:r,numFailures:s})=>{if(s)throw new dexie_min_z("Could not delete some values",Object.keys(e).map((t=>e[t])),t-s);return t-s}))))})):this.modify(Ft)}}const Ft=(e,t)=>t.value=null;function Mt(e,t){return e<t?-1:e===t?0:1}function Nt(e,t){return e>t?-1:e===t?0:1}function qt(e,t,n){var r=e instanceof Yt?new e.Collection(e):e;return r._ctx.error=n?new n(t):new TypeError(t),r}function $t(e){return new e.Collection(e,(()=>Wt(""))).limit(0)}function Ut(e,t,n,r,s,i){for(var o=Math.min(e.length,r.length),a=-1,u=0;u<o;++u){var l=t[u];if(l!==r[u])return s(e[u],n[u])<0?e.substr(0,u)+n[u]+n.substr(u+1):s(e[u],r[u])<0?e.substr(0,u)+r[u]+n.substr(u+1):a>=0?e.substr(0,a)+t[a]+n.substr(a+1):null;s(e[u],l)<0&&(a=u)}return o<r.length&&"next"===i?e+n.substr(e.length):o<e.length&&"prev"===i?e.substr(0,n.length):a<0?null:e.substr(0,a)+r[a]+n.substr(a+1)}function Lt(e,t,n,r){var s,i,o,a,u,l,c,h=n.length;if(!n.every((e=>"string"==typeof e)))return qt(e,"String expected.");function d(e){s=function(e){return"next"===e?e=>e.toUpperCase():e=>e.toLowerCase()}(e),i=function(e){return"next"===e?e=>e.toLowerCase():e=>e.toUpperCase()}(e),o="next"===e?Mt:Nt;var t=n.map((function(e){return{lower:i(e),upper:s(e)}})).sort((function(e,t){return o(e.lower,t.lower)}));a=t.map((function(e){return e.upper})),u=t.map((function(e){return e.lower})),l=e,c="next"===e?"":r}d("next");var f=new e.Collection(e,(()=>Vt(a[0],u[h-1]+r)));f._ondirectionchange=function(e){d(e)};var p=0;return f._addAlgorithm((function(e,n,r){var s=e.key;if("string"!=typeof s)return!1;var d=i(s);if(t(d,u,p))return!0;for(var f=null,y=p;y<h;++y){var m=Ut(s,d,a[y],u[y],o,l);null===m&&null===f?p=y+1:(null===f||o(f,m)>0)&&(f=m)}return n(null!==f?function(){e.continue(f+c)}:r),!1})),f}function Vt(e,t,n,r){return{type:2,lower:e,upper:t,lowerOpen:n,upperOpen:r}}function Wt(e){return{type:1,lower:e,upper:e}}class Yt{get Collection(){return this._ctx.table.db.Collection}between(e,t,n,r){n=!1!==n,r=!0===r;try{return this._cmp(e,t)>0||0===this._cmp(e,t)&&(n||r)&&(!n||!r)?$t(this):new this.Collection(this,(()=>Vt(e,t,!n,!r)))}catch(e){return qt(this,pt)}}equals(e){return null==e?qt(this,pt):new this.Collection(this,(()=>Wt(e)))}above(e){return null==e?qt(this,pt):new this.Collection(this,(()=>Vt(e,void 0,!0)))}aboveOrEqual(e){return null==e?qt(this,pt):new this.Collection(this,(()=>Vt(e,void 0,!1)))}below(e){return null==e?qt(this,pt):new this.Collection(this,(()=>Vt(void 0,e,!1,!0)))}belowOrEqual(e){return null==e?qt(this,pt):new this.Collection(this,(()=>Vt(void 0,e)))}startsWith(e){return"string"!=typeof e?qt(this,"String expected."):this.between(e,e+ft,!0,!0)}startsWithIgnoreCase(e){return""===e?this.startsWith(e):Lt(this,((e,t)=>0===e.indexOf(t[0])),[e],ft)}equalsIgnoreCase(e){return Lt(this,((e,t)=>e===t[0]),[e],"")}anyOfIgnoreCase(){var e=dexie_min_B.apply(dexie_min_I,arguments);return 0===e.length?$t(this):Lt(this,((e,t)=>-1!==t.indexOf(e)),e,"")}startsWithAnyOfIgnoreCase(){var e=dexie_min_B.apply(dexie_min_I,arguments);return 0===e.length?$t(this):Lt(this,((e,t)=>t.some((t=>0===e.indexOf(t)))),e,ft)}anyOf(){const e=dexie_min_B.apply(dexie_min_I,arguments);let t=this._cmp;try{e.sort(t)}catch(e){return qt(this,pt)}if(0===e.length)return $t(this);const n=new this.Collection(this,(()=>Vt(e[0],e[e.length-1])));n._ondirectionchange=n=>{t="next"===n?this._ascending:this._descending,e.sort(t)};let r=0;return n._addAlgorithm(((n,s,i)=>{const o=n.key;for(;t(o,e[r])>0;)if(++r,r===e.length)return s(i),!1;return 0===t(o,e[r])||(s((()=>{n.continue(e[r])})),!1)})),n}notEqual(e){return this.inAnyRange([[-(1/0),e],[e,this.db._maxKey]],{includeLowers:!1,includeUppers:!1})}noneOf(){const e=dexie_min_B.apply(dexie_min_I,arguments);if(0===e.length)return new this.Collection(this);try{e.sort(this._ascending)}catch(e){return qt(this,pt)}const t=e.reduce(((e,t)=>e?e.concat([[e[e.length-1][1],t]]):[[-(1/0),t]]),null);return t.push([e[e.length-1],this.db._maxKey]),this.inAnyRange(t,{includeLowers:!1,includeUppers:!1})}inAnyRange(e,t){const n=this._cmp,r=this._ascending,s=this._descending,i=this._min,o=this._max;if(0===e.length)return $t(this);if(!e.every((e=>void 0!==e[0]&&void 0!==e[1]&&r(e[0],e[1])<=0)))return qt(this,"First argument to inAnyRange() must be an Array of two-value Arrays [lower,upper] where upper must not be lower than lower",dexie_min_X.InvalidArgument);const a=!t||!1!==t.includeLowers,u=t&&!0===t.includeUppers;let l,c=r;function h(e,t){return c(e[0],t[0])}try{l=e.reduce((function(e,t){let r=0,s=e.length;for(;r<s;++r){const s=e[r];if(n(t[0],s[1])<0&&n(t[1],s[0])>0){s[0]=i(s[0],t[0]),s[1]=o(s[1],t[1]);break}}return r===s&&e.push(t),e}),[]),l.sort(h)}catch(e){return qt(this,pt)}let d=0;const f=u?e=>r(e,l[d][1])>0:e=>r(e,l[d][1])>=0,p=a?e=>s(e,l[d][0])>0:e=>s(e,l[d][0])>=0;let y=f;const m=new this.Collection(this,(()=>Vt(l[0][0],l[l.length-1][1],!a,!u)));return m._ondirectionchange=e=>{"next"===e?(y=f,c=r):(y=p,c=s),l.sort(h)},m._addAlgorithm(((e,t,n)=>{for(var s=e.key;y(s);)if(++d,d===l.length)return t(n),!1;return!!function(e){return!f(e)&&!p(e)}(s)||(0===this._cmp(s,l[d][1])||0===this._cmp(s,l[d][0])||t((()=>{c===r?e.continue(l[d][0]):e.continue(l[d][1])})),!1)})),m}startsWithAnyOf(){const e=dexie_min_B.apply(dexie_min_I,arguments);return e.every((e=>"string"==typeof e))?0===e.length?$t(this):this.inAnyRange(e.map((e=>[e,e+ft]))):qt(this,"startsWithAnyOf() only works with strings")}}function zt(e){return dexie_min_We((function(t){return Gt(t),e(t.target.error),!1}))}function Gt(e){e.stopPropagation&&e.stopPropagation(),e.preventDefault&&e.preventDefault()}const Ht=Et(null,"storagemutated");class Qt{_lock(){return m(!dexie_min_Ke.global),++this._reculock,1!==this._reculock||dexie_min_Ke.global||(dexie_min_Ke.lockOwnerFor=this),this}_unlock(){if(m(!dexie_min_Ke.global),0==--this._reculock)for(dexie_min_Ke.global||(dexie_min_Ke.lockOwnerFor=null);this._blockedFuncs.length>0&&!this._locked();){var e=this._blockedFuncs.shift();try{ot(e[1],e[0])}catch(e){}}return this}_locked(){return this._reculock&&dexie_min_Ke.lockOwnerFor!==this}create(e){if(!this.mode)return this;const t=this.db.idbdb,n=this.db._state.dbOpenError;if(m(!this.idbtrans),!e&&!t)switch(n&&n.name){case"DatabaseClosedError":throw new dexie_min_X.DatabaseClosed(n);case"MissingAPIError":throw new dexie_min_X.MissingAPI(n.message,n);default:throw new dexie_min_X.OpenFailed(n)}if(!this.active)throw new dexie_min_X.TransactionInactive;return m(null===this._completion._state),(e=this.idbtrans=e||(this.db.core?this.db.core.transaction(this.storeNames,this.mode,{durability:this.chromeTransactionDurability}):t.transaction(this.storeNames,this.mode,{durability:this.chromeTransactionDurability}))).onerror=dexie_min_We((t=>{Gt(t),this._reject(e.error)})),e.onabort=dexie_min_We((t=>{Gt(t),this.active&&this._reject(new dexie_min_X.Abort(e.error)),this.active=!1,this.on("abort").fire(t)})),e.oncomplete=dexie_min_We((()=>{this.active=!1,this._resolve(),"mutatedParts"in e&&Ht.storagemutated.fire(e.mutatedParts)})),this}_promise(e,t,n){if("readwrite"===e&&"readwrite"!==this.mode)return ht(new dexie_min_X.ReadOnly("Transaction is readonly"));if(!this.active)return ht(new dexie_min_X.TransactionInactive);if(this._locked())return new dexie_min_Ce(((r,s)=>{this._blockedFuncs.push([()=>{this._promise(e,t,n).then(r,s)},dexie_min_Ke])}));if(n)return dexie_min_Je((()=>{var e=new dexie_min_Ce(((e,n)=>{this._lock();const r=t(e,n,this);r&&r.then&&r.then(e,n)}));return e.finally((()=>this._unlock())),e._lib=!0,e}));var r=new dexie_min_Ce(((e,n)=>{var r=t(e,n,this);r&&r.then&&r.then(e,n)}));return r._lib=!0,r}_root(){return this.parent?this.parent._root():this}waitFor(e){var t=this._root();const n=dexie_min_Ce.resolve(e);if(t._waitingFor)t._waitingFor=t._waitingFor.then((()=>n));else{t._waitingFor=n,t._waitingQueue=[];var r=t.idbtrans.objectStore(t.storeNames[0]);!function e(){for(++t._spinCount;t._waitingQueue.length;)t._waitingQueue.shift()();t._waitingFor&&(r.get(-1/0).onsuccess=e)}()}var s=t._waitingFor;return new dexie_min_Ce(((e,r)=>{n.then((n=>t._waitingQueue.push(dexie_min_We(e.bind(null,n)))),(e=>t._waitingQueue.push(dexie_min_We(r.bind(null,e))))).finally((()=>{t._waitingFor===s&&(t._waitingFor=null)}))}))}abort(){this.active&&(this.active=!1,this.idbtrans&&this.idbtrans.abort(),this._reject(new dexie_min_X.Abort))}table(e){const t=this._memoizedTables||(this._memoizedTables={});if(o(t,e))return t[e];const n=this.schema[e];if(!n)throw new dexie_min_X.NotFound("Table "+e+" not part of transaction");const r=new this.db.Table(e,n,this);return r.core=this.db.core.table(e),t[e]=r,r}}function Xt(e,t,n,r,s,i,o){return{name:e,keyPath:t,unique:n,multi:r,auto:s,compound:i,src:(n&&!o?"&":"")+(r?"*":"")+(s?"++":"")+Jt(t)}}function Jt(e){return"string"==typeof e?e:e?"["+[].join.call(e,"+")+"]":""}function Zt(e,t,n){return{name:e,primKey:t,indexes:n,mappedClass:null,idxByName:dexie_min_g(n,(e=>[e.name,e]))}}let en=e=>{try{return e.only([[]]),en=()=>[[]],[[]]}catch(e){return en=()=>ft,ft}};function tn(e){return null==e?()=>{}:"string"==typeof e?function(e){return 1===e.split(".").length?t=>t[e]:t=>dexie_min_b(t,e)}(e):t=>dexie_min_b(t,e)}function nn(e){return[].slice.call(e)}let rn=0;function sn(e){return null==e?":id":"string"==typeof e?e:`[${e.join("+")}]`}function on(e,t,r){function s(e){if(3===e.type)return null;if(4===e.type)throw new Error("Cannot convert never type to IDBKeyRange");const{lower:n,upper:r,lowerOpen:s,upperOpen:i}=e;return void 0===n?void 0===r?null:t.upperBound(r,!!i):void 0===r?t.lowerBound(n,!!s):t.bound(n,r,!!s,!!i)}const{schema:i,hasGetAll:o}=function(e,t){const r=nn(e.objectStoreNames);return{schema:{name:e.name,tables:r.map((e=>t.objectStore(e))).map((e=>{const{keyPath:t,autoIncrement:r}=e,s=n(t),i=null==t,o={},a={name:e.name,primaryKey:{name:null,isPrimaryKey:!0,outbound:i,compound:s,keyPath:t,autoIncrement:r,unique:!0,extractKey:tn(t)},indexes:nn(e.indexNames).map((t=>e.index(t))).map((e=>{const{name:t,unique:r,multiEntry:s,keyPath:i}=e,a={name:t,compound:n(i),keyPath:i,unique:r,multiEntry:s,extractKey:tn(i)};return o[sn(i)]=a,a})),getIndexByKeyPath:e=>o[sn(e)]};return o[":id"]=a.primaryKey,null!=t&&(o[sn(t)]=a.primaryKey),a}))},hasGetAll:r.length>0&&"getAll"in t.objectStore(r[0])&&!("undefined"!=typeof navigator&&/Safari/.test(navigator.userAgent)&&!/(Chrome\/|Edge\/)/.test(navigator.userAgent)&&[].concat(navigator.userAgent.match(/Safari\/(\d*)/))[1]<604)}}(e,r),a=i.tables.map((e=>function(e){const t=e.name;return{name:t,schema:e,mutate:function({trans:e,type:n,keys:r,values:i,range:o}){return new Promise(((a,u)=>{a=dexie_min_We(a);const l=e.objectStore(t),c=null==l.keyPath,h="put"===n||"add"===n;if(!h&&"delete"!==n&&"deleteRange"!==n)throw new Error("Invalid operation type: "+n);const{length:d}=r||i||{length:1};if(r&&i&&r.length!==i.length)throw new Error("Given keys array must have same length as given values array.");if(0===d)return a({numFailures:0,failures:{},results:[],lastResult:void 0});let f;const p=[],y=[];let m=0;const v=e=>{++m,Gt(e)};if("deleteRange"===n){if(4===o.type)return a({numFailures:m,failures:y,results:[],lastResult:void 0});3===o.type?p.push(f=l.clear()):p.push(f=l.delete(s(o)))}else{const[e,t]=h?c?[i,r]:[i,null]:[r,null];if(h)for(let r=0;r<d;++r)p.push(f=t&&void 0!==t[r]?l[n](e[r],t[r]):l[n](e[r])),f.onerror=v;else for(let t=0;t<d;++t)p.push(f=l[n](e[t])),f.onerror=v}const g=e=>{const t=e.target.result;p.forEach(((e,t)=>null!=e.error&&(y[t]=e.error))),a({numFailures:m,failures:y,results:"delete"===n?r:p.map((e=>e.result)),lastResult:t})};f.onerror=e=>{v(e),g(e)},f.onsuccess=g}))},getMany:({trans:e,keys:n})=>new Promise(((r,s)=>{r=dexie_min_We(r);const i=e.objectStore(t),o=n.length,a=new Array(o);let u,l=0,c=0;const h=e=>{const t=e.target;a[t._pos]=t.result,++c===l&&r(a)},d=zt(s);for(let e=0;e<o;++e)null!=n[e]&&(u=i.get(n[e]),u._pos=e,u.onsuccess=h,u.onerror=d,++l);0===l&&r(a)})),get:({trans:e,key:n})=>new Promise(((r,s)=>{r=dexie_min_We(r);const i=e.objectStore(t).get(n);i.onsuccess=e=>r(e.target.result),i.onerror=zt(s)})),query:function(e){return n=>new Promise(((r,i)=>{r=dexie_min_We(r);const{trans:o,values:a,limit:u,query:l}=n,c=u===1/0?void 0:u,{index:h,range:d}=l,f=o.objectStore(t),p=h.isPrimaryKey?f:f.index(h.name),y=s(d);if(0===u)return r({result:[]});if(e){const e=a?p.getAll(y,c):p.getAllKeys(y,c);e.onsuccess=e=>r({result:e.target.result}),e.onerror=zt(i)}else{let e=0;const t=a||!("openKeyCursor"in p)?p.openCursor(y):p.openKeyCursor(y),n=[];t.onsuccess=s=>{const i=t.result;return i?(n.push(a?i.value:i.primaryKey),++e===u?r({result:n}):void i.continue()):r({result:n})},t.onerror=zt(i)}}))}(o),openCursor:function({trans:e,values:n,query:r,reverse:i,unique:o}){return new Promise(((a,u)=>{a=dexie_min_We(a);const{index:l,range:c}=r,h=e.objectStore(t),d=l.isPrimaryKey?h:h.index(l.name),f=i?o?"prevunique":"prev":o?"nextunique":"next",p=n||!("openKeyCursor"in d)?d.openCursor(s(c),f):d.openKeyCursor(s(c),f);p.onerror=zt(u),p.onsuccess=dexie_min_We((t=>{const n=p.result;if(!n)return void a(null);n.___id=++rn,n.done=!1;const r=n.continue.bind(n);let s=n.continuePrimaryKey;s&&(s=s.bind(n));const i=n.advance.bind(n),o=()=>{throw new Error("Cursor not stopped")};n.trans=e,n.stop=n.continue=n.continuePrimaryKey=n.advance=()=>{throw new Error("Cursor not started")},n.fail=dexie_min_We(u),n.next=function(){let e=1;return this.start((()=>e--?this.continue():this.stop())).then((()=>this))},n.start=e=>{const t=new Promise(((e,t)=>{e=dexie_min_We(e),p.onerror=zt(t),n.fail=t,n.stop=t=>{n.stop=n.continue=n.continuePrimaryKey=n.advance=o,e(t)}})),a=()=>{if(p.result)try{e()}catch(e){n.fail(e)}else n.done=!0,n.start=()=>{throw new Error("Cursor behind last entry")},n.stop()};return p.onsuccess=dexie_min_We((e=>{p.onsuccess=a,a()})),n.continue=r,n.continuePrimaryKey=s,n.advance=i,a(),t},a(n)}),u)}))},count({query:e,trans:n}){const{index:r,range:i}=e;return new Promise(((e,o)=>{const a=n.objectStore(t),u=r.isPrimaryKey?a:a.index(r.name),l=s(i),c=l?u.count(l):u.count();c.onsuccess=dexie_min_We((t=>e(t.target.result))),c.onerror=zt(o)}))}}}(e))),u={};return a.forEach((e=>u[e.name]=e)),{stack:"dbcore",transaction:e.transaction.bind(e),table(e){if(!u[e])throw new Error(`Table '${e}' not found`);return u[e]},MIN_KEY:-1/0,MAX_KEY:en(t),schema:i}}function an({_novip:e},t){const n=t.db,r=function(e,t,{IDBKeyRange:n,indexedDB:r},s){const i=function(e,t){return t.reduce(((e,{create:t})=>({...e,...t(e)})),e)}(on(t,n,s),e.dbcore);return{dbcore:i}}(e._middlewares,n,e._deps,t);e.core=r.dbcore,e.tables.forEach((t=>{const n=t.name;e.core.schema.tables.some((e=>e.name===n))&&(t.core=e.core.table(n),e[n]instanceof e.Table&&(e[n].core=t.core))}))}function un({_novip:e},t,n,r){n.forEach((n=>{const s=r[n];t.forEach((t=>{const r=d(t,n);(!r||"value"in r&&void 0===r.value)&&(t===e.Transaction.prototype||t instanceof e.Transaction?l(t,n,{get(){return this.table(n)},set(e){u(this,n,{value:e,writable:!0,configurable:!0,enumerable:!0})}}):t[n]=new e.Table(n,s))}))}))}function ln({_novip:e},t){t.forEach((t=>{for(let n in t)t[n]instanceof e.Table&&delete t[n]}))}function cn(e,t){return e._cfg.version-t._cfg.version}function hn(e,n,r,s){const i=e._dbSchema,o=e._createTransaction("readwrite",e._storeNames,i);o.create(r),o._completion.catch(s);const a=o._reject.bind(o),u=dexie_min_Ke.transless||dexie_min_Ke;dexie_min_Je((()=>{dexie_min_Ke.trans=o,dexie_min_Ke.transless=u,0===n?(t(i).forEach((e=>{fn(r,e,i[e].primKey,i[e].indexes)})),an(e,r),dexie_min_Ce.follow((()=>e.on.populate.fire(o))).catch(a)):function({_novip:e},n,r,s){const i=[],o=e._versions;let a=e._dbSchema=yn(e,e.idbdb,s),u=!1;function l(){return i.length?dexie_min_Ce.resolve(i.shift()(r.idbtrans)).then(l):dexie_min_Ce.resolve()}return o.filter((e=>e._cfg.version>=n)).forEach((o=>{i.push((()=>{const i=a,l=o._cfg.dbschema;mn(e,i,s),mn(e,l,s),a=e._dbSchema=l;const c=dn(i,l);c.add.forEach((e=>{fn(s,e[0],e[1].primKey,e[1].indexes)})),c.change.forEach((e=>{if(e.recreate)throw new dexie_min_X.Upgrade("Not yet support for changing primary key");{const t=s.objectStore(e.name);e.add.forEach((e=>pn(t,e))),e.change.forEach((e=>{t.deleteIndex(e.name),pn(t,e)})),e.del.forEach((e=>t.deleteIndex(e)))}}));const h=o._cfg.contentUpgrade;if(h&&o._cfg.version>n){an(e,s),r._memoizedTables={},u=!0;let n=dexie_min_w(l);c.del.forEach((e=>{n[e]=i[e]})),ln(e,[e.Transaction.prototype]),un(e,[e.Transaction.prototype],t(n),n),r.schema=n;const o=dexie_min_T(h);let a;o&&dexie_min_Ze();const d=dexie_min_Ce.follow((()=>{if(a=h(r),a&&o){var e=et.bind(null,null);a.then(e,e)}}));return a&&"function"==typeof a.then?dexie_min_Ce.resolve(a):d.then((()=>a))}})),i.push((t=>{if(!u||!vt){!function(e,t){[].slice.call(t.db.objectStoreNames).forEach((n=>null==e[n]&&t.db.deleteObjectStore(n)))}(o._cfg.dbschema,t)}ln(e,[e.Transaction.prototype]),un(e,[e.Transaction.prototype],e._storeNames,e._dbSchema),r.schema=e._dbSchema}))})),l().then((()=>{var e,n;n=s,t(e=a).forEach((t=>{n.db.objectStoreNames.contains(t)||fn(n,t,e[t].primKey,e[t].indexes)}))}))}(e,n,o,r).catch(a)}))}function dn(e,t){const n={del:[],add:[],change:[]};let r;for(r in e)t[r]||n.del.push(r);for(r in t){const s=e[r],i=t[r];if(s){const e={name:r,def:i,recreate:!1,del:[],add:[],change:[]};if(""+(s.primKey.keyPath||"")!=""+(i.primKey.keyPath||"")||s.primKey.auto!==i.primKey.auto&&!mt)e.recreate=!0,n.change.push(e);else{const t=s.idxByName,r=i.idxByName;let o;for(o in t)r[o]||e.del.push(o);for(o in r){const n=t[o],s=r[o];n?n.src!==s.src&&e.change.push(s):e.add.push(s)}(e.del.length>0||e.add.length>0||e.change.length>0)&&n.change.push(e)}}else n.add.push([r,i])}return n}function fn(e,t,n,r){const s=e.db.createObjectStore(t,n.keyPath?{keyPath:n.keyPath,autoIncrement:n.auto}:{autoIncrement:n.auto});return r.forEach((e=>pn(s,e))),s}function pn(e,t){e.createIndex(t.name,t.keyPath,{unique:t.unique,multiEntry:t.multi})}function yn(e,t,n){const r={};return p(t.objectStoreNames,0).forEach((e=>{const t=n.objectStore(e);let s=t.keyPath;const i=Xt(Jt(s),s||"",!1,!1,!!t.autoIncrement,s&&"string"!=typeof s,!0),o=[];for(let e=0;e<t.indexNames.length;++e){const n=t.index(t.indexNames[e]);s=n.keyPath;var a=Xt(n.name,s,!!n.unique,!!n.multiEntry,!1,s&&"string"!=typeof s,!1);o.push(a)}r[e]=Zt(e,i,o)})),r}function mn({_novip:t},n,r){const s=r.db.objectStoreNames;for(let e=0;e<s.length;++e){const i=s[e],o=r.objectStore(i);t._hasGetAll="getAll"in o;for(let e=0;e<o.indexNames.length;++e){const t=o.indexNames[e],r=o.index(t).keyPath,s="string"==typeof r?r:"["+p(r).join("+")+"]";if(n[i]){const e=n[i].idxByName[s];e&&(e.name=t,delete n[i].idxByName[s],n[i].idxByName[t]=e)}}}"undefined"!=typeof navigator&&/Safari/.test(navigator.userAgent)&&!/(Chrome\/|Edge\/)/.test(navigator.userAgent)&&e.WorkerGlobalScope&&e instanceof e.WorkerGlobalScope&&[].concat(navigator.userAgent.match(/Safari\/(\d*)/))[1]<604&&(t._hasGetAll=!1)}class vn{_parseStoresSpec(e,r){t(e).forEach((t=>{if(null!==e[t]){var s=e[t].split(",").map(((e,t)=>{const r=(e=e.trim()).replace(/([&*]|\+\+)/g,""),s=/^\[/.test(r)?r.match(/^\[(.*)\]$/)[1].split("+"):r;return Xt(r,s||null,/\&/.test(e),/\*/.test(e),/\+\+/.test(e),n(s),0===t)})),i=s.shift();if(i.multi)throw new dexie_min_X.Schema("Primary key cannot be multi-valued");s.forEach((e=>{if(e.auto)throw new dexie_min_X.Schema("Only primary key can be marked as autoIncrement (++)");if(!e.keyPath)throw new dexie_min_X.Schema("Index must have a name and cannot be an empty string")})),r[t]=Zt(t,i,s)}}))}stores(e){const n=this.db;this._cfg.storesSource=this._cfg.storesSource?dexie_min_r(this._cfg.storesSource,e):e;const s=n._versions,i={};let o={};return s.forEach((e=>{dexie_min_r(i,e._cfg.storesSource),o=e._cfg.dbschema={},e._parseStoresSpec(i,o)})),n._dbSchema=o,ln(n,[n._allTables,n,n.Transaction.prototype]),un(n,[n._allTables,n,n.Transaction.prototype,this._cfg.tables],t(o),o),n._storeNames=t(o),this}upgrade(e){return this._cfg.contentUpgrade=dexie_min_ue(this._cfg.contentUpgrade||dexie_min_ee,e),this}}function gn(e,t){let n=e._dbNamesDB;return n||(n=e._dbNamesDB=new $n("__dbnames",{addons:[],indexedDB:e,IDBKeyRange:t}),n.version(1).stores({dbnames:"name"})),n.table("dbnames")}function bn(e){return e&&"function"==typeof e.databases}function _n(e){return dexie_min_Je((function(){return dexie_min_Ke.letThrough=!0,e()}))}function wn(){var e;return!navigator.userAgentData&&/Safari\//.test(navigator.userAgent)&&!/Chrom(e|ium)\//.test(navigator.userAgent)&&indexedDB.databases?new Promise((function(t){var n=function(){return indexedDB.databases().finally(t)};e=setInterval(n,100),n()})).finally((function(){return clearInterval(e)})):Promise.resolve()}function xn(e){const n=e._state,{indexedDB:r}=e._deps;if(n.isBeingOpened||e.idbdb)return n.dbReadyPromise.then((()=>n.dbOpenError?ht(n.dbOpenError):e));dexie_min_R&&(n.openCanceller._stackHolder=dexie_min_q()),n.isBeingOpened=!0,n.dbOpenError=null,n.openComplete=!1;const s=n.openCanceller;function i(){if(n.openCanceller!==s)throw new dexie_min_X.DatabaseClosed("db.open() was cancelled")}let o=n.dbReadyResolve,a=null,u=!1;return dexie_min_Ce.race([s,("undefined"==typeof navigator?dexie_min_Ce.resolve():wn()).then((()=>new dexie_min_Ce(((s,o)=>{if(i(),!r)throw new dexie_min_X.MissingAPI;const l=e.name,c=n.autoSchema?r.open(l):r.open(l,Math.round(10*e.verno));if(!c)throw new dexie_min_X.MissingAPI;c.onerror=zt(o),c.onblocked=dexie_min_We(e._fireOnBlocked),c.onupgradeneeded=dexie_min_We((t=>{if(a=c.transaction,n.autoSchema&&!e._options.allowEmptyDB){c.onerror=Gt,a.abort(),c.result.close();const e=r.deleteDatabase(l);e.onsuccess=e.onerror=dexie_min_We((()=>{o(new dexie_min_X.NoSuchDatabase(`Database ${l} doesnt exist`))}))}else{a.onerror=zt(o);var s=t.oldVersion>Math.pow(2,62)?0:t.oldVersion;u=s<1,e._novip.idbdb=c.result,hn(e,s/10,a,o)}}),o),c.onsuccess=dexie_min_We((()=>{a=null;const r=e._novip.idbdb=c.result,i=p(r.objectStoreNames);if(i.length>0)try{const s=r.transaction(1===(o=i).length?o[0]:o,"readonly");n.autoSchema?function({_novip:e},n,r){e.verno=n.version/10;const s=e._dbSchema=yn(0,n,r);e._storeNames=p(n.objectStoreNames,0),un(e,[e._allTables],t(s),s)}(e,r,s):(mn(e,e._dbSchema,s),function(e,t){const n=dn(yn(0,e.idbdb,t),e._dbSchema);return!(n.add.length||n.change.some((e=>e.add.length||e.change.length)))}(e,s)||console.warn("Dexie SchemaDiff: Schema was extended without increasing the number passed to db.version(). Some queries may fail.")),an(e,s)}catch(e){}var o;yt.push(e),r.onversionchange=dexie_min_We((t=>{n.vcFired=!0,e.on("versionchange").fire(t)})),r.onclose=dexie_min_We((t=>{e.on("close").fire(t)})),u&&function({indexedDB:e,IDBKeyRange:t},n){!bn(e)&&"__dbnames"!==n&&gn(e,t).put({name:n}).catch(dexie_min_ee)}(e._deps,l),s()}),o)}))))]).then((()=>(i(),n.onReadyBeingFired=[],dexie_min_Ce.resolve(_n((()=>e.on.ready.fire(e.vip)))).then((function t(){if(n.onReadyBeingFired.length>0){let r=n.onReadyBeingFired.reduce(dexie_min_ue,dexie_min_ee);return n.onReadyBeingFired=[],dexie_min_Ce.resolve(_n((()=>r(e.vip)))).then(t)}}))))).finally((()=>{n.onReadyBeingFired=null,n.isBeingOpened=!1})).then((()=>e)).catch((t=>{n.dbOpenError=t;try{a&&a.abort()}catch(e){}return s===n.openCanceller&&e._close(),ht(t)})).finally((()=>{n.openComplete=!0,o()}))}function kn(e){var t=t=>e.next(t),r=i(t),s=i((t=>e.throw(t)));function i(e){return t=>{var i=e(t),o=i.value;return i.done?o:o&&"function"==typeof o.then?o.then(r,s):n(o)?Promise.all(o).then(r,s):r(o)}}return i(t)()}function En(e,t,n){var r=arguments.length;if(r<2)throw new dexie_min_X.InvalidArgument("Too few arguments");for(var s=new Array(r-1);--r;)s[r-1]=arguments[r];n=s.pop();var i=dexie_min_k(s);return[e,i,n]}function Pn(e,t,n,r,s){return dexie_min_Ce.resolve().then((()=>{const i=dexie_min_Ke.transless||dexie_min_Ke,o=e._createTransaction(t,n,e._dbSchema,r),a={trans:o,transless:i};if(r)o.idbtrans=r.idbtrans;else try{o.create(),e._state.PR1398_maxLoop=3}catch(r){return r.name===dexie_min_H.InvalidState&&e.isOpen()&&--e._state.PR1398_maxLoop>0?(console.warn("Dexie: Need to reopen db"),e._close(),e.open().then((()=>Pn(e,t,n,null,s)))):ht(r)}const u=dexie_min_T(s);let l;u&&dexie_min_Ze();const c=dexie_min_Ce.follow((()=>{if(l=s.call(o,o),l)if(u){var e=et.bind(null,null);l.then(e,e)}else"function"==typeof l.next&&"function"==typeof l.throw&&(l=kn(l))}),a);return(l&&"function"==typeof l.then?dexie_min_Ce.resolve(l).then((e=>o.active?e:ht(new dexie_min_X.PrematureCommit("Transaction committed too early. See http://bit.ly/2kdckMn")))):c.then((()=>l))).then((e=>(r&&o._resolve(),o._completion.then((()=>e))))).catch((e=>(o._reject(e),ht(e))))}))}function Kn(e,t,r){const s=n(e)?e.slice():[e];for(let e=0;e<r;++e)s.push(t);return s}const On={stack:"dbcore",name:"VirtualIndexMiddleware",level:1,create:function(e){return{...e,table(t){const n=e.table(t),{schema:r}=n,s={},i=[];function o(e,t,n){const r=sn(e),a=s[r]=s[r]||[],u=null==e?0:"string"==typeof e?1:e.length,l=t>0,c={...n,isVirtual:l,keyTail:t,keyLength:u,extractKey:tn(e),unique:!l&&n.unique};if(a.push(c),c.isPrimaryKey||i.push(c),u>1){o(2===u?e[0]:e.slice(0,u-1),t+1,n)}return a.sort(((e,t)=>e.keyTail-t.keyTail)),c}const a=o(r.primaryKey.keyPath,0,r.primaryKey);s[":id"]=[a];for(const e of r.indexes)o(e.keyPath,0,e);function u(t){const n=t.query.index;return n.isVirtual?{...t,query:{index:n,range:(r=t.query.range,s=n.keyTail,{type:1===r.type?2:r.type,lower:Kn(r.lower,r.lowerOpen?e.MAX_KEY:e.MIN_KEY,s),lowerOpen:!0,upper:Kn(r.upper,r.upperOpen?e.MIN_KEY:e.MAX_KEY,s),upperOpen:!0})}}:t;var r,s}const l={...n,schema:{...r,primaryKey:a,indexes:i,getIndexByKeyPath:function(e){const t=s[sn(e)];return t&&t[0]}},count:e=>n.count(u(e)),query:e=>n.query(u(e)),openCursor(t){const{keyTail:r,isVirtual:s,keyLength:i}=t.query.index;if(!s)return n.openCursor(t);return n.openCursor(u(t)).then((n=>n&&function(n){const s=Object.create(n,{continue:{value:function(s){null!=s?n.continue(Kn(s,t.reverse?e.MAX_KEY:e.MIN_KEY,r)):t.unique?n.continue(n.key.slice(0,i).concat(t.reverse?e.MIN_KEY:e.MAX_KEY,r)):n.continue()}},continuePrimaryKey:{value(t,s){n.continuePrimaryKey(Kn(t,e.MAX_KEY,r),s)}},primaryKey:{get:()=>n.primaryKey},key:{get(){const e=n.key;return 1===i?e[0]:e.slice(0,i)}},value:{get:()=>n.value}});return s}(n)))}};return l}}}};function Sn(e,n,r,s){return r=r||{},s=s||"",t(e).forEach((t=>{if(o(n,t)){var i=e[t],a=n[t];if("object"==typeof i&&"object"==typeof a&&i&&a){const e=dexie_min_C(i);e!==dexie_min_C(a)?r[s+t]=n[t]:"Object"===e?Sn(i,a,r,s+t+"."):i!==a&&(r[s+t]=n[t])}else i!==a&&(r[s+t]=n[t])}else r[s+t]=void 0})),t(n).forEach((t=>{o(e,t)||(r[s+t]=n[t])})),r}const An={stack:"dbcore",name:"HooksMiddleware",level:2,create:e=>({...e,table(t){const n=e.table(t),{primaryKey:r}=n.schema,s={...n,mutate(e){const s=dexie_min_Ke.trans,{deleting:i,creating:a,updating:u}=s.table(t).hook;switch(e.type){case"add":if(a.fire===dexie_min_ee)break;return s._promise("readwrite",(()=>l(e)),!0);case"put":if(a.fire===dexie_min_ee&&u.fire===dexie_min_ee)break;return s._promise("readwrite",(()=>l(e)),!0);case"delete":if(i.fire===dexie_min_ee)break;return s._promise("readwrite",(()=>l(e)),!0);case"deleteRange":if(i.fire===dexie_min_ee)break;return s._promise("readwrite",(()=>function(e){return c(e.trans,e.range,1e4)}(e)),!0)}return n.mutate(e);function l(e){const t=dexie_min_Ke.trans,s=e.keys||function(e,t){return"delete"===t.type?t.keys:t.keys||t.values.map(e.extractKey)}(r,e);if(!s)throw new Error("Keys missing");return"delete"!==(e="add"===e.type||"put"===e.type?{...e,keys:s}:{...e}).type&&(e.values=[...e.values]),e.keys&&(e.keys=[...e.keys]),function(e,t,n){return"add"===t.type?Promise.resolve([]):e.getMany({trans:t.trans,keys:n,cache:"immutable"})}(n,e,s).then((l=>{const c=s.map(((n,s)=>{const c=l[s],h={onerror:null,onsuccess:null};if("delete"===e.type)i.fire.call(h,n,c,t);else if("add"===e.type||void 0===c){const i=a.fire.call(h,n,e.values[s],t);null==n&&null!=i&&(n=i,e.keys[s]=n,r.outbound||dexie_min_(e.values[s],r.keyPath,n))}else{const r=Sn(c,e.values[s]),i=u.fire.call(h,r,n,c,t);if(i){const t=e.values[s];Object.keys(i).forEach((e=>{o(t,e)?t[e]=i[e]:dexie_min_(t,e,i[e])}))}}return h}));return n.mutate(e).then((({failures:t,results:n,numFailures:r,lastResult:i})=>{for(let r=0;r<s.length;++r){const i=n?n[r]:s[r],o=c[r];null==i?o.onerror&&o.onerror(t[r]):o.onsuccess&&o.onsuccess("put"===e.type&&l[r]?e.values[r]:i)}return{failures:t,results:n,numFailures:r,lastResult:i}})).catch((e=>(c.forEach((t=>t.onerror&&t.onerror(e))),Promise.reject(e))))}))}function c(e,t,s){return n.query({trans:e,values:!1,query:{index:r,range:t},limit:s}).then((({result:n})=>l({type:"delete",keys:n,trans:e}).then((r=>r.numFailures>0?Promise.reject(r.failures[0]):n.length<s?{failures:[],numFailures:0,lastResult:void 0}:c(e,{...t,lower:n[n.length-1],lowerOpen:!0},s)))))}}};return s}})};function Cn(e,t,n){try{if(!t)return null;if(t.keys.length<e.length)return null;const r=[];for(let s=0,i=0;s<t.keys.length&&i<e.length;++s)0===It(t.keys[s],e[i])&&(r.push(n?dexie_min_O(t.values[s]):t.values[s]),++i);return r.length===e.length?r:null}catch(e){return null}}const jn={stack:"dbcore",level:-1,create:e=>({table:t=>{const n=e.table(t);return{...n,getMany:e=>{if(!e.cache)return n.getMany(e);const t=Cn(e.keys,e.trans._cache,"clone"===e.cache);return t?dexie_min_Ce.resolve(t):n.getMany(e).then((t=>(e.trans._cache={keys:e.keys,values:"clone"===e.cache?dexie_min_O(t):t},t)))},mutate:e=>("add"!==e.type&&(e.trans._cache=null),n.mutate(e))}}})};function Dn(e){return!("from"in e)}const In=function(e,t){if(!this){const t=new In;return e&&"d"in e&&dexie_min_r(t,e),t}dexie_min_r(this,arguments.length?{d:1,from:e,to:arguments.length>1?t:e}:{d:0})};function Bn(e,t,n){const s=It(t,n);if(isNaN(s))return;if(s>0)throw RangeError();if(Dn(e))return dexie_min_r(e,{from:t,to:n,d:1});const i=e.l,o=e.r;if(It(n,e.from)<0)return i?Bn(i,t,n):e.l={from:t,to:n,d:1,l:null,r:null},Mn(e);if(It(t,e.to)>0)return o?Bn(o,t,n):e.r={from:t,to:n,d:1,l:null,r:null},Mn(e);It(t,e.from)<0&&(e.from=t,e.l=null,e.d=o?o.d+1:1),It(n,e.to)>0&&(e.to=n,e.r=null,e.d=e.l?e.l.d+1:1);const a=!e.r;i&&!e.l&&Tn(e,i),o&&a&&Tn(e,o)}function Tn(e,t){Dn(t)||function e(t,{from:n,to:r,l:s,r:i}){Bn(t,n,r),s&&e(t,s),i&&e(t,i)}(e,t)}function Rn(e,t){const n=Fn(t);let r=n.next();if(r.done)return!1;let s=r.value;const i=Fn(e);let o=i.next(s.from),a=o.value;for(;!r.done&&!o.done;){if(It(a.from,s.to)<=0&&It(a.to,s.from)>=0)return!0;It(s.from,a.from)<0?s=(r=n.next(a.from)).value:a=(o=i.next(s.from)).value}return!1}function Fn(e){let t=Dn(e)?null:{s:0,n:e};return{next(e){const n=arguments.length>0;for(;t;)switch(t.s){case 0:if(t.s=1,n)for(;t.n.l&&It(e,t.n.from)<0;)t={up:t,n:t.n.l,s:1};else for(;t.n.l;)t={up:t,n:t.n.l,s:1};case 1:if(t.s=2,!n||It(e,t.n.to)<=0)return{value:t.n,done:!1};case 2:if(t.n.r){t.s=3,t={up:t,n:t.n.r,s:0};continue}case 3:t=t.up}return{done:!0}}}}function Mn(e){var t,n;const r=((null===(t=e.r)||void 0===t?void 0:t.d)||0)-((null===(n=e.l)||void 0===n?void 0:n.d)||0),s=r>1?"r":r<-1?"l":"";if(s){const t="r"===s?"l":"r",n={...e},r=e[s];e.from=r.from,e.to=r.to,e[s]=r[s],n[s]=r[t],e[t]=n,n.d=Nn(n)}e.d=Nn(e)}function Nn({r:e,l:t}){return(e?t?Math.max(e.d,t.d):e.d:t?t.d:0)+1}a(In.prototype,{add(e){return Tn(this,e),this},addKey(e){return Bn(this,e,e),this},addKeys(e){return e.forEach((e=>Bn(this,e,e))),this},[dexie_min_j](){return Fn(this)}});const qn={stack:"dbcore",level:0,create:e=>{const r=e.schema.name,s=new In(e.MIN_KEY,e.MAX_KEY);return{...e,table:i=>{const o=e.table(i),{schema:a}=o,{primaryKey:u}=a,{extractKey:l,outbound:c}=u,h={...o,mutate:e=>{const t=e.trans,u=t.mutatedParts||(t.mutatedParts={}),l=e=>{const t=`idb://${r}/${i}/${e}`;return u[t]||(u[t]=new In)},c=l(""),h=l(":dels"),{type:d}=e;let[f,p]="deleteRange"===e.type?[e.range]:"delete"===e.type?[e.keys]:e.values.length<50?[[],e.values]:[];const y=e.trans._cache;return o.mutate(e).then((e=>{if(n(f)){"delete"!==d&&(f=e.results),c.addKeys(f);const t=Cn(f,y);t||"add"===d||h.addKeys(f),(t||p)&&function(e,t,r,s){function i(t){const i=e(t.name||"");function o(e){return null!=e?t.extractKey(e):null}const a=e=>t.multiEntry&&n(e)?e.forEach((e=>i.addKey(e))):i.addKey(e);(r||s).forEach(((e,t)=>{const n=r&&o(r[t]),i=s&&o(s[t]);0!==It(n,i)&&(null!=n&&a(n),null!=i&&a(i))}))}t.indexes.forEach(i)}(l,a,t,p)}else if(f){const e={from:f.lower,to:f.upper};h.add(e),c.add(e)}else c.add(s),h.add(s),a.indexes.forEach((e=>l(e.name).add(s)));return e}))}},d=({query:{index:t,range:n}})=>{var r,s;return[t,new In(null!==(r=n.lower)&&void 0!==r?r:e.MIN_KEY,null!==(s=n.upper)&&void 0!==s?s:e.MAX_KEY)]},f={get:e=>[u,new In(e.key)],getMany:e=>[u,(new In).addKeys(e.keys)],count:d,query:d,openCursor:d};return t(f).forEach((e=>{h[e]=function(t){const{subscr:n}=dexie_min_Ke;if(n){const a=e=>{const t=`idb://${r}/${i}/${e}`;return n[t]||(n[t]=new In)},u=a(""),h=a(":dels"),[d,p]=f[e](t);if(a(d.name||"").add(p),!d.isPrimaryKey){if("count"!==e){const n="query"===e&&c&&t.values&&o.query({...t,values:!1});return o[e].apply(this,arguments).then((r=>{if("query"===e){if(c&&t.values)return n.then((({result:e})=>(u.addKeys(e),r)));const e=t.values?r.result.map(l):r.result;t.values?u.addKeys(e):h.addKeys(e)}else if("openCursor"===e){const e=r,n=t.values;return e&&Object.create(e,{key:{get:()=>(h.addKey(e.primaryKey),e.key)},primaryKey:{get(){const t=e.primaryKey;return h.addKey(t),t}},value:{get:()=>(n&&u.addKey(e.primaryKey),e.value)}})}return r}))}h.add(s)}}return o[e].apply(this,arguments)}})),h}}}};class $n{constructor(e,t){this._middlewares={},this.verno=0;const n=$n.dependencies;this._options=t={addons:$n.addons,autoOpen:!0,indexedDB:n.indexedDB,IDBKeyRange:n.IDBKeyRange,...t},this._deps={indexedDB:t.indexedDB,IDBKeyRange:t.IDBKeyRange};const{addons:r}=t;this._dbSchema={},this._versions=[],this._storeNames=[],this._allTables={},this.idbdb=null,this._novip=this;const s={dbOpenError:null,isBeingOpened:!1,onReadyBeingFired:null,openComplete:!1,dbReadyResolve:dexie_min_ee,dbReadyPromise:null,cancelOpen:dexie_min_ee,openCanceller:null,autoSchema:!0,PR1398_maxLoop:3};var i;s.dbReadyPromise=new dexie_min_Ce((e=>{s.dbReadyResolve=e})),s.openCanceller=new dexie_min_Ce(((e,t)=>{s.cancelOpen=t})),this._state=s,this.name=e,this.on=Et(this,"populate","blocked","versionchange","close",{ready:[dexie_min_ue,dexie_min_ee]}),this.on.ready.subscribe=dexie_min_y(this.on.ready.subscribe,(e=>(t,n)=>{$n.vip((()=>{const r=this._state;if(r.openComplete)r.dbOpenError||dexie_min_Ce.resolve().then(t),n&&e(t);else if(r.onReadyBeingFired)r.onReadyBeingFired.push(t),n&&e(t);else{e(t);const r=this;n||e((function e(){r.on.ready.unsubscribe(t),r.on.ready.unsubscribe(e)}))}}))})),this.Collection=(i=this,Pt(Rt.prototype,(function(e,t){this.db=i;let n=wt,r=null;if(t)try{n=t()}catch(e){r=e}const s=e._ctx,o=s.table,a=o.hook.reading.fire;this._ctx={table:o,index:s.index,isPrimKey:!s.index||o.schema.primKey.keyPath&&s.index===o.schema.primKey.name,range:n,keysOnly:!1,dir:"next",unique:"",algorithm:null,filter:null,replayFilter:null,justLimit:!0,isMatch:null,offset:0,limit:1/0,error:r,or:s.or,valueMapper:a!==dexie_min_te?a:null}}))),this.Table=function(e){return Pt(kt.prototype,(function(t,n,r){this.db=e,this._tx=r,this.name=t,this.schema=n,this.hook=e._allTables[t]?e._allTables[t].hook:Et(null,{creating:[dexie_min_se,dexie_min_ee],reading:[dexie_min_ne,dexie_min_te],updating:[dexie_min_oe,dexie_min_ee],deleting:[dexie_min_ie,dexie_min_ee]})}))}(this),this.Transaction=function(e){return Pt(Qt.prototype,(function(t,n,r,s,i){this.db=e,this.mode=t,this.storeNames=n,this.schema=r,this.chromeTransactionDurability=s,this.idbtrans=null,this.on=Et(this,"complete","error","abort"),this.parent=i||null,this.active=!0,this._reculock=0,this._blockedFuncs=[],this._resolve=null,this._reject=null,this._waitingFor=null,this._waitingQueue=null,this._spinCount=0,this._completion=new dexie_min_Ce(((e,t)=>{this._resolve=e,this._reject=t})),this._completion.then((()=>{this.active=!1,this.on.complete.fire()}),(e=>{var t=this.active;return this.active=!1,this.on.error.fire(e),this.parent?this.parent._reject(e):t&&this.idbtrans&&this.idbtrans.abort(),ht(e)}))}))}(this),this.Version=function(e){return Pt(vn.prototype,(function(t){this.db=e,this._cfg={version:t,storesSource:null,dbschema:{},tables:{},contentUpgrade:null}}))}(this),this.WhereClause=function(e){return Pt(Yt.prototype,(function(t,n,r){this.db=e,this._ctx={table:t,index:":id"===n?null:n,or:r};const s=e._deps.indexedDB;if(!s)throw new dexie_min_X.MissingAPI;this._cmp=this._ascending=s.cmp.bind(s),this._descending=(e,t)=>s.cmp(t,e),this._max=(e,t)=>s.cmp(e,t)>0?e:t,this._min=(e,t)=>s.cmp(e,t)<0?e:t,this._IDBKeyRange=e._deps.IDBKeyRange}))}(this),this.on("versionchange",(e=>{e.newVersion>0?console.warn(`Another connection wants to upgrade database '${this.name}'. Closing db now to resume the upgrade.`):console.warn(`Another connection wants to delete database '${this.name}'. Closing db now to resume the delete request.`),this.close()})),this.on("blocked",(e=>{!e.newVersion||e.newVersion<e.oldVersion?console.warn(`Dexie.delete('${this.name}') was blocked`):console.warn(`Upgrade '${this.name}' blocked by other connection holding version ${e.oldVersion/10}`)})),this._maxKey=en(t.IDBKeyRange),this._createTransaction=(e,t,n,r)=>new this.Transaction(e,t,n,this._options.chromeTransactionDurability,r),this._fireOnBlocked=e=>{this.on("blocked").fire(e),yt.filter((e=>e.name===this.name&&e!==this&&!e._state.vcFired)).map((t=>t.on("versionchange").fire(e)))},this.use(On),this.use(An),this.use(qn),this.use(jn),this.vip=Object.create(this,{_vip:{value:!0}}),r.forEach((e=>e(this)))}version(e){if(isNaN(e)||e<.1)throw new dexie_min_X.Type("Given version is not a positive number");if(e=Math.round(10*e)/10,this.idbdb||this._state.isBeingOpened)throw new dexie_min_X.Schema("Cannot add version when database is open");this.verno=Math.max(this.verno,e);const t=this._versions;var n=t.filter((t=>t._cfg.version===e))[0];return n||(n=new this.Version(e),t.push(n),t.sort(cn),n.stores({}),this._state.autoSchema=!1,n)}_whenReady(e){return this.idbdb&&(this._state.openComplete||dexie_min_Ke.letThrough||this._vip)?e():new dexie_min_Ce(((e,t)=>{if(this._state.openComplete)return t(new dexie_min_X.DatabaseClosed(this._state.dbOpenError));if(!this._state.isBeingOpened){if(!this._options.autoOpen)return void t(new dexie_min_X.DatabaseClosed);this.open().catch(dexie_min_ee)}this._state.dbReadyPromise.then(e,t)})).then(e)}use({stack:e,create:t,level:n,name:r}){r&&this.unuse({stack:e,name:r});const s=this._middlewares[e]||(this._middlewares[e]=[]);return s.push({stack:e,create:t,level:null==n?10:n,name:r}),s.sort(((e,t)=>e.level-t.level)),this}unuse({stack:e,name:t,create:n}){return e&&this._middlewares[e]&&(this._middlewares[e]=this._middlewares[e].filter((e=>n?e.create!==n:!!t&&e.name!==t))),this}open(){return xn(this)}_close(){const e=this._state,t=yt.indexOf(this);if(t>=0&&yt.splice(t,1),this.idbdb){try{this.idbdb.close()}catch(e){}this._novip.idbdb=null}e.dbReadyPromise=new dexie_min_Ce((t=>{e.dbReadyResolve=t})),e.openCanceller=new dexie_min_Ce(((t,n)=>{e.cancelOpen=n}))}close(){this._close();const e=this._state;this._options.autoOpen=!1,e.dbOpenError=new dexie_min_X.DatabaseClosed,e.isBeingOpened&&e.cancelOpen(e.dbOpenError)}delete(){const e=arguments.length>0,t=this._state;return new dexie_min_Ce(((n,r)=>{const s=()=>{this.close();var e=this._deps.indexedDB.deleteDatabase(this.name);e.onsuccess=dexie_min_We((()=>{!function({indexedDB:e,IDBKeyRange:t},n){!bn(e)&&"__dbnames"!==n&&gn(e,t).delete(n).catch(dexie_min_ee)}(this._deps,this.name),n()})),e.onerror=zt(r),e.onblocked=this._fireOnBlocked};if(e)throw new dexie_min_X.InvalidArgument("Arguments not allowed in db.delete()");t.isBeingOpened?t.dbReadyPromise.then(s):s()}))}backendDB(){return this.idbdb}isOpen(){return null!==this.idbdb}hasBeenClosed(){const e=this._state.dbOpenError;return e&&"DatabaseClosed"===e.name}hasFailed(){return null!==this._state.dbOpenError}dynamicallyOpened(){return this._state.autoSchema}get tables(){return t(this._allTables).map((e=>this._allTables[e]))}transaction(){const e=En.apply(this,arguments);return this._transaction.apply(this,e)}_transaction(e,t,n){let r=dexie_min_Ke.trans;r&&r.db===this&&-1===e.indexOf("!")||(r=null);const s=-1!==e.indexOf("?");let i,o;e=e.replace("!","").replace("?","");try{if(o=t.map((e=>{var t=e instanceof this.Table?e.name:e;if("string"!=typeof t)throw new TypeError("Invalid table argument to Dexie.transaction(). Only Table or String are allowed");return t})),"r"==e||"readonly"===e)i="readonly";else{if("rw"!=e&&"readwrite"!=e)throw new dexie_min_X.InvalidArgument("Invalid transaction mode: "+e);i="readwrite"}if(r){if("readonly"===r.mode&&"readwrite"===i){if(!s)throw new dexie_min_X.SubTransaction("Cannot enter a sub-transaction with READWRITE mode when parent transaction is READONLY");r=null}r&&o.forEach((e=>{if(r&&-1===r.storeNames.indexOf(e)){if(!s)throw new dexie_min_X.SubTransaction("Table "+e+" not included in parent transaction.");r=null}})),s&&r&&!r.active&&(r=null)}}catch(e){return r?r._promise(null,((t,n)=>{n(e)})):ht(e)}const a=Pn.bind(null,this,i,o,r,n);return r?r._promise(i,a,"lock"):dexie_min_Ke.trans?ot(dexie_min_Ke.transless,(()=>this._whenReady(a))):this._whenReady(a)}table(e){if(!o(this._allTables,e))throw new dexie_min_X.InvalidTable(`Table ${e} does not exist`);return this._allTables[e]}}const Un="undefined"!=typeof Symbol&&"observable"in Symbol?Symbol.observable:"@@observable";class Ln{constructor(e){this._subscribe=e}subscribe(e,t,n){return this._subscribe(e&&"function"!=typeof e?e:{next:e,error:t,complete:n})}[Un](){return this}}function Vn(e,n){return t(n).forEach((t=>{Tn(e[t]||(e[t]=new In),n[t])})),e}function Wn(e){return new Ln((n=>{const r=dexie_min_T(e);let s=!1,i={},o={};const a={get closed(){return s},unsubscribe:()=>{s=!0,Ht.storagemutated.unsubscribe(h)}};n.start&&n.start(a);let u=!1,l=!1;function c(){return t(o).some((e=>i[e]&&Rn(i[e],o[e])))}const h=e=>{Vn(i,e),c()&&d()},d=()=>{if(u||s)return;i={};const t={},f=function(t){r&&dexie_min_Ze();const n=()=>dexie_min_Je(e,{subscr:t,trans:null}),s=dexie_min_Ke.trans?ot(dexie_min_Ke.transless,n):n();return r&&s.then(et,et),s}(t);l||(Ht("storagemutated",h),l=!0),u=!0,Promise.resolve(f).then((e=>{u=!1,s||(c()?d():(i={},o=t,n.next&&n.next(e)))}),(e=>{u=!1,n.error&&n.error(e),a.unsubscribe()}))};return d(),a}))}let Yn;try{Yn={indexedDB:e.indexedDB||e.mozIndexedDB||e.webkitIndexedDB||e.msIndexedDB,IDBKeyRange:e.IDBKeyRange||e.webkitIDBKeyRange}}catch(e){Yn={indexedDB:null,IDBKeyRange:null}}const zn=$n;function Gn(e){let t=Hn;try{Hn=!0,Ht.storagemutated.fire(e)}finally{Hn=t}}a(zn,{...dexie_min_Z,delete:e=>new zn(e,{addons:[]}).delete(),exists:e=>new zn(e,{addons:[]}).open().then((e=>(e.close(),!0))).catch("NoSuchDatabaseError",(()=>!1)),getDatabaseNames(e){try{return function({indexedDB:e,IDBKeyRange:t}){return bn(e)?Promise.resolve(e.databases()).then((e=>e.map((e=>e.name)).filter((e=>"__dbnames"!==e)))):gn(e,t).toCollection().primaryKeys()}(zn.dependencies).then(e)}catch(e){return ht(new dexie_min_X.MissingAPI)}},defineClass:()=>function(e){dexie_min_r(this,e)},ignoreTransaction:e=>dexie_min_Ke.trans?ot(dexie_min_Ke.transless,e):e(),vip:_n,async:function(e){return function(){try{var t=kn(e.apply(this,arguments));return t&&"function"==typeof t.then?t:dexie_min_Ce.resolve(t)}catch(e){return ht(e)}}},spawn:function(e,t,n){try{var r=kn(e.apply(n,t||[]));return r&&"function"==typeof r.then?r:dexie_min_Ce.resolve(r)}catch(e){return ht(e)}},currentTransaction:{get:()=>dexie_min_Ke.trans||null},waitFor:function(e,t){const n=dexie_min_Ce.resolve("function"==typeof e?zn.ignoreTransaction(e):e).timeout(t||6e4);return dexie_min_Ke.trans?dexie_min_Ke.trans.waitFor(n):n},Promise:dexie_min_Ce,debug:{get:()=>dexie_min_R,set:e=>{dexie_min_F(e,"dexie"===e?()=>!0:bt)}},derive:c,extend:dexie_min_r,props:a,override:dexie_min_y,Events:Et,on:Ht,liveQuery:Wn,extendObservabilitySet:Vn,getByKeyPath:dexie_min_b,setByKeyPath:dexie_min_,delByKeyPath:function(e,t){"string"==typeof t?dexie_min_(e,t,void 0):"length"in t&&[].map.call(t,(function(t){dexie_min_(e,t,void 0)}))},shallowClone:dexie_min_w,deepClone:dexie_min_O,getObjectDiff:Sn,cmp:It,asap:dexie_min_v,minKey:-(1/0),addons:[],connections:yt,errnames:dexie_min_H,dependencies:Yn,semVer:"3.2.2",version:"3.2.2".split(".").map((e=>parseInt(e))).reduce(((e,t,n)=>e+t/Math.pow(10,2*n)))}),zn.maxKey=en(zn.dependencies.IDBKeyRange),"undefined"!=typeof dispatchEvent&&"undefined"!=typeof addEventListener&&(Ht("storagemutated",(e=>{if(!Hn){let t;mt?(t=document.createEvent("CustomEvent"),t.initCustomEvent("x-storagemutated-1",!0,!0,e)):t=new CustomEvent("x-storagemutated-1",{detail:e}),Hn=!0,dispatchEvent(t),Hn=!1}})),addEventListener("x-storagemutated-1",(({detail:e})=>{Hn||Gn(e)})));let Hn=!1;if("undefined"!=typeof BroadcastChannel){const e=new BroadcastChannel("x-storagemutated-1");Ht("storagemutated",(t=>{Hn||e.postMessage(t)})),e.onmessage=e=>{e.data&&Gn(e.data)}}else if("undefined"!=typeof self&&"undefined"!=typeof navigator){Ht("storagemutated",(e=>{try{Hn||("undefined"!=typeof localStorage&&localStorage.setItem("x-storagemutated-1",JSON.stringify({trig:Math.random(),changedParts:e})),"object"==typeof self.clients&&[...self.clients.matchAll({includeUncontrolled:!0})].forEach((t=>t.postMessage({type:"x-storagemutated-1",changedParts:e}))))}catch(e){}})),"undefined"!=typeof addEventListener&&addEventListener("storage",(e=>{if("x-storagemutated-1"===e.key){const t=JSON.parse(e.newValue);t&&Gn(t.changedParts)}}));const e=self.document&&navigator.serviceWorker;e&&e.addEventListener("message",(function({data:e}){e&&"x-storagemutated-1"===e.type&&Gn(e.changedParts)}))}dexie_min_Ce.rejectionMapper=function(e,t){if(!e||e instanceof dexie_min_W||e instanceof TypeError||e instanceof SyntaxError||!e.name||!dexie_min_J[e.name])return e;var n=new dexie_min_J[e.name](t||e.message,e);return"stack"in e&&l(n,"stack",{get:function(){return this.inner.stack}}),n},dexie_min_F(dexie_min_R,bt);
+;// CONCATENATED MODULE: ./src/indexeddb/memos.ts
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (undefined && undefined.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+
+var database = new $n('markdown-editor');
+database.version(1).stores({ memos: '&datetime' });
+var memos = database.table('memos');
+var putMemo = function (title, text) { return __awaiter(void 0, void 0, void 0, function () {
+    var datetime;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                datetime = new Date().toISOString();
+                return [4 /*yield*/, memos.put({ datetime: datetime, title: title, text: text })];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); };
+var getMemos = function () {
+    return memos.orderBy('datetime')
+        .reverse()
+        .toArray();
+};
+
+;// CONCATENATED MODULE: ./src/components/button.tsx
 var __makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
     if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
     return cooked;
 };
 
 
-var Header = styled_components_browser_esm.header(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    font-size: 1.5rem;\n    height: 2rem;\n    left: 0;\n    line-height: 2rem;\n    padding: 0.5rem 1rem;\n    position: fixed;\n    right: 0;\n    top: 0;\n    "], ["\n    font-size: 1.5rem;\n    height: 2rem;\n    left: 0;\n    line-height: 2rem;\n    padding: 0.5rem 1rem;\n    position: fixed;\n    right: 0;\n    top: 0;\n    "])));
-var Wrapper = styled_components_browser_esm.div(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    bottom: 0;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    "], ["\n    bottom: 0;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    "])));
-var TextArea = styled_components_browser_esm.textarea(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    border-right: 1px solid silver;\n    border-top: 1px solid silver;\n    bottom: 0;\n    font-size; 1rem;\n    left: 0;\n    padding: 0.5rem;\n    position: absolute;\n    top: 0;\n    width: 50vw;\n    "], ["\n    border-right: 1px solid silver;\n    border-top: 1px solid silver;\n    bottom: 0;\n    font-size; 1rem;\n    left: 0;\n    padding: 0.5rem;\n    position: absolute;\n    top: 0;\n    width: 50vw;\n    "])));
-var Preview = styled_components_browser_esm.div(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    border-top: 1px solid silver;\n    bottom: 0;\n    overflow-y: scroll;\n    padding: 1rem;\n    position: absolute;\n    right: 0;\n    top: 0;\n    width: 50vw;\n    "], ["\n    border-top: 1px solid silver;\n    bottom: 0;\n    overflow-y: scroll;\n    padding: 1rem;\n    position: absolute;\n    right: 0;\n    top: 0;\n    width: 50vw;\n    "])));
-var Editor = function () {
-    return (react.createElement(react.Fragment, null,
-        react.createElement(Header, null, "Markdown Editor"),
-        react.createElement(Wrapper, null,
-            react.createElement(TextArea, { value: "\u30C6\u30AD\u30B9\u30C8\u5165\u529B\u30A8\u30EA\u30A2" }),
-            react.createElement(Preview, null, "\u30D7\u30EC\u30D3\u30E5\u30FC\u30A8\u30EA\u30A2"))));
+var StyledButton = styled_components_browser_esm.button(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    background-color: dodgerblue;\n    border: none;\n    box-shadow: none;\n    color: white;\n    font-size: 1rem;\n    height: 2rem;\n    min-width; 5rem;\n    padding: 0 1rem;\n\n    &.cnacel {\n        background: white;\n        border: 1px solid gray;\n        color: gray;\n    }\n    "], ["\n    background-color: dodgerblue;\n    border: none;\n    box-shadow: none;\n    color: white;\n    font-size: 1rem;\n    height: 2rem;\n    min-width; 5rem;\n    padding: 0 1rem;\n\n    &.cnacel {\n        background: white;\n        border: 1px solid gray;\n        color: gray;\n    }\n    "])));
+var Button = function (props) { return (react.createElement(StyledButton, { onClick: props.onClick, className: props.cancel ? 'cancel' : '' }, props.children)); };
+var templateObject_1;
+
+;// CONCATENATED MODULE: ./src/components/save_modal.tsx
+var save_modal_makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
 };
-var templateObject_1, templateObject_2, templateObject_3, templateObject_4;
+
+
+
+var useState = react.useState;
+var Wrapper = styled_components_browser_esm.div(save_modal_templateObject_1 || (save_modal_templateObject_1 = save_modal_makeTemplateObject(["\n    align-items: center;\n    background-color: #0002;\n    bottom: 0;\n    display: flex;\n    justify-content: center;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 0;\n    "], ["\n    align-items: center;\n    background-color: #0002;\n    bottom: 0;\n    display: flex;\n    justify-content: center;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 0;\n    "])));
+var Modal = styled_components_browser_esm.div(templateObject_2 || (templateObject_2 = save_modal_makeTemplateObject(["\n    background: #fff;\n    padding: 1rem;\n    width: 32rem;\n    "], ["\n    background: #fff;\n    padding: 1rem;\n    width: 32rem;\n    "])));
+var TitleInput = styled_components_browser_esm.input(templateObject_3 || (templateObject_3 = save_modal_makeTemplateObject(["\n    width: 29rem;\n    padding: 0.5rem;\n    "], ["\n    width: 29rem;\n    padding: 0.5rem;\n    "])));
+var Control = styled_components_browser_esm.div(templateObject_4 || (templateObject_4 = save_modal_makeTemplateObject(["\n    display: flex;\n    justify-content: space-evenly;\n    padding: 1rem;\n    "], ["\n    display: flex;\n    justify-content: space-evenly;\n    padding: 1rem;\n    "])));
+var SaveModal = function (props) {
+    var onCancel = props.onCancel, onSave = props.onSave;
+    var _a = useState(new Date().toISOString()), title = _a[0], setTitle = _a[1];
+    return (react.createElement(Wrapper, null,
+        react.createElement(Modal, null,
+            react.createElement("p", null, "\u30C6\u30AD\u30B9\u30C8\u306E\u5185\u5BB9\u3092\u4FDD\u5B58\u3057\u307E\u3059\u3002"),
+            react.createElement("p", null, "\u4FDD\u5B58\u5185\u5BB9\u306E\u30BF\u30A4\u30C8\u30EB\u3092\u5165\u529B\u3057\u3066\u300C\u4FDD\u5B58\u300D\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u304F\u3060\u3055\u3044\u3002"),
+            react.createElement("p", null,
+                react.createElement(TitleInput, { type: "text", value: title, onChange: function (event) { return setTitle(event.target.value); } })),
+            react.createElement(Control, null,
+                react.createElement(Button, { onClick: onCancel, cancel: true }, "\u30AD\u30E3\u30F3\u30BB\u30EB"),
+                react.createElement(Button, { onClick: function () { return onSave(title); } }, "\u4FDD\u5B58")))));
+};
+var save_modal_templateObject_1, templateObject_2, templateObject_3, templateObject_4;
+
+;// CONCATENATED MODULE: ./src/components/header.tsx
+var header_makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+
+
+var HeaderWrapper = styled_components_browser_esm.header(header_templateObject_1 || (header_templateObject_1 = header_makeTemplateObject(["\n    align-content: center;\n    display: flex;\n    height: 2rem;\n    justify-content: space-between;\n    line-heigth: 2rem;\n    padding: 0.5rem 1rem;\n    "], ["\n    align-content: center;\n    display: flex;\n    height: 2rem;\n    justify-content: space-between;\n    line-heigth: 2rem;\n    padding: 0.5rem 1rem;\n    "])));
+var HeaderTitle = styled_components_browser_esm.div(header_templateObject_2 || (header_templateObject_2 = header_makeTemplateObject(["\n    font-size: 1.5rem;\n    "], ["\n    font-size: 1.5rem;\n    "])));
+var HeaderControl = styled_components_browser_esm.div(header_templateObject_3 || (header_templateObject_3 = header_makeTemplateObject(["\n    align-content: center;\n    display: flex;\n    height: 2rem;\n    justify-content: center;\n    \n    & > * {\n        margin-left: 0.5rem;\n    }\n    "], ["\n    align-content: center;\n    display: flex;\n    height: 2rem;\n    justify-content: center;\n    \n    & > * {\n        margin-left: 0.5rem;\n    }\n    "])));
+var Header = function (props) { return (react.createElement(HeaderWrapper, null,
+    react.createElement(HeaderTitle, null, props.title),
+    react.createElement(HeaderControl, null, props.children))); };
+var header_templateObject_1, header_templateObject_2, header_templateObject_3;
+
+;// CONCATENATED MODULE: ./src/pages/editor.tsx
+var editor_makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+
+
+
+
+
+
+
+
+var editor_useState = react.useState;
+var editor_Wrapper = styled_components_browser_esm.div(editor_templateObject_1 || (editor_templateObject_1 = editor_makeTemplateObject(["\n    bottom: 0;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    "], ["\n    bottom: 0;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    "])));
+var HeaderArea = styled_components_browser_esm.div(editor_templateObject_2 || (editor_templateObject_2 = editor_makeTemplateObject(["\n    position: fixed;\n    right: 0;\n    top: 0;\n    left: 0;\n    "], ["\n    position: fixed;\n    right: 0;\n    top: 0;\n    left: 0;\n    "])));
+var TextArea = styled_components_browser_esm.textarea(editor_templateObject_3 || (editor_templateObject_3 = editor_makeTemplateObject(["\n    border-right: 1px solid silver;\n    border-top: 1px solid silver;\n    bottom: 0;\n    font-size; 1rem;\n    left: 0;\n    padding: 0.5rem;\n    position: absolute;\n    top: 0;\n    width: 50vw;\n    "], ["\n    border-right: 1px solid silver;\n    border-top: 1px solid silver;\n    bottom: 0;\n    font-size; 1rem;\n    left: 0;\n    padding: 0.5rem;\n    position: absolute;\n    top: 0;\n    width: 50vw;\n    "])));
+var Preview = styled_components_browser_esm.div(editor_templateObject_4 || (editor_templateObject_4 = editor_makeTemplateObject(["\n    border-top: 1px solid silver;\n    bottom: 0;\n    overflow-y: scroll;\n    padding: 1rem;\n    position: absolute;\n    right: 0;\n    top: 0;\n    width: 50vw;\n    "], ["\n    border-top: 1px solid silver;\n    bottom: 0;\n    overflow-y: scroll;\n    padding: 1rem;\n    position: absolute;\n    right: 0;\n    top: 0;\n    width: 50vw;\n    "])));
+var Editor = function (props) {
+    var text = props.text, setText = props.setText;
+    var _a = editor_useState(false), showModal = _a[0], setShowModal = _a[1];
+    return (react.createElement(react.Fragment, null,
+        react.createElement(HeaderArea, null,
+            react.createElement(Header, { title: "Markdown Editor" },
+                react.createElement(Button, { onClick: function () { return setShowModal(true); } }, "\u4FDD\u5B58\u3059\u308B"),
+                react.createElement(Link, { to: "/history" }, "\u5C65\u6B74\u3092\u898B\u308B"))),
+        react.createElement(editor_Wrapper, null,
+            react.createElement(TextArea, { onChange: function (event) { return setText(event.target.value); }, value: text }),
+            react.createElement(Preview, null,
+                react.createElement(react_markdown, null, text))),
+        showModal && (react.createElement(SaveModal, { onSave: function (title) {
+                putMemo(title, text);
+                setShowModal(false);
+            }, onCancel: function () { return setShowModal(false); } }))));
+};
+var editor_templateObject_1, editor_templateObject_2, editor_templateObject_3, editor_templateObject_4;
+
+;// CONCATENATED MODULE: ./src/pages/history.tsx
+var history_makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+
+
+
+
+
+var history_useState = react.useState, useEffect = react.useEffect;
+var history_HeaderArea = styled_components_browser_esm.div(history_templateObject_1 || (history_templateObject_1 = history_makeTemplateObject(["\n    position: fixed;\n    right: 0;\n    top: 0;\n    left: 0;\n    "], ["\n    position: fixed;\n    right: 0;\n    top: 0;\n    left: 0;\n    "])));
+var history_Wrapper = styled_components_browser_esm.div(history_templateObject_2 || (history_templateObject_2 = history_makeTemplateObject(["\n    bottom: 0;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    padding: 0 1rem;\n    "], ["\n    bottom: 0;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    padding: 0 1rem;\n    "])));
+var Memo = styled_components_browser_esm.button(history_templateObject_3 || (history_templateObject_3 = history_makeTemplateObject(["\n    display: block;\n    background-color: white;\n    border: 1px solid gray;\n    width: 100%;\n    padding: 1rem;\n    margin: 1rem 0;\n    text-align: left;\n    "], ["\n    display: block;\n    background-color: white;\n    border: 1px solid gray;\n    width: 100%;\n    padding: 1rem;\n    margin: 1rem 0;\n    text-align: left;\n    "])));
+var MemoTitle = styled_components_browser_esm.div(history_templateObject_4 || (history_templateObject_4 = history_makeTemplateObject(["\n    font-size: 1rem;\n    margin-bottom: 0.5rem;\n    "], ["\n    font-size: 1rem;\n    margin-bottom: 0.5rem;\n    "])));
+var MemoText = styled_components_browser_esm.div(templateObject_5 || (templateObject_5 = history_makeTemplateObject(["\n    font-size: 0.85rem;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    "], ["\n    font-size: 0.85rem;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    "])));
+var History = function (props) {
+    var setText = props.setText;
+    var _a = history_useState([]), memos = _a[0], setMemos = _a[1];
+    var history = useHistory();
+    useEffect(function () {
+        getMemos().then(setMemos);
+    }, []);
+    return (react.createElement(react.Fragment, null,
+        react.createElement(history_HeaderArea, null,
+            react.createElement(Header, { title: "\u5C65\u6B74" },
+                react.createElement(Link, { to: "/editor" }, "\u30A8\u30C7\u30A3\u30BF\u306B\u623B\u308B"))),
+        react.createElement(history_Wrapper, null, memos.map(function (memo) { return (react.createElement(Memo, { key: memo.datetime, onClick: function () {
+                setText(memo.text);
+                history.push('/editor');
+            } },
+            react.createElement(MemoTitle, null, memo.title),
+            react.createElement(MemoText, null, memo.text))); }))));
+};
+var history_templateObject_1, history_templateObject_2, history_templateObject_3, history_templateObject_4, templateObject_5;
+
+;// CONCATENATED MODULE: ./src/hooks/use_state_with_storage.ts
+
+var useStateWithStorage = function (init, key) {
+    var _a = (0,react.useState)(localStorage.getItem(key) || init), value = _a[0], setValue = _a[1];
+    var setValueWithStorage = function (nextValue) {
+        setValue(nextValue);
+        localStorage.setItem(key, nextValue);
+    };
+    return [value, setValueWithStorage];
+};
 
 ;// CONCATENATED MODULE: ./src/index.tsx
 var src_makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
@@ -1565,11 +17291,24 @@ var src_makeTemplateObject = (undefined && undefined.__makeTemplateObject) || fu
 
 
 
+
+
+
 var GlobalStyle = We(src_templateObject_1 || (src_templateObject_1 = src_makeTemplateObject(["\n    body * {\n        box-sizing: border-box;\n    }\n    "], ["\n    body * {\n        box-sizing: border-box;\n    }\n    "])));
-var Main = (react.createElement(react.Fragment, null,
-    react.createElement(GlobalStyle, null),
-    react.createElement(Editor, null)));
-(0,react_dom.render)(Main, document.getElementById('app'));
+var StorageKey = '/editor:text';
+var Main = function () {
+    var _a = useStateWithStorage('', StorageKey), text = _a[0], setText = _a[1];
+    return (react.createElement(react.Fragment, null,
+        react.createElement(GlobalStyle, null),
+        react.createElement(HashRouter, null,
+            react.createElement(Switch, null,
+                react.createElement(Route, { exact: true, path: "/editor" },
+                    react.createElement(Editor, { text: text, setText: setText })),
+                react.createElement(Route, { exact: true, path: "/history" },
+                    react.createElement(History, { setText: setText })),
+                react.createElement(Redirect, { to: "/editor", path: "*" })))));
+};
+(0,react_dom.render)(react.createElement(Main, null), document.getElementById('app'));
 var src_templateObject_1;
 
 })();
