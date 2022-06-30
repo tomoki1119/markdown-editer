@@ -17138,9 +17138,25 @@ var putMemo = function (title, text) { return __awaiter(void 0, void 0, void 0, 
         }
     });
 }); };
-var getMemos = function () {
+var NUM_PER_PAGE = 10;
+var getMemoPageCount = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var totalCount, pageCount;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, memos.count()];
+            case 1:
+                totalCount = _a.sent();
+                pageCount = Math.ceil(totalCount / NUM_PER_PAGE);
+                return [2 /*return*/, pageCount > 0 ? pageCount : 1];
+        }
+    });
+}); };
+var getMemos = function (page) {
+    var offset = (page - 1) * NUM_PER_PAGE;
     return memos.orderBy('datetime')
         .reverse()
+        .offset(offset)
+        .limit(NUM_PER_PAGE)
         .toArray();
 };
 
@@ -17247,29 +17263,50 @@ var history_makeTemplateObject = (undefined && undefined.__makeTemplateObject) |
 
 var history_useState = react.useState, useEffect = react.useEffect;
 var history_HeaderArea = styled_components_browser_esm.div(history_templateObject_1 || (history_templateObject_1 = history_makeTemplateObject(["\n    position: fixed;\n    right: 0;\n    top: 0;\n    left: 0;\n    "], ["\n    position: fixed;\n    right: 0;\n    top: 0;\n    left: 0;\n    "])));
-var history_Wrapper = styled_components_browser_esm.div(history_templateObject_2 || (history_templateObject_2 = history_makeTemplateObject(["\n    bottom: 0;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    padding: 0 1rem;\n    "], ["\n    bottom: 0;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    padding: 0 1rem;\n    "])));
+var history_Wrapper = styled_components_browser_esm.div(history_templateObject_2 || (history_templateObject_2 = history_makeTemplateObject(["\n    bottom: 3rem;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    padding: 0 1rem;\n    overflow-y: scroll;\n    "], ["\n    bottom: 3rem;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    padding: 0 1rem;\n    overflow-y: scroll;\n    "])));
 var Memo = styled_components_browser_esm.button(history_templateObject_3 || (history_templateObject_3 = history_makeTemplateObject(["\n    display: block;\n    background-color: white;\n    border: 1px solid gray;\n    width: 100%;\n    padding: 1rem;\n    margin: 1rem 0;\n    text-align: left;\n    "], ["\n    display: block;\n    background-color: white;\n    border: 1px solid gray;\n    width: 100%;\n    padding: 1rem;\n    margin: 1rem 0;\n    text-align: left;\n    "])));
 var MemoTitle = styled_components_browser_esm.div(history_templateObject_4 || (history_templateObject_4 = history_makeTemplateObject(["\n    font-size: 1rem;\n    margin-bottom: 0.5rem;\n    "], ["\n    font-size: 1rem;\n    margin-bottom: 0.5rem;\n    "])));
 var MemoText = styled_components_browser_esm.div(templateObject_5 || (templateObject_5 = history_makeTemplateObject(["\n    font-size: 0.85rem;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    "], ["\n    font-size: 0.85rem;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    "])));
+var Paging = styled_components_browser_esm.div(templateObject_6 || (templateObject_6 = history_makeTemplateObject(["\n    bottom: 0;\n    height: 3rem;\n    left: 0;\n    line-height: 2rem;\n    padding: 0.5rem;\n    position: fixed;\n    right: 0;\n    text-align: center;\n    "], ["\n    bottom: 0;\n    height: 3rem;\n    left: 0;\n    line-height: 2rem;\n    padding: 0.5rem;\n    position: fixed;\n    right: 0;\n    text-align: center;\n    "])));
+var PagingButton = styled_components_browser_esm.button(templateObject_7 || (templateObject_7 = history_makeTemplateObject(["\n    background: none;\n    border: none;\n    display: inline-block;\n    height: 2rem;\n    padding: 0.5rem 1rem;\n    \n    &:disabled {\n        color: silver;\n    }\n    "], ["\n    background: none;\n    border: none;\n    display: inline-block;\n    height: 2rem;\n    padding: 0.5rem 1rem;\n    \n    &:disabled {\n        color: silver;\n    }\n    "])));
 var History = function (props) {
     var setText = props.setText;
     var _a = history_useState([]), memos = _a[0], setMemos = _a[1];
+    var _b = history_useState(1), page = _b[0], setPage = _b[1];
+    var _c = history_useState(1), maxPage = _c[0], setMaxPage = _c[1];
     var history = useHistory();
     useEffect(function () {
-        getMemos().then(setMemos);
+        getMemos(1).then(setMemos);
+        getMemoPageCount().then(setMaxPage);
     }, []);
+    var canNextPage = page < maxPage;
+    var canPrevPage = page > 1;
+    var movePage = function (targetPage) {
+        if (targetPage < 1 || maxPage < targetPage) {
+            return;
+        }
+        setPage(targetPage);
+        getMemos(targetPage).then(setMemos);
+    };
     return (react.createElement(react.Fragment, null,
         react.createElement(history_HeaderArea, null,
             react.createElement(Header, { title: "\u5C65\u6B74" },
                 react.createElement(Link, { to: "/editor" }, "\u30A8\u30C7\u30A3\u30BF\u306B\u623B\u308B"))),
-        react.createElement(history_Wrapper, null, memos.map(function (memo) { return (react.createElement(Memo, { key: memo.datetime, onClick: function () {
-                setText(memo.text);
-                history.push('/editor');
-            } },
-            react.createElement(MemoTitle, null, memo.title),
-            react.createElement(MemoText, null, memo.text))); }))));
+        react.createElement(history_Wrapper, null,
+            react.createElement(Paging, null,
+                react.createElement(PagingButton, { onClick: function () { return movePage(page - 1); }, disabled: !canPrevPage }, "\uFF1C"),
+                page,
+                " / ",
+                maxPage,
+                react.createElement(PagingButton, { onClick: function () { return movePage(page + 1); }, disabled: !canNextPage }, "\uFF1E")),
+            memos.map(function (memo) { return (react.createElement(Memo, { key: memo.datetime, onClick: function () {
+                    setText(memo.text);
+                    history.push('/editor');
+                } },
+                react.createElement(MemoTitle, null, memo.title),
+                react.createElement(MemoText, null, memo.text))); }))));
 };
-var history_templateObject_1, history_templateObject_2, history_templateObject_3, history_templateObject_4, templateObject_5;
+var history_templateObject_1, history_templateObject_2, history_templateObject_3, history_templateObject_4, templateObject_5, templateObject_6, templateObject_7;
 
 ;// CONCATENATED MODULE: ./src/hooks/use_state_with_storage.ts
 
