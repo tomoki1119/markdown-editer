@@ -14157,6 +14157,11 @@ module.exports = JSON.parse('{"classId":"classID","dataType":"datatype","itemId"
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/publicPath */
+/******/ 	(() => {
+/******/ 		__webpack_require__.p = "dist/";
+/******/ 	})();
+/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
@@ -17214,6 +17219,11 @@ var Header = function (props) { return (react.createElement(HeaderWrapper, null,
     react.createElement(HeaderControl, null, props.children))); };
 var header_templateObject_1, header_templateObject_2, header_templateObject_3;
 
+;// CONCATENATED MODULE: ./node_modules/worker-loader/dist/cjs.js!./src/worker/test.ts
+function Worker_fn() {
+  return new Worker(__webpack_require__.p + "index.worker.js");
+}
+
 ;// CONCATENATED MODULE: ./src/pages/editor.tsx
 var editor_makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
     if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
@@ -17227,7 +17237,9 @@ var editor_makeTemplateObject = (undefined && undefined.__makeTemplateObject) ||
 
 
 
-var editor_useState = react.useState;
+
+var testWorker = new Worker_fn();
+var editor_useState = react.useState, useEffect = react.useEffect;
 var editor_Wrapper = styled_components_browser_esm.div(editor_templateObject_1 || (editor_templateObject_1 = editor_makeTemplateObject(["\n    bottom: 0;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    "], ["\n    bottom: 0;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    "])));
 var HeaderArea = styled_components_browser_esm.div(editor_templateObject_2 || (editor_templateObject_2 = editor_makeTemplateObject(["\n    position: fixed;\n    right: 0;\n    top: 0;\n    left: 0;\n    "], ["\n    position: fixed;\n    right: 0;\n    top: 0;\n    left: 0;\n    "])));
 var TextArea = styled_components_browser_esm.textarea(editor_templateObject_3 || (editor_templateObject_3 = editor_makeTemplateObject(["\n    border-right: 1px solid silver;\n    border-top: 1px solid silver;\n    bottom: 0;\n    font-size; 1rem;\n    left: 0;\n    padding: 0.5rem;\n    position: absolute;\n    top: 0;\n    width: 50vw;\n    "], ["\n    border-right: 1px solid silver;\n    border-top: 1px solid silver;\n    bottom: 0;\n    font-size; 1rem;\n    left: 0;\n    padding: 0.5rem;\n    position: absolute;\n    top: 0;\n    width: 50vw;\n    "])));
@@ -17235,6 +17247,14 @@ var Preview = styled_components_browser_esm.div(editor_templateObject_4 || (edit
 var Editor = function (props) {
     var text = props.text, setText = props.setText;
     var _a = editor_useState(false), showModal = _a[0], setShowModal = _a[1];
+    useEffect(function () {
+        testWorker.onmessage = function (event) {
+            console.log('Main thread Received:', event.data);
+        };
+    }, []);
+    useEffect(function () {
+        testWorker.postMessage(text);
+    }, [text]);
     return (react.createElement(react.Fragment, null,
         react.createElement(HeaderArea, null,
             react.createElement(Header, { title: "Markdown Editor" },
@@ -17261,7 +17281,7 @@ var history_makeTemplateObject = (undefined && undefined.__makeTemplateObject) |
 
 
 
-var history_useState = react.useState, useEffect = react.useEffect;
+var history_useState = react.useState, history_useEffect = react.useEffect;
 var history_HeaderArea = styled_components_browser_esm.div(history_templateObject_1 || (history_templateObject_1 = history_makeTemplateObject(["\n    position: fixed;\n    right: 0;\n    top: 0;\n    left: 0;\n    "], ["\n    position: fixed;\n    right: 0;\n    top: 0;\n    left: 0;\n    "])));
 var history_Wrapper = styled_components_browser_esm.div(history_templateObject_2 || (history_templateObject_2 = history_makeTemplateObject(["\n    bottom: 3rem;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    padding: 0 1rem;\n    overflow-y: scroll;\n    "], ["\n    bottom: 3rem;\n    left: 0;\n    position: fixed;\n    right: 0;\n    top: 3rem;\n    padding: 0 1rem;\n    overflow-y: scroll;\n    "])));
 var Memo = styled_components_browser_esm.button(history_templateObject_3 || (history_templateObject_3 = history_makeTemplateObject(["\n    display: block;\n    background-color: white;\n    border: 1px solid gray;\n    width: 100%;\n    padding: 1rem;\n    margin: 1rem 0;\n    text-align: left;\n    "], ["\n    display: block;\n    background-color: white;\n    border: 1px solid gray;\n    width: 100%;\n    padding: 1rem;\n    margin: 1rem 0;\n    text-align: left;\n    "])));
@@ -17275,7 +17295,7 @@ var History = function (props) {
     var _b = history_useState(1), page = _b[0], setPage = _b[1];
     var _c = history_useState(1), maxPage = _c[0], setMaxPage = _c[1];
     var history = useHistory();
-    useEffect(function () {
+    history_useEffect(function () {
         getMemos(1).then(setMemos);
         getMemoPageCount().then(setMaxPage);
     }, []);
