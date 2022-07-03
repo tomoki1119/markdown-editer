@@ -6,10 +6,6 @@ module.exports = {
     module:{
         rules:[
             {
-                test: /\.worker\.js$/,
-                use: "worker-loader" ,
-            },
-            {
                 test:/\.tsx?$/,
                 use:'ts-loader',
                 exclude:/node_modules/,
@@ -25,9 +21,7 @@ module.exports = {
         publicPath:'dist/',
     },
     devServer:{
-        static:{
-            directory: path.join(__dirname, 'dist')
-        },
+        publicPath: '/dist/',
         hot:true,
         open:true
     },
